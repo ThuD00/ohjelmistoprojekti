@@ -23,12 +23,26 @@ Järjestelmän suunnittelussa huomioidaan myös mahdollinen jatkokehitys. Tuleva
 Projektin käyttöliittymän suunnittelussa hyödynnetään tilaajan toimittamia alustavia wireframe-malleja. Wireframet toimivat suunnittelun tukena ja antavat suuntaa järjestelmän tärkeimpien käyttöliittymien rakenteesta ja toiminnallisuudesta. Niitä ei kuitenkaan käsitellä lopullisina käyttöliittymäsuunnitelmina vaan niitä voidaan muokata projektin edetessä määriteltyjen tarpeiden perusteella.
 
 ## Järjestelmän määrittely
-- Käyttäjärooli: Tapahtuman järjestäjä, lipunmyyjä, asiakas ja lipuntarkastaja
-- Lipuntarkastaja: "Lipunkuittaus on hankalaa."
-- Lipunmyyjä: "Bändin osuus olisi mukava nähdä lipunmyynnissä."
+- Käyttäjäroolit: Tapahtuman järjestäjä, asiakas ja lipuntarkastaja
 - Asiakas: "Haluan ostaa lipun haluamaani tapahtumaan."
+ - Kirjautuu sisään palveluun.
+ - Käy läpi tapahtuma listaa löytääkseen haluamansa.
+ - Valitsee tapahtuman ja siirtyy lippu tyypin valintaan.
+ - Maksutavan valinta lipun ostamiseen.
+ - Siirtymä käyttäjän liput näkymään ja tulostukseen.
+- Lipunmyyjä: "Bändin osuus olisi mukava nähdä lipunmyynnissä."
+ - Kirjautuu sisään järjestelmään myyjänä tapahtumat näkymlle.
+ - Luo uuden tapahtuman.
+ - Asettaa tapahtuman ajankohdan, paikan, kuvauksen, kaupunging sekä lippujen määrän.
+ - Tarkentaa lippunäkymällä eri lippujen kuvauksen ja hinnan.
+ - Käy tarkastamassa viime tapahtuman myyntiraportin.
 - Tapahtuma järjestäjä:
 "Olisi hyvä saada tapahtuman sivuihin jokin viittaus."
+ - Kirjautuu sisään tapahtuma järjestäjänä.
+ - Valitsee oman tapahtumansa.
+ - Muokkaa ajankohdan muutoksen tulevaan tapahtumaan.
+ - Tarkastaa samalla myytyjen lippujen määrän.
+ - Valitsee menneen tapahtuman raportin näkeäkseen kokonaismyynnin.
 ## Käyttöliittymä
 - Asiakas näkee lipunmyynnin ja tapahtumaluettelon.
 - Myyjät näkevät tapahtumahallinnan ja myyntiraportin.
