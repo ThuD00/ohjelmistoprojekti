@@ -24,20 +24,19 @@ Projektin käyttöliittymän suunnittelussa hyödynnetään tilaajan toimittamia
 
 ## Järjestelmän määrittely
 - Käyttäjäroolit: Tapahtuman järjestäjä, asiakas ja lipuntarkastaja
-- Asiakas: "Haluan ostaa lipun haluamaani tapahtumaan."
+1. Asiakas: "Haluan ostaa lipun haluamaani tapahtumaan."
  - Kirjautuu sisään palveluun.
  - Käy läpi tapahtuma listaa löytääkseen haluamansa.
  - Valitsee tapahtuman ja siirtyy lippu tyypin valintaan.
  - Maksutavan valinta lipun ostamiseen.
  - Siirtymä käyttäjän liput näkymään ja tulostukseen.
-- Lipunmyyjä: "Bändin osuus olisi mukava nähdä lipunmyynnissä."
+2. Lipunmyyjä: "Bändin osuus olisi mukava nähdä lipunmyynnissä."
  - Kirjautuu sisään järjestelmään myyjänä tapahtumat näkymlle.
  - Luo uuden tapahtuman.
  - Asettaa tapahtuman ajankohdan, paikan, kuvauksen, kaupunging sekä lippujen määrän.
  - Tarkentaa lippunäkymällä eri lippujen kuvauksen ja hinnan.
  - Käy tarkastamassa viime tapahtuman myyntiraportin.
-- Tapahtuma järjestäjä:
-"Olisi hyvä saada tapahtuman sivuihin jokin viittaus."
+3. Tapahtuma järjestäjä: "Olisi hyvä saada tapahtuman sivuihin jokin viittaus."
  - Kirjautuu sisään tapahtuma järjestäjänä.
  - Valitsee oman tapahtumansa.
  - Muokkaa ajankohdan muutoksen tulevaan tapahtumaan.
