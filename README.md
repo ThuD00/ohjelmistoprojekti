@@ -45,3 +45,12 @@ Projektin käyttöliittymän suunnittelussa hyödynnetään tilaajan toimittamia
 ## Käyttöliittymä
 - Asiakas näkee lipunmyynnin ja tapahtumaluettelon.
 - Myyjät näkevät tapahtumahallinnan ja myyntiraportin.
+
+## Tietokanta
+Lippu on määritelty kuulumaan aina pakollisesti yhteen myyntitapahtumaan. Näin jokaisella myydyllä lipulla on tieto siitä, mihin myyntitapahtumaan se kuuluu. Tämä tukee tietokannan eheyttä ja mahdollistaa esim. yksittäisen myynnin sisältämien lippujen tarkastelun. Myös tulevassa verkkokaupassa asiakkaan ostamat liput voidaan liittää samaan myyntitapahtumaan. Mikäli ovelle halutaan printata lippuja ennakkoon ilman suoraa asiakaskontaktia, ne voidaan kirjata järjestelmään omana myyntitapahtumana ennen tulostusta. 
+
+**Relaatiot**  
+![relaatiokaavio käyttöliittymästä](lipputoimisto/docs/relaatiokaavio.png) 
+- __Tapahtuma 1:0..* Lipputyyppi__: Yhdellä tapahtumalla voi olla useita eri lipputyyppejä (esim. aikuinen, lapsi, eläkäinen ja opiskelija). Jokainen lipputyyppi kuuluu yhteen tapahtumaan.
+- __Lipputyyppi 1:0..* Lippu__: Yhdestä lipputyypistä voidaan muodostaa useita yksittäisiä lippuja. Yksittäinen lippu perustuu aina yhteen lipputyyppiin ja sen hintaan. Jokaisella lipulla on lisäksi yksilöllinen koodi, jonka avulla lippu voidaan tarkistaa ja merkitä käytetyksi ovella.
+- __Myyntitapahtuma 1:1..* Lippu__: Yksi myyntitapahtuma voi sisältää yhden tai useamman lipun. Myyntitapahtuma kokoaa samaan ostoon kuuluvat liput yhteen ja sisältää esimerkiksi maksuaikaa ja myynnin kokonaissummaa. Jokainen lippu kuuluu pakollisesti yhteen myyntitapahtumaan.
