@@ -43,5 +43,7 @@ Projektin käyttöliittymän suunnittelussa hyödynnetään tilaajan toimittamia
  - Tarkastaa samalla myytyjen lippujen määrän.
  - Valitsee menneen tapahtuman raportin näkeäkseen kokonaismyynnin.
 ## Käyttöliittymä
-- Asiakas näkee lipunmyynnin ja tapahtumaluettelon.
-- Myyjät näkevät tapahtumahallinnan ja myyntiraportin.
+- Asiakas voi kirjautua sisään näkeäkseen lipunmyynnin, tapahtumaluettelon ja myyntitapahtumansa.
+- Tapahtuman järjestäjä voi kirjautua näkeäkseen myyntiraportin ja tapahtumanhallinnan.
+- Lipunmyyjä hallitsee järjestelmää, näkee myyntiraportin, tapahtumien hallinnan sekä voi luoda uuden tapahtuman.
+![Käyttöliittymän kuvaus](lipputoimisto\docs\kayttoLiittyma.png)
