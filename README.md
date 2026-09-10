@@ -51,6 +51,8 @@ Projektin käyttöliittymän suunnittelussa hyödynnetään tilaajan toimittamia
 ## Tietokanta
 Lippu on määritelty kuulumaan aina pakollisesti yhteen myyntitapahtumaan. Näin jokaisella myydyllä lipulla on tieto siitä, mihin myyntitapahtumaan se kuuluu. Tämä tukee tietokannan eheyttä ja mahdollistaa esimerkiksi yksittäisen myynnin sisältämien lippujen tarkastelun. Myös tulevassa verkkokaupassa asiakkaan ostamat liput voidaan liittää samaan myyntitapahtumaan. Mikäli ovelle halutaan tulostaa lippuja ennakkoon ilman suoraa asiakaskontaktia, ne voidaan kirjata järjestelmään omana myyntitapahtumanaan ennen tulostusta. 
 
+Asiakastaulua ei tässä vaiheessa ole toteutettu, koska nykyisessä järjestelmässä liput myydään lipunmyyntipisteessä eikä ostajan tietoja tarvitsee tallentaa. Asiakkaiden hallintaa tulee ajankohtaiseksi järjestelmän jatkokehityksessä, kun verkkokauppa toteutetaan.
+
 ![relaatiokaavio käyttöliittymästä](lipputoimisto/docs/relaatiokaavio.png) 
 
 **Relaatiot**  
