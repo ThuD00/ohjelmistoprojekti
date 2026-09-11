@@ -26,12 +26,12 @@ public class Lippu {
     private String koodi;
 
     @Column(name = "lipun_status")
-    private String lipunStatus;
+    private boolean lipunStatus;
 
     public Lippu() {
     }
 
-    public Lippu(Lipputyyppi lipputyyppi, Myyntitapahtuma myyntitapahtuma, String koodi, String lipunStatus) {
+    public Lippu(Lipputyyppi lipputyyppi, Myyntitapahtuma myyntitapahtuma, String koodi, boolean lipunStatus) {
         this.lipputyyppi = lipputyyppi;
         this.myyntitapahtuma = myyntitapahtuma;
         this.koodi = koodi;
@@ -70,11 +70,11 @@ public class Lippu {
         this.koodi = koodi;
     }
 
-    public String getLipunStatus() {
+    public boolean getLipunStatus() {
         return lipunStatus;
     }
 
-    public void setLipunStatus(String lipunStatus) {
+    public void setLipunStatus(boolean lipunStatus) {
         this.lipunStatus = lipunStatus;
     }
 
