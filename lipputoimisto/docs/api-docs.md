@@ -105,4 +105,57 @@
 
 ## 2. Liput
 
-### todo
+### Varaa lippu
+* **Metodi**: `POST`
+* **Polku**: `/liput/varaa`
+* **Pyynnön runko**:
+```json
+{
+  "lipputyyppiId": 1,
+  "qty": 2
+}
+```
+* **Vastaus**: `201 CREATED`
+* **Vastauksen runko**:
+```json
+{
+  "myyntitapahtumaId": 1234567890
+  "liput": [
+    {
+      "lippuId": 123,
+      "koodi": "ABCDEF123456"
+    },
+    {
+      "lippuId": 124,
+      "koodi": "FEDCBA654321"
+    }
+  ]
+}
+
+```
+
+### Lunasta lippu
+* **Metodi**: `PUT`
+* **Polku**: `/liput/lunasta`
+* **Pyynnön runko**:
+```json
+{
+  "koodi": "ABCDEF123456"
+}
+```
+* **Vastaus**: `200 OK`
+  * `404 NOT FOUND` (Jos koodilla ei löydy lippua)
+  * `409 CONFLICT` (Jos lippu on jo lunastettu tai peruttu)
+
+### Peruuta varaus
+* **Metodi**: `PUT`
+* **Polku**: `/liput/peru`
+* **Pyynnön runko**:
+```json
+{
+  "koodi": "ABCDEF123456"
+}
+```
+* **Vastaus**: `200 OK`
+  * `404 NOT FOUND` (Jos koodilla ei löydy lippua)
+  * `409 CONFLICT` (Jos lippu on jo lunastettu tai peruttu)
