@@ -2,6 +2,8 @@ package ohjelmistoprojekti.lipputoimisto.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -10,6 +12,12 @@ import jakarta.persistence.ManyToOne;
 
 @Entity 
 public class Lippu {
+
+    public enum LippuTila {
+        VARATTU,
+        LUNASTETTU,
+        PERUTTU
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,12 +34,13 @@ public class Lippu {
     private String koodi;
 
     @Column(name = "lipun_status")
-    private boolean lipunStatus;
+    @Enumerated(EnumType.STRING)
+    private LippuTila lipunStatus;
 
     public Lippu() {
     }
 
-    public Lippu(Lipputyyppi lipputyyppi, Myyntitapahtuma myyntitapahtuma, String koodi, boolean lipunStatus) {
+    public Lippu(Lipputyyppi lipputyyppi, Myyntitapahtuma myyntitapahtuma, String koodi, LippuTila lipunStatus) {
         this.lipputyyppi = lipputyyppi;
         this.myyntitapahtuma = myyntitapahtuma;
         this.koodi = koodi;
@@ -70,11 +79,11 @@ public class Lippu {
         this.koodi = koodi;
     }
 
-    public boolean getLipunStatus() {
+    public LippuTila getLipunStatus() {
         return lipunStatus;
     }
 
-    public void setLipunStatus(boolean lipunStatus) {
+    public void setLipunStatus(LippuTila lipunStatus) {
         this.lipunStatus = lipunStatus;
     }
 
