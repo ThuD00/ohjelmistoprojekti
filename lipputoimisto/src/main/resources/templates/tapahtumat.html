@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Lipunmyynti</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+<body>
+	<h1>Tapahtumat</h1>
+    <table>
+		<tr>
+		    <th>Aika</th>
+		    <th>Kaupunki</th>
+            <th>Kuvaus</th>
+            <th>Toiminnot</th>
+		</tr>
+    	<tr th:each = "tapahtuma : ${tapahtumat}">
+    		<td th:text="${tapahtuma.aika}"></td>
+			<td th:text="${tapahtuma.kaupunki}"></td>
+			<td th:text="${tapahtuma.kuvaus}"></td>
+            <td><a th:href=null class="btn btn-warning">Muokkaa</a></td>
+			<td><a th:href=null class="btn btn-info">Lipputyypit</a></td>
+            <td><a th:href=null class="btn btn-danger">Poista</a></td>
+    	</tr>
+     </table>
+	 <a th:href=null class="btn btn-success">Uusi tapahtuma</a>
+</body>
+</html>
