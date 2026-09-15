@@ -1,5 +1,7 @@
 # Lipputoimisto API dokumentaatio
 
+*Versio: V0*
+
 ## URL
 `http://.../api`
 
@@ -103,6 +105,23 @@
 
 ---
 
+## 1.1 Lipputyypit
+
+Todo
+
+**Polku**:`/tapahtumat/{id}/lippuTyypit` vaikka
+
+### Hae tapahtuman lipputyypit
+
+
+### Lisää lipputyyppi
+
+### Muokkaa lipputyyppiä
+
+### Poista lipputyyppi
+
+### jotain jotain
+
 ## 2. Liput
 
 ### Varaa lippu
@@ -119,15 +138,15 @@
 * **Vastauksen runko**:
 ```json
 {
-  "myyntitapahtumaId": 1234567890
+  "myyntitapahtumaId": 1234567890,
   "liput": [
     {
       "lippuId": 123,
-      "koodi": "ABCDEF123456"
+      "koodi": "ABCDEF-123456"
     },
     {
       "lippuId": 124,
-      "koodi": "FEDCBA654321"
+      "koodi": "FEDCBA-654321"
     }
   ]
 }
@@ -135,12 +154,12 @@
 ```
 
 ### Lunasta lippu
-* **Metodi**: `PUT`
+* **Metodi**: `POST`
 * **Polku**: `/liput/lunasta`
 * **Pyynnön runko**:
 ```json
 {
-  "koodi": "ABCDEF123456"
+  "koodi": "ABCDEF-123456"
 }
 ```
 * **Vastaus**: `200 OK`
@@ -148,12 +167,12 @@
   * `409 CONFLICT` (Jos lippu on jo lunastettu tai peruttu)
 
 ### Peruuta varaus
-* **Metodi**: `PUT`
+* **Metodi**: `POST`
 * **Polku**: `/liput/peru`
 * **Pyynnön runko**:
 ```json
 {
-  "koodi": "ABCDEF123456"
+  "koodi": "ABCDEF-123456"
 }
 ```
 * **Vastaus**: `200 OK`
