@@ -1,6 +1,7 @@
-GET http://localhost:8080/tapahtumat
+GET http://localhost:8080/api/tapahtumat
 
-POST http://localhost:8080/tapahtumat
+###
+POST http://localhost:8080/api/tapahtumat
 Content-Type: application/json
 
 {
