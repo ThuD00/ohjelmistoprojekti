@@ -65,7 +65,7 @@ public class TapahtumaRestController {
         return ResponseEntity.notFound().build();
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/tapahtumat/{id}")
     public void deleteTapahtuma(@PathVariable("id") long tapahtumaId) {
       tapahtumaRepository.deleteById(tapahtumaId);
     }
