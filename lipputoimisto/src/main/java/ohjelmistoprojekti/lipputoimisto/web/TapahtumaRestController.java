@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 
 
+
+
 @RestController
-@RequestMapping("/api") 
+@RequestMapping("/api/tapahtumat") 
 public class TapahtumaRestController {
 
     private final TapahtumaRepository tapahtumaRepository;
@@ -26,22 +28,22 @@ public class TapahtumaRestController {
         this.tapahtumaRepository = tapahtumaRepository;
     }
 
-    @PostMapping("/tapahtumat")
+    @PostMapping
     public Tapahtuma addTapahtuma(@RequestBody Tapahtuma tapahtuma) {
         return tapahtumaRepository.save(tapahtuma);
     }
     
-    @GetMapping("/tapahtumat")
+    @GetMapping
     public Iterable<Tapahtuma> findAllTapahtumat() {
         return tapahtumaRepository.findAll();
     }
 
-    @GetMapping("/tapahtumat/{id}")
+    @GetMapping("/{id}")
     public Optional<Tapahtuma> findById(@PathVariable("id") long tapahtumaId) {
         return tapahtumaRepository.findById(tapahtumaId);
     }
 
-    @PutMapping("/tapahtumat/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Tapahtuma> updateTapahtuma(
             @PathVariable ("id") long tapahtumaId,
             @RequestBody Tapahtuma uusiTapahtuma) {
@@ -63,9 +65,12 @@ public class TapahtumaRestController {
         return ResponseEntity.notFound().build();
     }
 
-    @DeleteMapping("/tapahtumat/{id}")
+    @DeleteMapping("/{id}")
     public void deleteTapahtuma(@PathVariable("id") long tapahtumaId) {
-      tapahtumaRepository.deleteById(tapahtumaId);
+    // if (!tapahtumaRepository.existsById(tapahtumaId)) {
+    //     tässä pitäisi heittää 404 mutta miten
+    // } 
+    tapahtumaRepository.deleteById(tapahtumaId);
     }
     
 

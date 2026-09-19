@@ -31,6 +31,7 @@ public class Lippu {
     @JoinColumn(name = "myyntitapahtumaId", nullable = false)
     private Myyntitapahtuma myyntitapahtuma;
 
+    @Column(name = "koodi", unique = true, nullable = false)
     private String koodi;
 
     @Column(name = "lipun_status")
