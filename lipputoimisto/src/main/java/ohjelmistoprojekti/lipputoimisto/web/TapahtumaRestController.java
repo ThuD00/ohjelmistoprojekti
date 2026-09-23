@@ -39,8 +39,14 @@ public class TapahtumaRestController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Tapahtuma> findById(@PathVariable("id") long tapahtumaId) {
-        return tapahtumaRepository.findById(tapahtumaId);
+    public ResponseEntity<Tapahtuma> findById(@PathVariable("id") long tapahtumaId) {
+        Optional<Tapahtuma> tapahtuma = tapahtumaRepository.findById(tapahtumaId);
+
+        if (tapahtuma.isPresent()) {
+            return ResponseEntity.ok(tapahtuma.get());
+        }
+
+        return ResponseEntity.notFound().build();
     }
 
     @PutMapping("/{id}")
