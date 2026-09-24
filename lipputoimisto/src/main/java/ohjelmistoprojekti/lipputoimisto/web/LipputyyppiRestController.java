@@ -11,6 +11,7 @@ import ohjelmistoprojekti.lipputoimisto.repository.TapahtumaRepository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,7 +59,7 @@ public class LipputyyppiRestController {
 
             lipputyyppiRepository.save(lipputyyppi);
 
-            return ResponseEntity.ok(lipputyyppi);
+            return ResponseEntity.status(HttpStatus.CREATED).body(lipputyyppi);
         }
 
         return ResponseEntity.notFound().build();
