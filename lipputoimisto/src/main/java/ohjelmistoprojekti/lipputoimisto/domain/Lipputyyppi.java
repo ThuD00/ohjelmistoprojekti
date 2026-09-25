@@ -3,6 +3,8 @@ package ohjelmistoprojekti.lipputoimisto.domain;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,15 +23,13 @@ public class Lipputyyppi {
 
     @ManyToOne 
     @JoinColumn(name = "tapahtumaId", nullable = false)
+    @JsonIgnoreProperties("lipputyypit")
     private Tapahtuma tapahtuma;
 
     private String kuvaus;
     
     @Column(name = "lipun_hinta")
     private BigDecimal lipunHinta;
-
-    @OneToMany(mappedBy = "lipputyyppi")
-    private List<Lippu> liput;
 
     public Lipputyyppi() {
     }
@@ -70,14 +70,6 @@ public class Lipputyyppi {
 
     public void setLipunHinta(BigDecimal lipunHinta) {
         this.lipunHinta = lipunHinta;
-    }
-
-    public List<Lippu> getLiput() {
-        return liput;
-    }
-
-    public void setLiput(List<Lippu> liput) {
-        this.liput = liput;
     }
 
     @Override

@@ -1,0 +1,10 @@
+//GET http://localhost:8080/api/myyntitapahtumat
+
+###
+POST http://localhost:8080/api/myyntitapahtumat
+Content-Type: application/json
+
+{
+  "maksuaika": "2026-10-01T18:00:00",
+  "summa": 17.5
+}

@@ -1,0 +1,14 @@
+GET http://localhost:8080/api/tapahtumat
+
+###
+POST http://localhost:8080/api/tapahtumat
+Content-Type: application/json
+
+{
+  "id": 1,
+  "aika": "2026-10-01T18:00:00",
+  "paikka": "Finlandia-talo",
+  "kaupunki": "Helsinki",
+  "kuvaus": "Super-Gaala",
+  "maxLippumaara": 1700
+}
