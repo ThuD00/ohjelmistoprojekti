@@ -1,7 +1,10 @@
 package ohjelmistoprojekti.lipputoimisto.web;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import java.util.Optional;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -9,7 +12,7 @@ import ohjelmistoprojekti.lipputoimisto.domain.Myyntitapahtuma;
 import ohjelmistoprojekti.lipputoimisto.repository.MyyntitapahtumaRepository;
 
 @RestController
-@RequestMapping ("/api")
+@RequestMapping ("/api/myyntitapahtumat")
 public class MyyntitapahtumaRestController {
 
   private final MyyntitapahtumaRepository myyntitapahtumaRepository;
@@ -18,8 +21,19 @@ public class MyyntitapahtumaRestController {
     this.myyntitapahtumaRepository = myyntitapahtumaRepository;
   }
 
-  @PostMapping("/myyntitapahtumat")
-  public Myyntitapahtuma addMyyntitapahtuma(@RequestBody Myyntitapahtuma myyntitapahtuma) {
-    return myyntitapahtumaRepository.save(myyntitapahtuma);
+  @GetMapping
+  public Iterable<Myyntitapahtuma> findAllMyyntitapahtumat() {
+    return myyntitapahtumaRepository.findAll();
   }
+
+  @GetMapping("/{id}")
+    public ResponseEntity<Myyntitapahtuma> findById(@PathVariable("id") long myyntitapahtumaId) {
+        Optional<Myyntitapahtuma> myyntitapahtuma = myyntitapahtumaRepository.findById(myyntitapahtumaId);
+
+        if (myyntitapahtuma.isPresent()) {
+            return ResponseEntity.ok(myyntitapahtuma.get());
+        }
+
+        return ResponseEntity.notFound().build();
+    }
 }

@@ -31,9 +31,6 @@ public class Lipputyyppi {
     @Column(name = "lipun_hinta")
     private BigDecimal lipunHinta;
 
-    @OneToMany(mappedBy = "lipputyyppi")
-    private List<Lippu> liput;
-
     public Lipputyyppi() {
     }
 
@@ -73,14 +70,6 @@ public class Lipputyyppi {
 
     public void setLipunHinta(BigDecimal lipunHinta) {
         this.lipunHinta = lipunHinta;
-    }
-
-    public List<Lippu> getLiput() {
-        return liput;
-    }
-
-    public void setLiput(List<Lippu> liput) {
-        this.liput = liput;
     }
 
     @Override
