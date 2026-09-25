@@ -1,5 +1,7 @@
 package ohjelmistoprojekti.lipputoimisto.domain;
 
+import java.util.Random;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -9,9 +11,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 
-@Entity 
+@Entity
 public class Lippu {
+
+    private static final String KOODIMERKIT = "ABCDEFGHJKMNPQRSTVWXYZ";
 
     public enum LippuTila {
         VARATTU,
@@ -23,11 +28,11 @@ public class Lippu {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long lippuId;
 
-    @ManyToOne 
+    @ManyToOne
     @JoinColumn(name = "lipputyyppiId", nullable = false)
     private Lipputyyppi lipputyyppi;
 
-    @ManyToOne 
+    @ManyToOne
     @JoinColumn(name = "myyntitapahtumaId", nullable = false)
     private Myyntitapahtuma myyntitapahtuma;
 
@@ -41,11 +46,26 @@ public class Lippu {
     public Lippu() {
     }
 
-    public Lippu(Lipputyyppi lipputyyppi, Myyntitapahtuma myyntitapahtuma, String koodi, LippuTila lipunStatus) {
+    public Lippu(Lipputyyppi lipputyyppi, Myyntitapahtuma myyntitapahtuma, LippuTila lipunStatus) {
         this.lipputyyppi = lipputyyppi;
         this.myyntitapahtuma = myyntitapahtuma;
-        this.koodi = koodi;
         this.lipunStatus = lipunStatus;
+    }
+
+    @PrePersist
+    private void luoKoodi() {
+        Random random = new Random();
+        StringBuilder koodiBuilder = new StringBuilder();
+
+        for (int i = 0; i < 6; i++) {
+            koodiBuilder.append(KOODIMERKIT.charAt(random.nextInt(KOODIMERKIT.length())));
+        }
+        koodiBuilder.append("-");
+        for (int i = 0; i < 6; i++) {
+            koodiBuilder.append(random.nextInt(10));
+        }
+
+        koodi = koodiBuilder.toString();
     }
 
     public long getLippuId() {
@@ -90,8 +110,8 @@ public class Lippu {
 
     @Override
     public String toString() {
-        return "Lippu [lippuId=" + lippuId + ", koodi=" + koodi + ", lipunStatus=" + lipunStatus + "]";
+        return "Lippu [lippuId=" + lippuId + ", lipputyyppi=" + lipputyyppi + ", myyntitapahtuma=" + myyntitapahtuma
+                + ", koodi=" + koodi + ", lipunStatus=" + lipunStatus + "]";
     }
 
-    
 }

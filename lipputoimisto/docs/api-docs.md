@@ -1,6 +1,6 @@
 # Lipputoimisto API dokumentaatio
 
-*Versio: V0*
+*Versio: V0.1*
 
 ## URL
 `http://.../api`
@@ -10,9 +10,11 @@
 ## 1. Tapahtumat
 
 ### Hae kaikki tapahtumat
+
 * **Metodi**: `GET`
 * **Polku**: `/tapahtumat`
-* **Vastaus**: `200 OK`
+* **Vastaus**: 
+  * `200 OK`
 * **Vastauksen runko**:
 ```json
 [
@@ -36,10 +38,12 @@
 ```
 
 ### Hae yksittäinen tapahtuma ID:llä
+
 * **Metodi**: `GET`
 * **Polku**: `/tapahtumat/{id}`
 * **Parametrit**: `id (Long)`
-* **Vastaus**: `200 OK`
+* **Vastaus**: 
+  * `200 OK`
   * `404 NOT FOUND` (Jos id:tä ei löydy)
 * **Vastauksen runko**:
 ```json
@@ -54,6 +58,7 @@
 ```
 
 ### Luo uusi tapahtuma
+
 * **Metodi**: `POST`
 * **Polku**: `/tapahtumat`
 * **Pyynnön runko**:
@@ -66,7 +71,8 @@
   "maxLippumaara": 700
 }
 ```
-* **Vastaus**: `201 CREATED`
+* **Vastaus**: 
+  * `201 CREATED`
 * **Vastauksen runko**:
 ```json
 {
@@ -80,6 +86,7 @@
 ```
 
 ### Muokkaa tapahtumaa
+
 * **Metodi**: `PUT`
 * **Polku**: `/tapahtumat/{id}`
 * **Parametrit**: `id (Long)`
@@ -93,67 +100,165 @@
   "maxLippumaara": 45000
 }
 ```
-* **Vastaus**: `200 OK`
+* **Vastaus**: 
+  * `200 OK`
   * `404 NOT FOUND` (Jos id:tä ei löydy)
+* **Vastauksen runko**:
+```json
+{
+  "tapahtumaId": 1,
+  "aika": "2026-07-15T19:00:00",
+  "paikka": "Olympiastadion",
+  "kaupunki": "Helsinki",
+  "kuvaus": "Rock Festival 2026 (Päivitetty)",
+  "maxLippumaara": 45000
+}
+```
 
 ### Poista tapahtuma
+
 * **Metodi**: `DELETE`
 * **Polku**: `/tapahtumat/{id}`
 * **Parametrit**: `id (Long)`
-* **Vastaus**: `204 NO CONTENT`
+* **Vastaus**: 
+  * `204 NO CONTENT`
   * `404 NOT FOUND` (Jos id:tä ei löydy)
 
 ---
 
-## 1.1 Lipputyypit
+## 1.1. Lipputyypit
 
-Todo
+### Hae tapahtuman lipputyypit 
 
-**Polku**:`/tapahtumat/{id}/lippuTyypit` vaikka
+* **Metodi**: `GET`
+* **Polku**: `/tapahtumat/{id}/lipputyypit`
+* **Parametrit**: `id (Long)`
+* **Vastaus**: 
+  * `200 OK`
+  * `404 NOT FOUND` (Jos tapahtumaa ei löydy)
+* **Vastauksen runko**:
+```json
+[
+  {
+    "lipputyyppiId": 1,
+    "kuvaus": "Aikuinen",
+    "lipunHinta": 25.00
+  },
+  {
+    "lipputyyppiId": 2,
+    "kuvaus": "Opiskelija",
+    "lipunHinta": 15.00
+  }
+]
+```
 
-### Hae tapahtuman lipputyypit
+### Lisää lipputyyppi tapahtumaan
 
+* **Metodi**: `POST`
+* **Polku**: `/tapahtumat/{id}/lipputyypit`
+* **Parametrit**: `id (Long)`
+* **Pyynnön runko**:
+```json
+{
+  "kuvaus": "Aikuinen",
+  "lipunHinta": 25.00
+}
+```
+* **Vastaus**: 
+  * `201 CREATED`
+* **Vastauksen runko**:
+```json
+{
+  "lipputyyppiId": 1,
+  "kuvaus": "Aikuinen",
+  "lipunHinta": 25.00
+}
+```
 
-### Lisää lipputyyppi
+### Muokkaa tapahtuman lipputyyppiä
 
-### Muokkaa lipputyyppiä
+* **Metodi**: `PUT`
+* **Polku**: `/tapahtumat/{id}/lipputyypit/{lipputyyppiId}`
+* **Parametrit**:
+  * `id (Long)`
+  * `lipputyyppiId (Long)`
+* **Pyynnön runko**:
+```json
+{
+  "kuvaus": "Aikuinen",
+  "lipunHinta": 30.00
+}
+```
+* **Vastaus**:
+  * `200 OK`
+  * `404 NOT FOUND` (Jos tapahtumaa tai lipputyyppiä ei löydy)
+* **Vastauksen runko**:
+```json
+{
+  "lipputyyppiId": 1,
+  "kuvaus": "Aikuinen",
+  "lipunHinta": 30.00
+}
+```
 
-### Poista lipputyyppi
+### Poista tapahtuman lipputyyppi
 
-### jotain jotain
+* **Metodi**: `DELETE`
+* **Polku**: `/tapahtumat/{id}/lipputyypit/{lipputyyppiId}`
+* **Parametrit**:
+  * `id (Long)`
+  * `lipputyyppiId (Long)`
+* **Vastaus**:
+  * `204 NO CONTENT`
+  * `404 NOT FOUND` (Jos tapahtumaa tai lipputyyppiä ei löydy)
 
 ## 2. Liput
 
-### Varaa lippu
+### Varaa lippuja 
+
 * **Metodi**: `POST`
 * **Polku**: `/liput/varaa`
 * **Pyynnön runko**:
 ```json
 {
-  "lipputyyppiId": 1,
-  "qty": 2
-}
-```
-* **Vastaus**: `201 CREATED`
-* **Vastauksen runko**:
-```json
-{
-  "myyntitapahtumaId": 1234567890,
+  "tapahtumaId": 1,
   "liput": [
     {
-      "lippuId": 123,
-      "koodi": "ABCDEF-123456"
+      "lipputyyppiId": 1,
+      "qty": 2
     },
     {
-      "lippuId": 124,
-      "koodi": "FEDCBA-654321"
+      "lipputyyppiId": 2,
+      "qty": 1
     }
   ]
 }
-
+```
+* **Vastaus**: 
+  * `201 CREATED`
+* **Vastauksen runko**:
+```json
+{
+  "myyntitapahtumaId": 123,
+  "summa": 80.00,
+  "liput": [
+    {
+      "lipputyyppiId": 1,
+      "koodi": "ABCDEF-123456"
+    },
+    {
+      "lipputyyppiId": 1,
+      "koodi": "FEDCBA-654321"
+    },
+    {
+      "lipputyyppiId": 2,
+      "koodi": "GHIJKL-789012"
+    }
+  ]
+}
 ```
 
-### Lunasta lippu
+### Lunasta lippu 
 * **Metodi**: `POST`
 * **Polku**: `/liput/lunasta`
 * **Pyynnön runko**:
@@ -162,11 +267,12 @@ Todo
   "koodi": "ABCDEF-123456"
 }
 ```
-* **Vastaus**: `200 OK`
-  * `404 NOT FOUND` (Jos koodilla ei löydy lippua)
+* **Vastaus**:
+  * `200 OK`
+  * `404 NOT FOUND` (Jos koodia ei löydy)
   * `409 CONFLICT` (Jos lippu on jo lunastettu tai peruttu)
 
-### Peruuta varaus
+### Peruuta varaus 
 * **Metodi**: `POST`
 * **Polku**: `/liput/peru`
 * **Pyynnön runko**:
@@ -175,6 +281,60 @@ Todo
   "koodi": "ABCDEF-123456"
 }
 ```
-* **Vastaus**: `200 OK`
-  * `404 NOT FOUND` (Jos koodilla ei löydy lippua)
-  * `409 CONFLICT` (Jos lippu on jo lunastettu tai peruttu)
+* **Vastaus**:
+  * `200 OK`
+  * `404 NOT FOUND` (Jos koodia ei löydy)
+  * `409 CONFLICT` (Jos lippua ei voi perua)
+
+## 3. Myyntitapahtumat
+
+### Hae kaikki myyntitapahtumat 
+* **Metodi**: `GET`
+* **Polku**: `/myyntitapahtumat`
+* **Vastaus**: 
+  * `200 OK`
+* **Vastauksen runko**:
+```json
+[
+  {
+    "myyntitapahtumaId": 123,
+    "maksuaika": "2026-07-15T14:30:00",
+    "summa": 80.00
+  },
+  {
+    "myyntitapahtumaId": 124,
+    "maksuaika": "2026-07-15T15:10:00",
+    "summa": 25.00
+  }
+]
+```
+
+### Hae yksittäinen myyntitapahtuma ID:llä 
+* **Metodi**: `GET`
+* **Polku**: `/myyntitapahtumat/{id}`
+* **Parametrit**: `id (Long)`
+* **Vastaus**:
+  * `200 OK`
+  * `404 NOT FOUND` (Jos id:tä ei löydy)
+* **Vastauksen runko**:
+```json
+{
+  "myyntitapahtumaId": 123,
+  "maksuaika": "2026-07-15T14:30:00",
+  "summa": 80.00,
+  "liput": [
+    {
+      "lipputyyppiId": 1,
+      "koodi": "ABCDEF-123456"
+    },
+    {
+      "lipputyyppiId": 1,
+      "koodi": "FEDCBA-654321"
+    },
+    {
+      "lipputyyppiId": 2,
+      "koodi": "GHIJKL-789012"
+    }
+  ]
+}
+```
