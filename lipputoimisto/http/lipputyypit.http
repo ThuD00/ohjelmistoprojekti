@@ -1,0 +1,65 @@
+### Hae tapahtuman lipputyypit
+GET http://localhost:8080/api/tapahtumat/1/lipputyypit
+
+### Hae lipputyypit tapahtumasta, jota ei ole
+GET http://localhost:8080/api/tapahtumat/99999/lipputyypit
+
+### Lisää Aikuinen-lipputyyppi tapahtumalle 1
+POST http://localhost:8080/api/tapahtumat/1/lipputyypit
+Content-Type: application/json
+
+{
+  "kuvaus": "Aikuinen",
+  "lipunHinta": 15.00
+}
+
+### Lisää Lapsi-lipputyyppi tapahtumalle 1
+POST http://localhost:8080/api/tapahtumat/1/lipputyypit
+Content-Type: application/json
+
+{
+  "kuvaus": "Lapsi",
+  "lipunHinta": 7.50
+}
+
+### Lisää lipputyyppi tapahtumaan, jota ei ole
+POST http://localhost:8080/api/tapahtumat/99999/lipputyypit
+Content-Type: application/json
+
+{
+  "kuvaus": "Aikuinen",
+  "lipunHinta": 15.00
+}
+
+### Muokkaa lipputyyppiä
+PUT http://localhost:8080/api/tapahtumat/1/lipputyypit/2
+Content-Type: application/json
+
+{
+  "kuvaus": "Lapsi",
+  "lipunHinta": 8.00
+}
+
+### Muokkaa lipputyyppiä, jota ei ole
+PUT http://localhost:8080/api/tapahtumat/1/lipputyypit/99999
+Content-Type: application/json
+
+{
+  "kuvaus": "Lapsi",
+  "lipunHinta": 8.00
+}
+
+### Muokkaa lipputyyppiä väärän tapahtuman kautta
+PUT http://localhost:8080/api/tapahtumat/99999/lipputyypit/1
+Content-Type: application/json
+
+{
+  "kuvaus": "Aikuinen",
+  "lipunHinta": 10.00
+}
+
+### Poista lipputyyppi
+DELETE http://localhost:8080/api/tapahtumat/1/lipputyypit/2
+
+### Poista lipputyyppi, jota ei ole
+DELETE http://localhost:8080/api/tapahtumat/1/lipputyypit/99999

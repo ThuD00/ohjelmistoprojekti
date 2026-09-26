@@ -1,0 +1,10 @@
+### Hae kaikki myyntitapahtumat
+GET http://localhost:8080/api/myyntitapahtumat
+
+
+### Hae myyntitapahtuma ID:llä
+GET http://localhost:8080/api/myyntitapahtumat/1
+
+
+### Hae myyntitapahtuma ID:llä, jota ei ole
+GET http://localhost:8080/api/myyntitapahtumat/99999

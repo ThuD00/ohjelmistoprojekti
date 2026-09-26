@@ -15,9 +15,6 @@ import ohjelmistoprojekti.lipputoimisto.repository.TapahtumaRepository;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 
-
-
-
 @RestController
 @RequestMapping("/api/tapahtumat") 
 public class TapahtumaRestController {
@@ -72,12 +69,13 @@ public class TapahtumaRestController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteTapahtuma(@PathVariable("id") long tapahtumaId) {
-    // if (!tapahtumaRepository.existsById(tapahtumaId)) {
-    //     tässä pitäisi heittää 404 mutta miten
-    // } 
-    tapahtumaRepository.deleteById(tapahtumaId);
-    }
-    
+    public ResponseEntity<Void> deleteTapahtuma(@PathVariable("id") long tapahtumaId) {
+      //tässä pitäisi heittää 404 jos tapahtumaa ei löydy
+      if (!tapahtumaRepository.existsById(tapahtumaId)) {
+        return ResponseEntity.notFound().build();
+      } 
+      tapahtumaRepository.deleteById(tapahtumaId);
+      return ResponseEntity.noContent().build();
+      }
 
 }
