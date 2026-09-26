@@ -1,0 +1,79 @@
+### Hae kaikki tapahtumat
+GET http://localhost:8080/api/tapahtumat
+
+
+### Hae tapahtuma
+GET http://localhost:8080/api/tapahtumat/1
+
+
+### Hae tapahtuma jota ei ole
+GET http://localhost:8080/api/tapahtumat/99999
+
+
+### Lisää tapahtuma
+POST http://localhost:8080/api/tapahtumat
+Content-Type: application/json
+
+{
+  "aika": "2026-10-05T20:00:00",
+  "paikka": "Tavastia",
+  "kaupunki": "Helsinki",
+  "kuvaus": "Stand-up Comedy Night",
+  "maxLippumaara": 700
+}
+
+### Lisää tapahtuma
+POST http://localhost:8080/api/tapahtumat
+Content-Type: application/json
+
+{
+  "aika": "2026-07-15T19:00:00",
+  "paikka": "Olympiastadion",
+  "kaupunki": "Helsinki",
+  "kuvaus": "Rock Festival 2026",
+  "maxLippumaara": 40000
+}
+
+### Lisää tapahtuma
+POST http://localhost:8080/api/tapahtumat
+Content-Type: application/json
+
+{
+  "id": 1,
+  "aika": "2026-10-01T18:00:00",
+  "paikka": "Finlandia-talo",
+  "kaupunki": "Helsinki",
+  "kuvaus": "Super-Gaala",
+  "maxLippumaara": 1700
+}
+
+
+### Muokkaa tapahtumaa
+PUT http://localhost:8080/api/tapahtumat/5
+Content-Type: application/json
+
+{
+  "aika": "2026-07-15T19:00:00",
+  "paikka": "Olympiastadion",
+  "kaupunki": "Helsinki",
+  "kuvaus": "Rock Festival 2026 (Päivitetty)",
+  "maxLippumaara": 45000
+}
+
+### Muokkaa tapahtumaa, jota ei ole
+PUT http://localhost:8080/api/tapahtumat/99999
+Content-Type: application/json
+
+{
+  "aika": "2026-07-15T19:00:00",
+  "paikka": "Olympiastadion",
+  "kaupunki": "Helsinki",
+  "kuvaus": "Rock Festival 2026 (Päivitetty)",
+  "maxLippumaara": 45000
+}
+
+### Poista tapahtuma
+DELETE http://localhost:8080/api/tapahtumat/2
+
+### Poista tapahtuma, jota ei ole
+DELETE http://localhost:8080/api/tapahtumat/99999

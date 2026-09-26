@@ -2,6 +2,9 @@ package ohjelmistoprojekti.lipputoimisto.domain;
 
 import java.util.Random;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,6 +15,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
+
+@JsonPropertyOrder({
+    "lippuId",
+    "lipputyyppi",
+    "lipunStatus",
+    "koodi"
+})
 
 @Entity
 public class Lippu {
@@ -34,6 +44,7 @@ public class Lippu {
 
     @ManyToOne
     @JoinColumn(name = "myyntitapahtumaId", nullable = false)
+    @JsonIgnore
     private Myyntitapahtuma myyntitapahtuma;
 
     @Column(name = "koodi", unique = true, nullable = false)
@@ -54,18 +65,18 @@ public class Lippu {
 
     @PrePersist
     private void luoKoodi() {
-        Random random = new Random();
-        StringBuilder koodiBuilder = new StringBuilder();
+      Random random = new Random();
+      StringBuilder koodiBuilder = new StringBuilder();
 
-        for (int i = 0; i < 6; i++) {
-            koodiBuilder.append(KOODIMERKIT.charAt(random.nextInt(KOODIMERKIT.length())));
-        }
-        koodiBuilder.append("-");
-        for (int i = 0; i < 6; i++) {
-            koodiBuilder.append(random.nextInt(10));
-        }
+      for (int i = 0; i < 6; i++) {
+          koodiBuilder.append(KOODIMERKIT.charAt(random.nextInt(KOODIMERKIT.length())));
+      }
+      koodiBuilder.append("-");
+      for (int i = 0; i < 6; i++) {
+          koodiBuilder.append(random.nextInt(10));
+      }
 
-        koodi = koodiBuilder.toString();
+      koodi = koodiBuilder.toString();
     }
 
     public long getLippuId() {

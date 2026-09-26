@@ -236,6 +236,7 @@
 ```
 * **Vastaus**: 
   * `201 CREATED`
+  * `404 NOT FOUND` (Jos tapahtumaa tai lipputyyppiä ei löydy tai lipputyyppi kuuluu eri tapahtumaan)
 * **Vastauksen runko**:
 ```json
 {
@@ -324,16 +325,34 @@
   "summa": 80.00,
   "liput": [
     {
-      "lipputyyppiId": 1,
+      "lippuId": 1,
+      "lipputyyppi": {
+        "lipputyyppiId": 1,
+        "kuvaus": "Aikuinen",
+        "hinta": 15.00
+      },
+      "lipunStatus": "VARATTU",
       "koodi": "ABCDEF-123456"
     },
     {
-      "lipputyyppiId": 1,
-      "koodi": "FEDCBA-654321"
+      "lippuId": 2,
+      "lipputyyppi": {
+        "lipputyyppiId": 1,
+        "kuvaus": "Aikuinen",
+        "hinta": 15.00,
+      },
+      "lipunStatus": "VARATTU",
+      "koodi": "PSMWVT-012597"
     },
     {
+      "lippuId": 3,
+      "lipputyyppi": {
       "lipputyyppiId": 2,
-      "koodi": "GHIJKL-789012"
+        "kuvaus": "Lapsi",
+        "hinta": 8.00
+      },
+      "lipunStatus": "VARATTU",
+      "koodi": "ZKMPDJ-076871"
     }
   ]
 }

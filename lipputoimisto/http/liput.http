@@ -1,0 +1,122 @@
+### Varaa lippuja onnistuneesti
+POST http://localhost:8080/api/liput/varaa
+Content-Type: application/json
+
+{
+  "tapahtumaId": 1,
+  "liput": [
+    {
+      "lipputyyppiId": 1,
+      "qty": 2
+    },
+    {
+      "lipputyyppiId": 2,
+      "qty": 1
+    }
+  ]
+}
+
+### Varaa lippuja onnistuneesti
+POST http://localhost:8080/api/liput/varaa
+Content-Type: application/json
+
+{
+  "tapahtumaId": 2,
+  "liput": [
+    {
+      "lipputyyppiId": 3,
+      "qty": 1
+    }
+  ]
+}
+
+### Varaa lippuja tapahtumaan, jota ei ole
+POST http://localhost:8080/api/liput/varaa
+Content-Type: application/json
+
+{
+  "tapahtumaId": 99999,
+  "liput": [
+    {
+      "lipputyyppiId": 1,
+      "qty": 2
+    }
+  ]
+}
+
+### Varaa lippuja lipputyypillä, jota ei ole
+POST http://localhost:8080/api/liput/varaa
+Content-Type: application/json
+
+{
+  "tapahtumaId": 1,
+  "liput": [
+    {
+      "lipputyyppiId": 99999,
+      "qty": 2
+    }
+  ]
+}
+
+### Varaa tapahtuman lipputyypin, joka kuuluu väärään tapahtumaan
+//esim. tapahtuma 1 -> lipputyypi 1 ja tapahtuma 2 -> lipputyypi 2
+POST http://localhost:8080/api/liput/varaa
+Content-Type: application/json
+
+{
+  "tapahtumaId": 1,
+  "liput": [
+    {
+      "lipputyyppiId": 99999,
+      "qty": 1
+    }
+  ]
+}
+
+### Lunasta lippu
+POST http://localhost:8080/api/liput/lunasta
+Content-Type: application/json
+
+{
+  "koodi": "ABCDEFG-123456"
+}
+
+### Lunasta lippu, jota ei ole
+POST http://localhost:8080/api/liput/lunasta
+Content-Type: application/json
+
+{
+  "koodi": "EI-OLEMASSA-123"
+}
+
+### Lunasta lippu, joka on lunastettu tai peruttu
+POST http://localhost:8080/api/liput/lunasta
+Content-Type: application/json
+
+{
+  "koodi": "ABCDEF-123456"
+}
+
+### Peruuta varaus
+POST http://localhost:8080/api/liput/peru
+Content-Type: application/json
+
+{
+  "koodi": "ABCDEF-123456"
+}
+
+### Peruuta varaus, jota ei löydy
+POST http://localhost:8080/api/liput/peru
+Content-Type: application/json
+
+{
+  "koodi": "EI-OLEMASSA-123"
+}
+
+### Peruuta varaus, jota ei pysty enää peruuttaa
+POST http://localhost:8080/api/liput/peru
+Content-Type: application/json
+
+{
+  "koodi": "ABCDEF-123456"
+}
