@@ -357,3 +357,17 @@
   ]
 }
 ```
+
+## 4. REST-periaatteiden tarkistus
+
+API käyttää HTTP-metodeja niiden käyttötarkoituksen mukaisesti:
+* `GET` käytetään tietojen hakemiseen
+* `POST` käytetään uusien tietojen luomiseen sekä esimerkiksi lippujen varaamiseen
+* `PUT` käytetään olemassa olevien tietojen päivittämiseen
+* `DELETE` käytetään tietojen poistamiseen
+
+URL-rakenteissa käytetään resursseja kuvaavia nimiä, esimerkiksi `/tapahtumat`, `/liput` ja `/myyntitapahtumat`. Yksittäisiin resursseihin viitataan niiden tunnisteen avulla, esimerkiksi `/tapahtumat/{id}`.
+
+API palauttaa tilanteen mukaiset HTTP-tilakoodit. Onnistuneiden pyyntöjen yhteydessä se käyttää esimerkiksi koodeja `200 OK`, `201 CREATED` ja `204 NO CONTENT`. Virhetilanteissa se käyttää esimerkiksi koodeja `404 NOT FOUND` ja `409 CONFLICT`.
+
+Tapahtuman ja sen lipputyyppien välinen suhde näkyy myös URL-rakenteessa, esimerkiksi `/tapahtumat/{id}/lipputyypit`.
