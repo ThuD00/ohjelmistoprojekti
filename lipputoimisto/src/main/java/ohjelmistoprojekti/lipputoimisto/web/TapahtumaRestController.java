@@ -13,29 +13,32 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import ohjelmistoprojekti.lipputoimisto.domain.Tapahtuma;
+import ohjelmistoprojekti.lipputoimisto.repository.LipputyyppiRepository;
 import ohjelmistoprojekti.lipputoimisto.repository.TapahtumaRepository;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
-@RequestMapping("/api/tapahtumat") 
+@RequestMapping("/api/tapahtumat")
 public class TapahtumaRestController {
 
     private final TapahtumaRepository tapahtumaRepository;
+    private final LipputyyppiRepository lipputyyppiRepository;
 
-    public TapahtumaRestController(TapahtumaRepository tapahtumaRepository) {
+    public TapahtumaRestController(TapahtumaRepository tapahtumaRepository, LipputyyppiRepository lipputyyppiRepository) {
         this.tapahtumaRepository = tapahtumaRepository;
+        this.lipputyyppiRepository = lipputyyppiRepository;
     }
 
     @PostMapping
     public ResponseEntity<Tapahtuma> addTapahtuma(
-        @Valid @RequestBody Tapahtuma tapahtuma) {
+            @Valid @RequestBody Tapahtuma tapahtuma) {
 
         Tapahtuma tallennettuTapahtuma = tapahtumaRepository.save(tapahtuma);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(tallennettuTapahtuma);
-}
-    
+    }
+
     @GetMapping
     public Iterable<Tapahtuma> findAllTapahtumat() {
         return tapahtumaRepository.findAll();
@@ -54,8 +57,8 @@ public class TapahtumaRestController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Tapahtuma> updateTapahtuma(
-            @PathVariable ("id") long tapahtumaId,
-           @Valid @RequestBody Tapahtuma uusiTapahtuma) {
+            @PathVariable("id") long tapahtumaId,
+            @Valid @RequestBody Tapahtuma uusiTapahtuma) {
 
         Optional<Tapahtuma> vanhaTapahtuma = tapahtumaRepository.findById(tapahtumaId);
 
@@ -70,18 +73,25 @@ public class TapahtumaRestController {
 
             return ResponseEntity.ok(tapahtumaRepository.save(tapahtuma));
         }
-    
+
         return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTapahtuma(@PathVariable("id") long tapahtumaId) {
-      //tässä pitäisi heittää 404 jos tapahtumaa ei löydy
-      if (!tapahtumaRepository.existsById(tapahtumaId)) {
-        return ResponseEntity.notFound().build();
-      } 
-      tapahtumaRepository.deleteById(tapahtumaId);
-      return ResponseEntity.noContent().build();
-      }
+
+        if (!tapahtumaRepository.existsById(tapahtumaId)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Tapahtuma loydettyTapahtuma = tapahtumaRepository.findById(tapahtumaId).get();
+
+        if (lipputyyppiRepository.existsByTapahtuma(loydettyTapahtuma)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+
+        tapahtumaRepository.deleteById(tapahtumaId);
+        return ResponseEntity.noContent().build();
+    }
 
 }

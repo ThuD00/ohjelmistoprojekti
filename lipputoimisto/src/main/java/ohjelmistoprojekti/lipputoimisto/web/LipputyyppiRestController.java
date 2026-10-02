@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import ohjelmistoprojekti.lipputoimisto.domain.Lipputyyppi;
 import ohjelmistoprojekti.lipputoimisto.domain.Tapahtuma;
+import ohjelmistoprojekti.lipputoimisto.repository.LippuRepository;
 import ohjelmistoprojekti.lipputoimisto.repository.LipputyyppiRepository;
 import ohjelmistoprojekti.lipputoimisto.repository.TapahtumaRepository;
 
@@ -21,22 +22,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
-
 @RestController
 @RequestMapping("/api/tapahtumat")
 public class LipputyyppiRestController {
 
     private final LipputyyppiRepository lipputyyppiRepository;
     private final TapahtumaRepository tapahtumaRepository;
+    private final LippuRepository lippuRepository;
 
-    public LipputyyppiRestController( LipputyyppiRepository lipputyyppiRepository, TapahtumaRepository tapahtumaRepository) {
+    public LipputyyppiRestController(LipputyyppiRepository lipputyyppiRepository,
+            TapahtumaRepository tapahtumaRepository, LippuRepository lippuRepository) {
         this.lipputyyppiRepository = lipputyyppiRepository;
         this.tapahtumaRepository = tapahtumaRepository;
+        this.lippuRepository = lippuRepository;
     }
 
     @GetMapping("/{id}/lipputyypit")
-    public ResponseEntity<List<Lipputyyppi>> getLipputyypit( @PathVariable("id") long tapahtumaId) {
+    public ResponseEntity<List<Lipputyyppi>> getLipputyypit(@PathVariable("id") long tapahtumaId) {
         Optional<Tapahtuma> tapahtuma = tapahtumaRepository.findById(tapahtumaId);
 
         if (tapahtuma.isPresent()) {
@@ -45,14 +47,13 @@ public class LipputyyppiRestController {
 
         return ResponseEntity.notFound().build();
     }
-    
+
     @PostMapping("/{id}/lipputyypit")
     public ResponseEntity<Lipputyyppi> addLipputyyppi(
             @PathVariable("id") long tapahtumaId,
             @Valid @RequestBody Lipputyyppi lipputyyppi) {
 
-        Optional<Tapahtuma> tapahtuma =
-                tapahtumaRepository.findById(tapahtumaId);
+        Optional<Tapahtuma> tapahtuma = tapahtumaRepository.findById(tapahtumaId);
 
         if (tapahtuma.isPresent()) {
 
@@ -65,15 +66,14 @@ public class LipputyyppiRestController {
 
         return ResponseEntity.notFound().build();
     }
-    
+
     @PutMapping("/{id}/lipputyypit/{lipputyyppiId}")
     public ResponseEntity<Lipputyyppi> updateLipputyyppi(
             @PathVariable("id") long tapahtumaId,
             @PathVariable long lipputyyppiId,
-           @Valid @RequestBody Lipputyyppi uusiLipputyyppi) {
+            @Valid @RequestBody Lipputyyppi uusiLipputyyppi) {
 
-        Optional<Lipputyyppi> vanhaLipputyyppi =
-                lipputyyppiRepository.findById(lipputyyppiId);
+        Optional<Lipputyyppi> vanhaLipputyyppi = lipputyyppiRepository.findById(lipputyyppiId);
 
         if (vanhaLipputyyppi.isPresent()) {
 
@@ -99,8 +99,7 @@ public class LipputyyppiRestController {
             @PathVariable("id") long tapahtumaId,
             @PathVariable long lipputyyppiId) {
 
-        Optional<Lipputyyppi> loydettyLipputyyppi =
-                lipputyyppiRepository.findById(lipputyyppiId);
+        Optional<Lipputyyppi> loydettyLipputyyppi = lipputyyppiRepository.findById(lipputyyppiId);
 
         if (loydettyLipputyyppi.isPresent()) {
 
@@ -108,6 +107,10 @@ public class LipputyyppiRestController {
 
             if (lipputyyppi.getTapahtuma().getTapahtumaId() != tapahtumaId) {
                 return ResponseEntity.notFound().build();
+            }
+
+            if (lippuRepository.existsByLipputyyppi(lipputyyppi)) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).build();
             }
 
             lipputyyppiRepository.deleteById(lipputyyppiId);
