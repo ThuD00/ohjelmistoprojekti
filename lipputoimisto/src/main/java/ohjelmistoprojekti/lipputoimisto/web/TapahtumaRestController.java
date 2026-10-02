@@ -2,6 +2,7 @@ package ohjelmistoprojekti.lipputoimisto.web;
 
 import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
 import ohjelmistoprojekti.lipputoimisto.domain.Tapahtuma;
 import ohjelmistoprojekti.lipputoimisto.repository.TapahtumaRepository;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,9 +28,13 @@ public class TapahtumaRestController {
     }
 
     @PostMapping
-    public Tapahtuma addTapahtuma(@RequestBody Tapahtuma tapahtuma) {
-        return tapahtumaRepository.save(tapahtuma);
-    }
+    public ResponseEntity<Tapahtuma> addTapahtuma(
+        @Valid @RequestBody Tapahtuma tapahtuma) {
+
+        Tapahtuma tallennettuTapahtuma = tapahtumaRepository.save(tapahtuma);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(tallennettuTapahtuma);
+}
     
     @GetMapping
     public Iterable<Tapahtuma> findAllTapahtumat() {
@@ -49,7 +55,7 @@ public class TapahtumaRestController {
     @PutMapping("/{id}")
     public ResponseEntity<Tapahtuma> updateTapahtuma(
             @PathVariable ("id") long tapahtumaId,
-            @RequestBody Tapahtuma uusiTapahtuma) {
+           @Valid @RequestBody Tapahtuma uusiTapahtuma) {
 
         Optional<Tapahtuma> vanhaTapahtuma = tapahtumaRepository.findById(tapahtumaId);
 

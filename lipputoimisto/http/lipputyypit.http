@@ -31,6 +31,14 @@ Content-Type: application/json
   "lipunHinta": 15.00
 }
 
+### Lisää lipputyyppi ilman hintaa
+POST http://localhost:8080/api/tapahtumat/1/lipputyypit
+Content-Type: application/json
+
+{
+  "kuvaus": "Aikuinen"
+}
+
 ### Muokkaa lipputyyppiä
 PUT http://localhost:8080/api/tapahtumat/1/lipputyypit/2
 Content-Type: application/json
