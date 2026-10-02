@@ -73,6 +73,29 @@ Content-Type: application/json
   ]
 }
 
+### Virheellinen varaus - ei lippuja
+POST http://localhost:8080/api/liput/varaa
+Content-Type: application/json
+
+{
+  "tapahtumaId": 1,
+  "liput": []
+}
+
+### Virheellinen varaus - negatiivinen määrä
+POST http://localhost:8080/api/liput/varaa
+Content-Type: application/json
+
+{
+  "tapahtumaId": 1,
+  "liput": [
+    {
+      "lipputyyppiId": 1,
+      "qty": -2
+    }
+  ]
+}
+
 ### Lunasta lippu
 POST http://localhost:8080/api/liput/lunasta
 Content-Type: application/json
