@@ -17,10 +17,10 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 
 @JsonPropertyOrder({
-    "lippuId",
-    "lipputyyppi",
-    "lipunStatus",
-    "koodi"
+        "lippuId",
+        "lipputyyppi",
+        "lipunStatus",
+        "koodi"
 })
 
 @Entity
@@ -65,18 +65,22 @@ public class Lippu {
 
     @PrePersist
     private void luoKoodi() {
-      Random random = new Random();
-      StringBuilder koodiBuilder = new StringBuilder();
+        if (koodi != null) { // testailua varten
+            return;
+        }
 
-      for (int i = 0; i < 6; i++) {
-          koodiBuilder.append(KOODIMERKIT.charAt(random.nextInt(KOODIMERKIT.length())));
-      }
-      koodiBuilder.append("-");
-      for (int i = 0; i < 6; i++) {
-          koodiBuilder.append(random.nextInt(10));
-      }
+        Random random = new Random();
+        StringBuilder koodiBuilder = new StringBuilder();
 
-      koodi = koodiBuilder.toString();
+        for (int i = 0; i < 6; i++) {
+            koodiBuilder.append(KOODIMERKIT.charAt(random.nextInt(KOODIMERKIT.length())));
+        }
+        koodiBuilder.append("-");
+        for (int i = 0; i < 6; i++) {
+            koodiBuilder.append(random.nextInt(10));
+        }
+
+        koodi = koodiBuilder.toString();
     }
 
     public long getLippuId() {

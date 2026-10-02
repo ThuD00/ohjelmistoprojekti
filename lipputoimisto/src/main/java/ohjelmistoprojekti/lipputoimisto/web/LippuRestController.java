@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +18,8 @@ import ohjelmistoprojekti.lipputoimisto.domain.Lippu;
 import ohjelmistoprojekti.lipputoimisto.domain.Lipputyyppi;
 import ohjelmistoprojekti.lipputoimisto.domain.Myyntitapahtuma;
 import ohjelmistoprojekti.lipputoimisto.domain.Tapahtuma;
+import ohjelmistoprojekti.lipputoimisto.domain.Lippu.LippuTila;
+import ohjelmistoprojekti.lipputoimisto.dto.LippuLunastus;
 import ohjelmistoprojekti.lipputoimisto.dto.LippuVaraus;
 import ohjelmistoprojekti.lipputoimisto.dto.LippuVarausPyynto;
 import ohjelmistoprojekti.lipputoimisto.dto.LippuVarausVastaus;
@@ -27,7 +30,7 @@ import ohjelmistoprojekti.lipputoimisto.repository.MyyntitapahtumaRepository;
 import ohjelmistoprojekti.lipputoimisto.repository.TapahtumaRepository;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/liput")
 public class LippuRestController {
 
   private final LippuRepository lippuRepository;
@@ -36,10 +39,10 @@ public class LippuRestController {
   private final TapahtumaRepository tapahtumaRepository;
 
   public LippuRestController(
-    LippuRepository lippuRepository,
-    LipputyyppiRepository lipputyyppiRepository,
-    MyyntitapahtumaRepository myyntitapahtumaRepository,
-    TapahtumaRepository tapahtumaRepository) {
+      LippuRepository lippuRepository,
+      LipputyyppiRepository lipputyyppiRepository,
+      MyyntitapahtumaRepository myyntitapahtumaRepository,
+      TapahtumaRepository tapahtumaRepository) {
 
     this.lippuRepository = lippuRepository;
     this.lipputyyppiRepository = lipputyyppiRepository;
@@ -47,13 +50,13 @@ public class LippuRestController {
     this.tapahtumaRepository = tapahtumaRepository;
   }
 
-  @PostMapping("/liput/varaa")
+  @PostMapping("/varaa")
   public ResponseEntity<?> varaaLiput(@Valid @RequestBody LippuVarausPyynto pyynto) {
 
     Optional<Tapahtuma> tapahtuma = tapahtumaRepository.findById(pyynto.getTapahtumaId());
 
     if (tapahtuma.isEmpty()) {
-        return ResponseEntity.notFound().build();
+      return ResponseEntity.notFound().build();
     }
 
     BigDecimal summa = BigDecimal.ZERO;
@@ -63,48 +66,102 @@ public class LippuRestController {
       Optional<Lipputyyppi> lipputyyppi = lipputyyppiRepository.findById(varaus.getLipputyyppiId());
 
       if (lipputyyppi.isEmpty()) {
-          return ResponseEntity.notFound().build();
+        return ResponseEntity.notFound().build();
       }
 
       if (lipputyyppi.get().getTapahtuma().getTapahtumaId() != pyynto.getTapahtumaId()) {
-          return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().build();
       }
 
       BigDecimal maara = BigDecimal.valueOf(varaus.getQty());
       summa = summa.add(lipputyyppi.get().getLipunHinta().multiply(maara));
+    }
+
+    Myyntitapahtuma myyntitapahtuma = new Myyntitapahtuma(LocalDateTime.now(), summa);
+
+    myyntitapahtumaRepository.save(myyntitapahtuma);
+
+    List<VarattuLippu> varatutLiput = new ArrayList<>();
+
+    for (LippuVaraus varaus : pyynto.getLiput()) {
+
+      Lipputyyppi lipputyyppi = lipputyyppiRepository
+          .findById(varaus.getLipputyyppiId()).get();
+
+      for (int i = 0; i < varaus.getQty(); i++) {
+
+        Lippu lippu = new Lippu(
+            lipputyyppi,
+            myyntitapahtuma,
+            Lippu.LippuTila.VARATTU);
+
+        lippuRepository.save(lippu);
+
+        varatutLiput.add(new VarattuLippu(
+            lipputyyppi.getLipputyyppiId(),
+            lippu.getKoodi()));
       }
+    }
 
-      Myyntitapahtuma myyntitapahtuma = new Myyntitapahtuma(LocalDateTime.now(), summa);
+    LippuVarausVastaus vastaus = new LippuVarausVastaus(
+        myyntitapahtuma.getMyyntitapahtumaId(),
+        summa,
+        varatutLiput);
 
-      myyntitapahtumaRepository.save(myyntitapahtuma);
+    return ResponseEntity.status(HttpStatus.CREATED).body(vastaus);
+  }
 
-      List<VarattuLippu> varatutLiput = new ArrayList<>();
+  @PostMapping("/lunasta")
+  public ResponseEntity<?> lunastaLippu(@RequestBody LippuLunastus pyynto) {
 
-      for (LippuVaraus varaus : pyynto.getLiput()) {
+    if (pyynto.getKoodi() == null || pyynto.getKoodi().isBlank()) {
+      return ResponseEntity.badRequest().build();
+    }
 
-        Lipputyyppi lipputyyppi = lipputyyppiRepository
-                .findById(varaus.getLipputyyppiId()).get();
+    Optional<Lippu> optLippu = lippuRepository.findByKoodi(pyynto.getKoodi());
 
-        for (int i = 0; i < varaus.getQty(); i++) {
+    if (optLippu.isEmpty()) {
+      return ResponseEntity.notFound().build();
+    }
 
-            Lippu lippu = new Lippu(
-                    lipputyyppi,
-                    myyntitapahtuma,
-                    Lippu.LippuTila.VARATTU);
+    Lippu lippu = optLippu.get();
 
-          lippuRepository.save(lippu);
+    LippuTila status = lippu.getLipunStatus();
 
-          varatutLiput.add(new VarattuLippu(
-                          lipputyyppi.getLipputyyppiId(),
-                          lippu.getKoodi()));
-        }
-      }
+    if (status != LippuTila.VARATTU) {
+      return ResponseEntity.status(HttpStatus.CONFLICT).build();
+    }
 
-      LippuVarausVastaus vastaus = new LippuVarausVastaus(
-              myyntitapahtuma.getMyyntitapahtumaId(),
-              summa,
-              varatutLiput);
+    lippu.setLipunStatus(LippuTila.LUNASTETTU);
+    lippuRepository.save(lippu);
 
-      return ResponseEntity.status(201).body(vastaus);
+    return ResponseEntity.ok().build();
+  }
+
+  @PostMapping("/peru")
+  public ResponseEntity<?> peruLippu(@RequestBody LippuLunastus pyynto) {
+
+    if (pyynto.getKoodi() == null || pyynto.getKoodi().isBlank()) {
+      return ResponseEntity.badRequest().build();
+    }
+
+    Optional<Lippu> optLippu = lippuRepository.findByKoodi(pyynto.getKoodi());
+
+    if (optLippu.isEmpty()) {
+      return ResponseEntity.notFound().build();
+    }
+
+    Lippu lippu = optLippu.get();
+
+    LippuTila status = lippu.getLipunStatus();
+
+    if (status != LippuTila.VARATTU) {
+      return ResponseEntity.status(HttpStatus.CONFLICT).build();
+    }
+
+    lippu.setLipunStatus(LippuTila.PERUTTU);
+    lippuRepository.save(lippu);
+
+    return ResponseEntity.ok().build();
   }
 }

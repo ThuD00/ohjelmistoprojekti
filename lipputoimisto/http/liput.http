@@ -101,7 +101,7 @@ POST http://localhost:8080/api/liput/lunasta
 Content-Type: application/json
 
 {
-  "koodi": "ABCDEFG-123456"
+  "koodi": "ABCDEF-123456"
 }
 
 ### Lunasta lippu, jota ei ole
@@ -112,12 +112,20 @@ Content-Type: application/json
   "koodi": "EI-OLEMASSA-123"
 }
 
-### Lunasta lippu, joka on lunastettu tai peruttu
+### Lunasta lippu, joka on lunastettu
 POST http://localhost:8080/api/liput/lunasta
 Content-Type: application/json
 
 {
-  "koodi": "ABCDEF-123456"
+  "koodi": "FEDCBA-654321"
+}
+
+### Lunasta lippu, joka on peruttu
+POST http://localhost:8080/api/liput/lunasta
+Content-Type: application/json
+
+{
+  "koodi": "AABBCC-112233"
 }
 
 ### Peruuta varaus
@@ -125,7 +133,7 @@ POST http://localhost:8080/api/liput/peru
 Content-Type: application/json
 
 {
-  "koodi": "ABCDEF-123456"
+  "koodi": "CCBBAA-332211"
 }
 
 ### Peruuta varaus, jota ei löydy
@@ -141,5 +149,5 @@ POST http://localhost:8080/api/liput/peru
 Content-Type: application/json
 
 {
-  "koodi": "ABCDEF-123456"
+  "koodi": "FEDCBA-654321"
 }
