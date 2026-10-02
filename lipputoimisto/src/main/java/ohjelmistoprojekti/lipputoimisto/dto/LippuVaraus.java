@@ -1,8 +1,13 @@
 package ohjelmistoprojekti.lipputoimisto.dto;
 
+import jakarta.validation.constraints.Positive;
+
 public class LippuVaraus {
 
+    @Positive 
     private long lipputyyppiId;
+
+    @Positive
     private int qty;
 
     public LippuVaraus() {

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
 import ohjelmistoprojekti.lipputoimisto.domain.Lippu;
 import ohjelmistoprojekti.lipputoimisto.domain.Lipputyyppi;
 import ohjelmistoprojekti.lipputoimisto.domain.Myyntitapahtuma;
@@ -47,7 +48,7 @@ public class LippuRestController {
   }
 
   @PostMapping("/liput/varaa")
-  public ResponseEntity<?> varaaLiput(@RequestBody LippuVarausPyynto pyynto) {
+  public ResponseEntity<?> varaaLiput(@Valid @RequestBody LippuVarausPyynto pyynto) {
 
     Optional<Tapahtuma> tapahtuma = tapahtumaRepository.findById(pyynto.getTapahtumaId());
 

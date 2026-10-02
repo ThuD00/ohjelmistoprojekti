@@ -10,6 +10,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 @JsonPropertyOrder({
     "tapahtumaId",
@@ -28,10 +31,19 @@ public class Tapahtuma {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long tapahtumaId;
 
+    @NotNull
     private LocalDateTime aika;
+
+    @NotBlank
     private String paikka;
+
+    @NotBlank
     private String kaupunki;
+
+    @NotBlank
     private String kuvaus;
+
+    @Positive
     private int maxLippumaara;
 
     @OneToMany(mappedBy = "tapahtuma")

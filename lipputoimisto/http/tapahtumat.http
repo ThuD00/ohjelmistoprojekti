@@ -47,6 +47,17 @@ Content-Type: application/json
   "maxLippumaara": 1700
 }
 
+### Lisää tapahtuma virheellinen tapahtuma
+POST http://localhost:8080/api/tapahtumat
+Content-Type: application/json
+
+{
+  "aika": "",
+  "paikka": "",
+  "kaupunki": "Helsinki",
+  "kuvaus": "Stand-up Comedy Night",
+  "maxLippumaara": -5
+}
 
 ### Muokkaa tapahtumaa
 PUT http://localhost:8080/api/tapahtumat/5

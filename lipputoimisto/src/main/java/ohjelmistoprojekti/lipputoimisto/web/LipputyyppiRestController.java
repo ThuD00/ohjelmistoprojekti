@@ -3,6 +3,7 @@ package ohjelmistoprojekti.lipputoimisto.web;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
 import ohjelmistoprojekti.lipputoimisto.domain.Lipputyyppi;
 import ohjelmistoprojekti.lipputoimisto.domain.Tapahtuma;
 import ohjelmistoprojekti.lipputoimisto.repository.LipputyyppiRepository;
@@ -48,7 +49,7 @@ public class LipputyyppiRestController {
     @PostMapping("/{id}/lipputyypit")
     public ResponseEntity<Lipputyyppi> addLipputyyppi(
             @PathVariable("id") long tapahtumaId,
-            @RequestBody Lipputyyppi lipputyyppi) {
+            @Valid @RequestBody Lipputyyppi lipputyyppi) {
 
         Optional<Tapahtuma> tapahtuma =
                 tapahtumaRepository.findById(tapahtumaId);
@@ -69,7 +70,7 @@ public class LipputyyppiRestController {
     public ResponseEntity<Lipputyyppi> updateLipputyyppi(
             @PathVariable("id") long tapahtumaId,
             @PathVariable long lipputyyppiId,
-            @RequestBody Lipputyyppi uusiLipputyyppi) {
+           @Valid @RequestBody Lipputyyppi uusiLipputyyppi) {
 
         Optional<Lipputyyppi> vanhaLipputyyppi =
                 lipputyyppiRepository.findById(lipputyyppiId);
