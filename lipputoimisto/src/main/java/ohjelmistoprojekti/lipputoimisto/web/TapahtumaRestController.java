@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +31,7 @@ public class TapahtumaRestController {
         this.lipputyyppiRepository = lipputyyppiRepository;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Tapahtuma> addTapahtuma(
             @Valid @RequestBody Tapahtuma tapahtuma) {
@@ -55,6 +57,7 @@ public class TapahtumaRestController {
         return ResponseEntity.notFound().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Tapahtuma> updateTapahtuma(
             @PathVariable("id") long tapahtumaId,
@@ -77,6 +80,7 @@ public class TapahtumaRestController {
         return ResponseEntity.notFound().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTapahtuma(@PathVariable("id") long tapahtumaId) {
 
