@@ -15,6 +15,7 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,6 +49,7 @@ public class LipputyyppiRestController {
         return ResponseEntity.notFound().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}/lipputyypit")
     public ResponseEntity<Lipputyyppi> addLipputyyppi(
             @PathVariable("id") long tapahtumaId,
@@ -67,6 +69,7 @@ public class LipputyyppiRestController {
         return ResponseEntity.notFound().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}/lipputyypit/{lipputyyppiId}")
     public ResponseEntity<Lipputyyppi> updateLipputyyppi(
             @PathVariable("id") long tapahtumaId,
@@ -94,6 +97,7 @@ public class LipputyyppiRestController {
         return ResponseEntity.notFound().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}/lipputyypit/{lipputyyppiId}")
     public ResponseEntity<Void> deleteLipputyyppi(
             @PathVariable("id") long tapahtumaId,
