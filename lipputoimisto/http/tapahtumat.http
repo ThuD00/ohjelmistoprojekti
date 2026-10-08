@@ -2,7 +2,6 @@
 GET http://localhost:8080/api/tapahtumat
 Authorization: Basic admin admin
 
-
 ### Hae tapahtuma
 GET http://localhost:8080/api/tapahtumat/1
 Authorization: Basic user user
