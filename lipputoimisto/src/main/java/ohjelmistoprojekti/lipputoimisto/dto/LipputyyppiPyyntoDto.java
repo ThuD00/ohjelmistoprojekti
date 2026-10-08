@@ -3,10 +3,15 @@ package ohjelmistoprojekti.lipputoimisto.dto;
 import java.math.BigDecimal;
 
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 
 public class LipputyyppiPyyntoDto {
-    @NotEmpty
+    @NotEmpty 
     private String kuvaus;
+
+    @NotNull
+    @PositiveOrZero
     private BigDecimal lipunHinta;
 
     public LipputyyppiPyyntoDto() {

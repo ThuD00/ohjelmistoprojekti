@@ -1,12 +1,15 @@
 ### Hae tapahtuman lipputyypit
 GET http://localhost:8080/api/tapahtumat/1/lipputyypit
+Authorization: Basic user user
 
 ### Hae lipputyypit tapahtumasta, jota ei ole
 GET http://localhost:8080/api/tapahtumat/99999/lipputyypit
+Authorization: Basic admin admin
 
 ### Lisää Aikuinen-lipputyyppi tapahtumalle 1
 POST http://localhost:8080/api/tapahtumat/1/lipputyypit
 Content-Type: application/json
+Authorization: Basic admin admin
 
 {
   "kuvaus": "Aikuinen",
@@ -16,6 +19,7 @@ Content-Type: application/json
 ### Lisää Lapsi-lipputyyppi tapahtumalle 1
 POST http://localhost:8080/api/tapahtumat/1/lipputyypit
 Content-Type: application/json
+Authorization: Basic admin admin
 
 {
   "kuvaus": "Lapsi",
@@ -25,6 +29,7 @@ Content-Type: application/json
 ### Lisää lipputyyppi tapahtumaan, jota ei ole
 POST http://localhost:8080/api/tapahtumat/99999/lipputyypit
 Content-Type: application/json
+Authorization: Basic admin admin
 
 {
   "kuvaus": "Aikuinen",
@@ -34,6 +39,7 @@ Content-Type: application/json
 ### Lisää lipputyyppi ilman hintaa
 POST http://localhost:8080/api/tapahtumat/1/lipputyypit
 Content-Type: application/json
+Authorization: Basic admin admin
 
 {
   "kuvaus": "Aikuinen"
@@ -42,8 +48,10 @@ Content-Type: application/json
 ### Muokkaa lipputyyppiä
 PUT http://localhost:8080/api/tapahtumat/1/lipputyypit/2
 Content-Type: application/json
+Authorization: Basic admin admin
 
 {
+  "lipputyyppiId": 2,
   "kuvaus": "Lapsi",
   "lipunHinta": 8.00
 }
@@ -51,6 +59,7 @@ Content-Type: application/json
 ### Muokkaa lipputyyppiä, jota ei ole
 PUT http://localhost:8080/api/tapahtumat/1/lipputyypit/99999
 Content-Type: application/json
+Authorization: Basic admin admin
 
 {
   "kuvaus": "Lapsi",
@@ -60,6 +69,7 @@ Content-Type: application/json
 ### Muokkaa lipputyyppiä väärän tapahtuman kautta
 PUT http://localhost:8080/api/tapahtumat/99999/lipputyypit/1
 Content-Type: application/json
+Authorization: Basic admin admin
 
 {
   "kuvaus": "Aikuinen",
@@ -67,7 +77,13 @@ Content-Type: application/json
 }
 
 ### Poista lipputyyppi
-DELETE http://localhost:8080/api/tapahtumat/1/lipputyypit/2
+DELETE http://localhost:8080/api/tapahtumat/1/lipputyypit/6
+Authorization: Basic admin admin
 
 ### Poista lipputyyppi, jota ei ole
 DELETE http://localhost:8080/api/tapahtumat/1/lipputyypit/99999
+Authorization: Basic admin admin
+
+### Poista lipputyyppi ilman oikeuksia
+DELETE http://localhost:8080/api/tapahtumat/1/lipputyypit/2
+Authorization: Basic user user

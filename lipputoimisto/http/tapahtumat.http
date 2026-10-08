@@ -1,16 +1,20 @@
 ### Hae kaikki tapahtumat
 GET http://localhost:8080/api/tapahtumat
+Authorization: Basic admin admin
 
 ### Hae tapahtuma
 GET http://localhost:8080/api/tapahtumat/1
+Authorization: Basic user user
 
 
 ### Hae tapahtuma jota ei ole
 GET http://localhost:8080/api/tapahtumat/99999
+Authorization: Basic user user
 
 
 ### Lisää tapahtuma
 POST http://localhost:8080/api/tapahtumat
+Authorization: Basic admin admin
 Content-Type: application/json
 
 {
@@ -23,6 +27,7 @@ Content-Type: application/json
 
 ### Lisää tapahtuma
 POST http://localhost:8080/api/tapahtumat
+Authorization: Basic admin admin
 Content-Type: application/json
 
 {
@@ -36,6 +41,7 @@ Content-Type: application/json
 ### Lisää tapahtuma
 POST http://localhost:8080/api/tapahtumat
 Content-Type: application/json
+Authorization: Basic admin admin
 
 {
   "id": 1,
@@ -46,9 +52,10 @@ Content-Type: application/json
   "maxLippumaara": 1700
 }
 
-### Lisää tapahtuma virheellinen tapahtuma
+### Lisää virheellinen tapahtuma
 POST http://localhost:8080/api/tapahtumat
 Content-Type: application/json
+Authorization: Basic admin admin
 
 {
   "aika": "",
@@ -61,6 +68,7 @@ Content-Type: application/json
 ### Muokkaa tapahtumaa
 PUT http://localhost:8080/api/tapahtumat/5
 Content-Type: application/json
+Authorization: Basic admin admin
 
 {
   "aika": "2026-07-15T19:00:00",
@@ -73,6 +81,7 @@ Content-Type: application/json
 ### Muokkaa tapahtumaa, jota ei ole
 PUT http://localhost:8080/api/tapahtumat/99999
 Content-Type: application/json
+Authorization: Basic admin admin
 
 {
   "aika": "2026-07-15T19:00:00",
@@ -83,7 +92,13 @@ Content-Type: application/json
 }
 
 ### Poista tapahtuma
-DELETE http://localhost:8080/api/tapahtumat/2
+DELETE http://localhost:8080/api/tapahtumat/6
+Authorization: Basic admin admin
 
 ### Poista tapahtuma, jota ei ole
 DELETE http://localhost:8080/api/tapahtumat/99999
+Authorization: Basic admin admin
+
+### Poista tapahtuma ilman oikeuksia
+DELETE http://localhost:8080/api/tapahtumat/1
+Authorization: Basic user user
