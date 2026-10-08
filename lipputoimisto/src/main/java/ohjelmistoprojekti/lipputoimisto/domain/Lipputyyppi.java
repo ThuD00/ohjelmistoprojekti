@@ -6,12 +6,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -25,10 +24,10 @@ import jakarta.validation.constraints.PositiveOrZero;
 @Entity 
 public class Lipputyyppi {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long lipputyyppiId;
+    @EmbeddedId
+    private LipputyyppiId lipputyyppiId;
 
+    @MapsId("tapahtumaId")
     @ManyToOne 
     @JoinColumn(name = "tapahtumaId", nullable = false)
     @JsonIgnore
@@ -51,11 +50,11 @@ public class Lipputyyppi {
         this.lipunHinta = lipunHinta;
     }
 
-    public long getLipputyyppiId() {
+    public LipputyyppiId getLipputyyppiId() {
         return lipputyyppiId;
     }
 
-    public void setLipputyyppiId(long lipputyyppiId) {
+    public void setLipputyyppiId(LipputyyppiId lipputyyppiId) {
         this.lipputyyppiId = lipputyyppiId;
     }
 
@@ -89,5 +88,4 @@ public class Lipputyyppi {
                 + ", lipunHinta=" + lipunHinta + "]";
     }
 
-    
 }
