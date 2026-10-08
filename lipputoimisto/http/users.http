@@ -1,0 +1,39 @@
+### Muuttujat (helpottaa testausta)
+@baseUrl = http://localhost:8080
+
+### 1. Testaa ilman tunnuksia (Odotettu tulos: 401 Unauthorized)
+GET {{baseUrl}}/api/myyntitapahtumat
+
+### 2. Testaa user käyttäjällä
+GET {{baseUrl}}/api/tapahtumat
+Authorization: Basic user user
+
+### 3. Testaa admin-tunnuksella
+GET {{baseUrl}}/api/tapahtumat
+Authorization: Basic admin admin
+
+### 4. Testaa admin-tason POST-pyyntöä
+POST {{baseUrl}}/api/tapahtumat
+Authorization: Basic YWRtaW46YWRtaW4=
+Content-Type: application/json
+
+{
+  "aika": "2026-10-05T20:00:00",
+  "paikka": "Testitapahtuma",
+  "kaupunki": "Espoo",
+  "kuvaus": "Stand-up Comedy Night",
+  "maxLippumaara": 700
+}
+
+### Testaa user-tason POST-pyyntöä
+POST {{baseUrl}}/api/tapahtumat
+Authorization: Basic user user
+Content-Type: application/json
+
+{
+  "aika": "2026-10-05T20:00:00",
+  "paikka": "Testitapahtuma",
+  "kaupunki": "Espoo",
+  "kuvaus": "Stand-up Comedy Night",
+  "maxLippumaara": 700
+}

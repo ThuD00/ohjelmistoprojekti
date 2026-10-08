@@ -28,25 +28,22 @@ public class WebSecurityConfig {
         //.authorizeHttpRequests(auth -> auth
         //    .anyRequest().permitAll()
         //);
-
+        .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(authorize -> authorize
-            .requestMatchers("/css/**").permitAll()
-            .requestMatchers(toH2Console()).permitAll()
-
-            .anyRequest().authenticated())
+          .requestMatchers("/css/**").permitAll()
+          .requestMatchers(toH2Console()).permitAll()
+          .anyRequest().authenticated())
         .httpBasic(Customizer.withDefaults())
-        .csrf(csrf -> csrf
-            .ignoringRequestMatchers(toH2Console()))
+        //.csrf(csrf -> csrf
+          //.ignoringRequestMatchers(toH2Console()))
         .headers(headers -> headers
-            .frameOptions(frameoptions -> frameoptions
-                .disable()));
+          .frameOptions(frameoptions -> frameoptions.disable()));
     return http.build();
-
   }
-
-  @Bean
+  
+   @Bean
   public UserDetailsService userDetailsService() {
-    List<UserDetails> users = new ArrayList<>();
+    //List<UserDetails> users = new ArrayList<>();
 
     PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
@@ -56,7 +53,7 @@ public class WebSecurityConfig {
         .roles("USER")
         .build();
 
-    users.add(user);
+    //users.add(user);
 
     UserDetails admin = User
         .withUsername("admin")
@@ -64,8 +61,8 @@ public class WebSecurityConfig {
         .roles("USER", "ADMIN")
         .build();
 
-    users.add(admin);
+    //users.add(admin);
 
-    return new InMemoryUserDetailsManager(users);
+    return new InMemoryUserDetailsManager(user, admin);
   }
 }
