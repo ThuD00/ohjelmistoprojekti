@@ -2,10 +2,10 @@ package ohjelmistoprojekti.lipputoimisto.dto;
 
 import java.math.BigDecimal;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Positive;
 
 public class LipputyyppiDto {
-    @NotEmpty
+    @Positive 
     private long lipputyyppiId;
     private String kuvaus;
     private BigDecimal lipunHinta;
@@ -13,7 +13,7 @@ public class LipputyyppiDto {
     public LipputyyppiDto() {
     }
 
-    public LipputyyppiDto(@NotEmpty long lipputyyppiId, String kuvaus, BigDecimal lipunHinta) {
+    public LipputyyppiDto(long lipputyyppiId, String kuvaus, BigDecimal lipunHinta) {
         this.lipputyyppiId = lipputyyppiId;
         this.kuvaus = kuvaus;
         this.lipunHinta = lipunHinta;

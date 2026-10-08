@@ -1,6 +1,7 @@
 ### Varaa lippuja onnistuneesti
 POST http://localhost:8080/api/liput/varaa
 Content-Type: application/json
+Authorization: Basic user user
 
 {
   "tapahtumaId": 1,
@@ -19,6 +20,7 @@ Content-Type: application/json
 ### Varaa lippuja onnistuneesti
 POST http://localhost:8080/api/liput/varaa
 Content-Type: application/json
+Authorization: Basic admin admin
 
 {
   "tapahtumaId": 2,
@@ -33,6 +35,7 @@ Content-Type: application/json
 ### Varaa lippuja tapahtumaan, jota ei ole
 POST http://localhost:8080/api/liput/varaa
 Content-Type: application/json
+Authorization: Basic user user
 
 {
   "tapahtumaId": 99999,
@@ -47,6 +50,7 @@ Content-Type: application/json
 ### Varaa lippuja lipputyypillä, jota ei ole
 POST http://localhost:8080/api/liput/varaa
 Content-Type: application/json
+Authorization: Basic user user
 
 {
   "tapahtumaId": 1,
@@ -62,6 +66,7 @@ Content-Type: application/json
 //esim. tapahtuma 1 -> lipputyypi 1 ja tapahtuma 2 -> lipputyypi 2
 POST http://localhost:8080/api/liput/varaa
 Content-Type: application/json
+Authorization: Basic user user
 
 {
   "tapahtumaId": 1,
@@ -76,6 +81,7 @@ Content-Type: application/json
 ### Virheellinen varaus - ei lippuja
 POST http://localhost:8080/api/liput/varaa
 Content-Type: application/json
+Authorization: Basic user user
 
 {
   "tapahtumaId": 1,
@@ -85,6 +91,7 @@ Content-Type: application/json
 ### Virheellinen varaus - negatiivinen määrä
 POST http://localhost:8080/api/liput/varaa
 Content-Type: application/json
+Authorization: Basic user user
 
 {
   "tapahtumaId": 1,
@@ -99,6 +106,7 @@ Content-Type: application/json
 ### Lunasta lippu
 POST http://localhost:8080/api/liput/lunasta
 Content-Type: application/json
+Authorization: Basic admin admin
 
 {
   "koodi": "ABCDEF-123456"
@@ -107,6 +115,7 @@ Content-Type: application/json
 ### Lunasta lippu, jota ei ole
 POST http://localhost:8080/api/liput/lunasta
 Content-Type: application/json
+Authorization: Basic user user
 
 {
   "koodi": "EI-OLEMASSA-123"
@@ -115,6 +124,7 @@ Content-Type: application/json
 ### Lunasta lippu, joka on lunastettu
 POST http://localhost:8080/api/liput/lunasta
 Content-Type: application/json
+Authorization: Basic user user
 
 {
   "koodi": "FEDCBA-654321"
@@ -123,6 +133,7 @@ Content-Type: application/json
 ### Lunasta lippu, joka on peruttu
 POST http://localhost:8080/api/liput/lunasta
 Content-Type: application/json
+Authorization: Basic user user
 
 {
   "koodi": "AABBCC-112233"
@@ -131,6 +142,7 @@ Content-Type: application/json
 ### Peruuta varaus
 POST http://localhost:8080/api/liput/peru
 Content-Type: application/json
+Authorization: Basic admin admin
 
 {
   "koodi": "CCBBAA-332211"
@@ -139,6 +151,7 @@ Content-Type: application/json
 ### Peruuta varaus, jota ei löydy
 POST http://localhost:8080/api/liput/peru
 Content-Type: application/json
+Authorization: Basic admin admin
 
 {
   "koodi": "EI-OLEMASSA-123"
@@ -147,6 +160,7 @@ Content-Type: application/json
 ### Peruuta varaus, jota ei pysty enää peruuttaa
 POST http://localhost:8080/api/liput/peru
 Content-Type: application/json
+Authorization: Basic user user
 
 {
   "koodi": "FEDCBA-654321"

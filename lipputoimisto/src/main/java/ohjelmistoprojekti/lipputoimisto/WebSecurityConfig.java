@@ -36,6 +36,7 @@ public class WebSecurityConfig {
             .anyRequest().authenticated())
         .httpBasic(Customizer.withDefaults())
         .csrf(csrf -> csrf
+            .ignoringRequestMatchers("/api/**")
             .ignoringRequestMatchers(toH2Console()))
         .headers(headers -> headers
             .frameOptions(frameoptions -> frameoptions
