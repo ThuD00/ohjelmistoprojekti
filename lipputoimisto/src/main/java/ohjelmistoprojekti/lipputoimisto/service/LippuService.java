@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import ohjelmistoprojekti.lipputoimisto.domain.Lippu;
 import ohjelmistoprojekti.lipputoimisto.domain.Lipputyyppi;
+import ohjelmistoprojekti.lipputoimisto.domain.LipputyyppiId;
 import ohjelmistoprojekti.lipputoimisto.domain.Myyntitapahtuma;
 import ohjelmistoprojekti.lipputoimisto.domain.Tapahtuma;
 import ohjelmistoprojekti.lipputoimisto.dto.LippuVaraus;
@@ -41,17 +42,20 @@ public class LippuService {
 
     public ResponseEntity<?> varaaLiput(LippuVarausPyynto pyynto) {
 
-        Optional<Tapahtuma> tapahtuma = tapahtumaRepository.findById(pyynto.getTapahtumaId());
+        Optional<Tapahtuma> tapahtumaOptional = tapahtumaRepository.findById(pyynto.getTapahtumaId());
 
-        if (tapahtuma.isEmpty()) {
+        if (tapahtumaOptional.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
+
+        Tapahtuma tapahtuma = tapahtumaOptional.get();
 
         BigDecimal summa = BigDecimal.ZERO;
 
         for (LippuVaraus varaus : pyynto.getLiput()) {
 
-            Optional<Lipputyyppi> lipputyyppi = lipputyyppiRepository.findById(varaus.getLipputyyppiId());
+            Optional<Lipputyyppi> lipputyyppi = lipputyyppiRepository
+                    .findById(new LipputyyppiId(tapahtuma.getTapahtumaId(), varaus.getLipputyyppiId()));
 
             if (lipputyyppi.isEmpty()) {
                 return ResponseEntity.notFound().build();
@@ -65,13 +69,14 @@ public class LippuService {
             summa = summa.add(lipputyyppi.get().getLipunHinta().multiply(maara));
         }
         Myyntitapahtuma myyntitapahtuma = new Myyntitapahtuma(LocalDateTime.now(), summa);
+        myyntitapahtumaRepository.save(myyntitapahtuma);
 
         List<VarattuLippu> varatutLiput = new ArrayList<>();
 
         for (LippuVaraus varaus : pyynto.getLiput()) {
 
             Lipputyyppi lipputyyppi = lipputyyppiRepository
-                    .findById(varaus.getLipputyyppiId()).get();
+                    .findById(new LipputyyppiId(tapahtuma.getTapahtumaId(), varaus.getLipputyyppiId())).get();
 
             for (int i = 0; i < varaus.getQty(); i++) {
 
@@ -91,8 +96,6 @@ public class LippuService {
                 myyntitapahtuma.getMyyntitapahtumaId(),
                 summa,
                 varatutLiput);
-
-        myyntitapahtumaRepository.save(myyntitapahtuma);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(vastaus);
     }

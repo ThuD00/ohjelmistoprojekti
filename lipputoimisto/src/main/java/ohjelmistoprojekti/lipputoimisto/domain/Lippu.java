@@ -41,8 +41,8 @@ public class Lippu {
 
     @ManyToOne
     @JoinColumns({
-            @JoinColumn(name = "tapahtumaId", referencedColumnName = "tapahtumaId", nullable = false),
-            @JoinColumn(name = "lipputyyppiId", referencedColumnName = "lipputyyppiId", nullable = false)
+            @JoinColumn(name = "tapahtuma_id", referencedColumnName = "tapahtuma_id", nullable = false),
+            @JoinColumn(name = "lipputyyppi_id", referencedColumnName = "lipputyyppi_id", nullable = false)
     })
     private Lipputyyppi lipputyyppi;
 

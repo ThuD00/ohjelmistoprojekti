@@ -2,14 +2,19 @@ package ohjelmistoprojekti.lipputoimisto.domain;
 
 import java.io.Serializable;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
 public class LipputyyppiId implements Serializable {
+    @Column(name = "tapahtuma_id")
     private long tapahtumaId;
+
+    @Column(name = "lipputyyppi_id")
     private long lipputyyppiId;
 
-    public LipputyyppiId() {}
+    public LipputyyppiId() {
+    }
 
     public LipputyyppiId(long tapahtumaId, long lipputyyppiId) {
         this.tapahtumaId = tapahtumaId;

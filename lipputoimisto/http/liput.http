@@ -24,7 +24,7 @@ Content-Type: application/json
   "tapahtumaId": 2,
   "liput": [
     {
-      "lipputyyppiId": 3,
+      "lipputyyppiId": 2,
       "qty": 1
     }
   ]

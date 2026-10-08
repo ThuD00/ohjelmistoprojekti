@@ -1,19 +1,6 @@
 package ohjelmistoprojekti.lipputoimisto.web;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import jakarta.validation.Valid;
-import ohjelmistoprojekti.lipputoimisto.domain.Lipputyyppi;
-import ohjelmistoprojekti.lipputoimisto.domain.Tapahtuma;
-import ohjelmistoprojekti.lipputoimisto.repository.LippuRepository;
-import ohjelmistoprojekti.lipputoimisto.repository.LipputyyppiRepository;
-import ohjelmistoprojekti.lipputoimisto.repository.TapahtumaRepository;
-
 import java.util.List;
-import java.util.Optional;
-
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,79 +9,48 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.validation.Valid;
+import ohjelmistoprojekti.lipputoimisto.dto.LipputyyppiDto;
+import ohjelmistoprojekti.lipputoimisto.dto.LipputyyppiPyyntoDto;
+import ohjelmistoprojekti.lipputoimisto.service.LipputyyppiService;
 
 @RestController
 @RequestMapping("/api/tapahtumat/{id}/lipputyypit")
 public class LipputyyppiRestController {
 
-    private final LipputyyppiRepository lipputyyppiRepository;
-    private final TapahtumaRepository tapahtumaRepository;
-    private final LippuRepository lippuRepository;
+    private final LipputyyppiService lipputyyppiService;
 
-    public LipputyyppiRestController(LipputyyppiRepository lipputyyppiRepository,
-            TapahtumaRepository tapahtumaRepository, LippuRepository lippuRepository) {
-        this.lipputyyppiRepository = lipputyyppiRepository;
-        this.tapahtumaRepository = tapahtumaRepository;
-        this.lippuRepository = lippuRepository;
+    public LipputyyppiRestController(LipputyyppiService lipputyyppiService) {
+        this.lipputyyppiService = lipputyyppiService;
     }
 
     @GetMapping
-    public ResponseEntity<List<Lipputyyppi>> getLipputyypit(@PathVariable("id") long tapahtumaId) {
-        Optional<Tapahtuma> tapahtuma = tapahtumaRepository.findById(tapahtumaId);
+    public ResponseEntity<List<LipputyyppiDto>> getLipputyypit(
+            @PathVariable("id") long tapahtumaId) {
 
-        if (tapahtuma.isPresent()) {
-            return ResponseEntity.ok(tapahtuma.get().getLipputyypit());
-        }
-
-        return ResponseEntity.notFound().build();
+        return lipputyyppiService.getLipputyypit(tapahtumaId);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<Lipputyyppi> addLipputyyppi(
+    public ResponseEntity<LipputyyppiDto> addLipputyyppi(
             @PathVariable("id") long tapahtumaId,
-            @Valid @RequestBody Lipputyyppi lipputyyppi) {
+            @Valid @RequestBody LipputyyppiPyyntoDto body) {
 
-        Optional<Tapahtuma> tapahtuma = tapahtumaRepository.findById(tapahtumaId);
-
-        if (tapahtuma.isPresent()) {
-
-            lipputyyppi.setTapahtuma(tapahtuma.get());
-
-            lipputyyppiRepository.save(lipputyyppi);
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(lipputyyppi);
-        }
-
-        return ResponseEntity.notFound().build();
+        return lipputyyppiService.addLipputyyppi(tapahtumaId, body);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{lipputyyppiId}")
-    public ResponseEntity<Lipputyyppi> updateLipputyyppi(
+    public ResponseEntity<LipputyyppiDto> updateLipputyyppi(
             @PathVariable("id") long tapahtumaId,
             @PathVariable long lipputyyppiId,
-            @Valid @RequestBody Lipputyyppi uusiLipputyyppi) {
+            @Valid @RequestBody LipputyyppiDto body) {
 
-        Optional<Lipputyyppi> vanhaLipputyyppi = lipputyyppiRepository.findById(lipputyyppiId);
-
-        if (vanhaLipputyyppi.isPresent()) {
-
-            Lipputyyppi lipputyyppi = vanhaLipputyyppi.get();
-
-            if (lipputyyppi.getTapahtuma().getTapahtumaId() != tapahtumaId) {
-                return ResponseEntity.notFound().build();
-            }
-
-            lipputyyppi.setKuvaus(uusiLipputyyppi.getKuvaus());
-            lipputyyppi.setLipunHinta(uusiLipputyyppi.getLipunHinta());
-
-            lipputyyppiRepository.save(lipputyyppi);
-
-            return ResponseEntity.ok(lipputyyppi);
-        }
-
-        return ResponseEntity.notFound().build();
+        return lipputyyppiService.updateLipputyyppi(tapahtumaId, lipputyyppiId, body);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -103,26 +59,6 @@ public class LipputyyppiRestController {
             @PathVariable("id") long tapahtumaId,
             @PathVariable long lipputyyppiId) {
 
-        Optional<Lipputyyppi> loydettyLipputyyppi = lipputyyppiRepository.findById(lipputyyppiId);
-
-        if (loydettyLipputyyppi.isPresent()) {
-
-            Lipputyyppi lipputyyppi = loydettyLipputyyppi.get();
-
-            if (lipputyyppi.getTapahtuma().getTapahtumaId() != tapahtumaId) {
-                return ResponseEntity.notFound().build();
-            }
-
-            if (lippuRepository.existsByLipputyyppi(lipputyyppi)) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).build();
-            }
-
-            lipputyyppiRepository.deleteById(lipputyyppiId);
-
-            return ResponseEntity.noContent().build();
-        }
-
-        return ResponseEntity.notFound().build();
+        return lipputyyppiService.deleteLipputyyppi(tapahtumaId, lipputyyppiId);
     }
-
 }

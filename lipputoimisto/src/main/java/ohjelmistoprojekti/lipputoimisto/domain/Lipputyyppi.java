@@ -22,14 +22,14 @@ import jakarta.validation.constraints.PositiveOrZero;
 })
 
 @Entity
-public class Lipputyyppi {
+public class Lipputyyppi implements Comparable<Lipputyyppi> {
 
     @EmbeddedId
     private LipputyyppiId id;
 
     @MapsId("tapahtumaId")
     @ManyToOne
-    @JoinColumn(name = "tapahtumaId", nullable = false)
+    @JoinColumn(name = "tapahtuma_id", nullable = false)
     @JsonIgnore
     private Tapahtuma tapahtuma;
 
@@ -89,6 +89,11 @@ public class Lipputyyppi {
                 + ", lipputyyppiId=" + id.getLipputyyppiId()
                 + ", kuvaus=" + kuvaus
                 + ", lipunHinta=" + lipunHinta + "]";
+    }
+
+    @Override
+    public int compareTo(Lipputyyppi lipputyyppi) {
+        return Long.compare(this.id.getLipputyyppiId(), lipputyyppi.id.getLipputyyppiId());
     }
 
 }

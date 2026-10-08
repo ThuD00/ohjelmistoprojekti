@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 
 import ohjelmistoprojekti.lipputoimisto.domain.Lippu;
 import ohjelmistoprojekti.lipputoimisto.domain.Lipputyyppi;
+import ohjelmistoprojekti.lipputoimisto.domain.LipputyyppiId;
 import ohjelmistoprojekti.lipputoimisto.domain.Myyntitapahtuma;
 import ohjelmistoprojekti.lipputoimisto.domain.Tapahtuma;
 import ohjelmistoprojekti.lipputoimisto.repository.LippuRepository;
@@ -61,36 +62,46 @@ public class LipputoimistoApplication {
 
                         // Lipputyypit
                         Lipputyyppi aikuinen1 = new Lipputyyppi(
+                                        new LipputyyppiId(1, 1),
                                         tapahtuma1,
                                         "Aikuinen",
                                         new BigDecimal("15.00"));
 
                         Lipputyyppi lapsi1 = new Lipputyyppi(
+                                        new LipputyyppiId(1, 2),
                                         tapahtuma1,
                                         "Lapsi",
                                         new BigDecimal("7.50"));
 
                         Lipputyyppi opiskelija1 = new Lipputyyppi(
+                                        new LipputyyppiId(1, 3),
                                         tapahtuma1,
                                         "Opiskelija",
                                         new BigDecimal("10.00"));
 
                         Lipputyyppi aikuinen2 = new Lipputyyppi(
+                                        new LipputyyppiId(2, 1),
                                         tapahtuma2,
                                         "Aikuinen",
                                         new BigDecimal("45.00"));
 
                         Lipputyyppi opiskelija2 = new Lipputyyppi(
+                                        new LipputyyppiId(2, 2),
+
                                         tapahtuma2,
                                         "Opiskelija",
                                         new BigDecimal("30.00"));
 
                         Lipputyyppi aikuinen3 = new Lipputyyppi(
+                                        new LipputyyppiId(3, 1),
+
                                         tapahtuma3,
                                         "Aikuinen",
                                         new BigDecimal("60.00"));
 
                         Lipputyyppi opiskelija3 = new Lipputyyppi(
+                                        new LipputyyppiId(3, 2),
+
                                         tapahtuma3,
                                         "Opiskelija",
                                         new BigDecimal("40.00"));
@@ -137,13 +148,13 @@ public class LipputoimistoApplication {
                                         aikuinen2,
                                         myynti2,
                                         Lippu.LippuTila.LUNASTETTU);
-                                        lippu4.setKoodi("FEDCBA-654321");
+                        lippu4.setKoodi("FEDCBA-654321");
 
                         Lippu lippu5 = new Lippu(
                                         opiskelija2,
                                         myynti2,
                                         Lippu.LippuTila.PERUTTU);
-                                        lippu5.setKoodi("AABBCC-112233");
+                        lippu5.setKoodi("AABBCC-112233");
 
                         lippuRepository.save(lippu1);
                         lippuRepository.save(lippu2);

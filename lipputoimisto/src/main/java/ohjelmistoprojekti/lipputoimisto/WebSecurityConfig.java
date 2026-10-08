@@ -15,44 +15,56 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import static org.springframework.boot.security.autoconfigure.web.servlet.PathRequest.toH2Console;
 
-@Configuration 
+@Configuration
 @EnableMethodSecurity
 public class WebSecurityConfig {
 
-  @Bean 
+  @Bean
   public SecurityFilterChain configure(HttpSecurity http) throws Exception {
     http
-    .authorizeHttpRequests(authorize -> authorize
-      .anyRequest().authenticated()
-    )
-    .httpBasic(Customizer.withDefaults())
-    .csrf(csrf -> csrf.disable());
+        //   .csrf(csrf -> csrf.disable())
+        //.authorizeHttpRequests(auth -> auth
+        //    .anyRequest().permitAll()
+        //);
 
+        .authorizeHttpRequests(authorize -> authorize
+            .requestMatchers("/css/**").permitAll()
+            .requestMatchers(toH2Console()).permitAll()
+
+            .anyRequest().authenticated())
+        .httpBasic(Customizer.withDefaults())
+        .csrf(csrf -> csrf
+            .ignoringRequestMatchers(toH2Console()))
+        .headers(headers -> headers
+            .frameOptions(frameoptions -> frameoptions
+                .disable()));
     return http.build();
+
   }
 
-  @Bean 
+  @Bean
   public UserDetailsService userDetailsService() {
     List<UserDetails> users = new ArrayList<>();
 
     PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
     UserDetails user = User
-      .withUsername("user")
-      .password(passwordEncoder.encode("user"))
-      .roles("USER")
-      .build();
+        .withUsername("user")
+        .password(passwordEncoder.encode("user"))
+        .roles("USER")
+        .build();
 
     users.add(user);
 
     UserDetails admin = User
-      .withUsername("admin")
-      .password(passwordEncoder.encode("admin"))
-      .roles("USER", "ADMIN")
-      .build();
-    
-      users.add(admin);
+        .withUsername("admin")
+        .password(passwordEncoder.encode("admin"))
+        .roles("USER", "ADMIN")
+        .build();
+
+    users.add(admin);
 
     return new InMemoryUserDetailsManager(users);
   }
