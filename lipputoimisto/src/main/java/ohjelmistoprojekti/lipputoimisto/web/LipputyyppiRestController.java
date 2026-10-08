@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping("/api/tapahtumat")
+@RequestMapping("/api/tapahtumat/{id}/lipputyypit")
 public class LipputyyppiRestController {
 
     private final LipputyyppiRepository lipputyyppiRepository;
@@ -38,7 +38,7 @@ public class LipputyyppiRestController {
         this.lippuRepository = lippuRepository;
     }
 
-    @GetMapping("/{id}/lipputyypit")
+    @GetMapping
     public ResponseEntity<List<Lipputyyppi>> getLipputyypit(@PathVariable("id") long tapahtumaId) {
         Optional<Tapahtuma> tapahtuma = tapahtumaRepository.findById(tapahtumaId);
 
@@ -50,7 +50,7 @@ public class LipputyyppiRestController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/{id}/lipputyypit")
+    @PostMapping
     public ResponseEntity<Lipputyyppi> addLipputyyppi(
             @PathVariable("id") long tapahtumaId,
             @Valid @RequestBody Lipputyyppi lipputyyppi) {
@@ -70,7 +70,7 @@ public class LipputyyppiRestController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/{id}/lipputyypit/{lipputyyppiId}")
+    @PutMapping("/{lipputyyppiId}")
     public ResponseEntity<Lipputyyppi> updateLipputyyppi(
             @PathVariable("id") long tapahtumaId,
             @PathVariable long lipputyyppiId,
@@ -98,7 +98,7 @@ public class LipputyyppiRestController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/{id}/lipputyypit/{lipputyyppiId}")
+    @DeleteMapping("/{lipputyyppiId}")
     public ResponseEntity<Void> deleteLipputyyppi(
             @PathVariable("id") long tapahtumaId,
             @PathVariable long lipputyyppiId) {

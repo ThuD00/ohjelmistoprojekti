@@ -13,6 +13,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinColumns;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 
@@ -39,7 +40,10 @@ public class Lippu {
     private long lippuId;
 
     @ManyToOne
-    @JoinColumn(name = "lipputyyppiId", nullable = false)
+    @JoinColumns({
+            @JoinColumn(name = "tapahtumaId", referencedColumnName = "tapahtumaId", nullable = false),
+            @JoinColumn(name = "lipputyyppiId", referencedColumnName = "lipputyyppiId", nullable = false)
+    })
     private Lipputyyppi lipputyyppi;
 
     @ManyToOne

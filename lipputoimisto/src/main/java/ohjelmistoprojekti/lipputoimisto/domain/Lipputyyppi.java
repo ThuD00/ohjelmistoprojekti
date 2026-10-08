@@ -16,26 +16,26 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
 @JsonPropertyOrder({
-    "lipputyyppiId",
-    "kuvaus",
-    "lipunHinta"
+        "lipputyyppiId",
+        "kuvaus",
+        "lipunHinta"
 })
 
-@Entity 
+@Entity
 public class Lipputyyppi {
 
     @EmbeddedId
-    private LipputyyppiId lipputyyppiId;
+    private LipputyyppiId id;
 
     @MapsId("tapahtumaId")
-    @ManyToOne 
+    @ManyToOne
     @JoinColumn(name = "tapahtumaId", nullable = false)
     @JsonIgnore
     private Tapahtuma tapahtuma;
 
     @NotBlank
     private String kuvaus;
-    
+
     @NotNull
     @PositiveOrZero
     @Column(name = "lipun_hinta")
@@ -44,18 +44,19 @@ public class Lipputyyppi {
     public Lipputyyppi() {
     }
 
-    public Lipputyyppi(Tapahtuma tapahtuma, String kuvaus, BigDecimal lipunHinta) {
+    public Lipputyyppi(LipputyyppiId id,Tapahtuma tapahtuma, String kuvaus, BigDecimal lipunHinta) {
+        this.id = id;
         this.tapahtuma = tapahtuma;
         this.kuvaus = kuvaus;
         this.lipunHinta = lipunHinta;
     }
 
-    public LipputyyppiId getLipputyyppiId() {
-        return lipputyyppiId;
+    public LipputyyppiId getId() {
+        return id;
     }
 
-    public void setLipputyyppiId(LipputyyppiId lipputyyppiId) {
-        this.lipputyyppiId = lipputyyppiId;
+    public void setId(LipputyyppiId id) {
+        this.id = id;
     }
 
     public Tapahtuma getTapahtuma() {
@@ -84,7 +85,9 @@ public class Lipputyyppi {
 
     @Override
     public String toString() {
-        return "Lipputyyppi [lipputyyppiId=" + lipputyyppiId + ", kuvaus=" + kuvaus
+        return "Lipputyyppi [tapahtuma=" + getTapahtuma().getTapahtumaId()
+                + ", lipputyyppiId=" + id.getLipputyyppiId()
+                + ", kuvaus=" + kuvaus
                 + ", lipunHinta=" + lipunHinta + "]";
     }
 
