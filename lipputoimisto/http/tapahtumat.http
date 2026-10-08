@@ -1,7 +1,6 @@
 ### Hae kaikki tapahtumat
 GET http://localhost:8080/api/tapahtumat
 
-
 ### Hae tapahtuma
 GET http://localhost:8080/api/tapahtumat/1
 
