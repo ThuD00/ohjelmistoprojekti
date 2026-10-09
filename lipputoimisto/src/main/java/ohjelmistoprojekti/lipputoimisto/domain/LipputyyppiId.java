@@ -41,8 +41,8 @@ public class LipputyyppiId implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + (int) (tapahtumaId ^ (tapahtumaId >>> 32));
-        result = prime * result + (int) (lipputyyppiId ^ (lipputyyppiId >>> 32));
+        result = prime * result + Long.hashCode(tapahtumaId);
+        result = prime * result + Long.hashCode(lipputyyppiId);
         return result;
     }
 

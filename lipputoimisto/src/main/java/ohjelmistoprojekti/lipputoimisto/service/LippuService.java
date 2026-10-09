@@ -1,27 +1,21 @@
 package ohjelmistoprojekti.lipputoimisto.service;
 
+import ohjelmistoprojekti.lipputoimisto.domain.*;
+import ohjelmistoprojekti.lipputoimisto.dto.*;
+import ohjelmistoprojekti.lipputoimisto.repository.LippuRepository;
+import ohjelmistoprojekti.lipputoimisto.repository.LipputyyppiRepository;
+import ohjelmistoprojekti.lipputoimisto.repository.MyyntitapahtumaRepository;
+import ohjelmistoprojekti.lipputoimisto.repository.TapahtumaRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import ohjelmistoprojekti.lipputoimisto.dto.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-
-import ohjelmistoprojekti.lipputoimisto.domain.Lippu;
-import ohjelmistoprojekti.lipputoimisto.domain.Lipputyyppi;
-import ohjelmistoprojekti.lipputoimisto.domain.LipputyyppiId;
-import ohjelmistoprojekti.lipputoimisto.domain.Myyntitapahtuma;
-import ohjelmistoprojekti.lipputoimisto.domain.Tapahtuma;
-import ohjelmistoprojekti.lipputoimisto.repository.LippuRepository;
-import ohjelmistoprojekti.lipputoimisto.repository.LipputyyppiRepository;
-import ohjelmistoprojekti.lipputoimisto.repository.MyyntitapahtumaRepository;
-import ohjelmistoprojekti.lipputoimisto.repository.TapahtumaRepository;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class LippuService {

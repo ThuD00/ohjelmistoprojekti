@@ -74,7 +74,7 @@ public class LipputyyppiService {
 
         Optional<Tapahtuma> tapahtuma = tapahtumaRepository.findById(tapahtumaId);
 
-        if (!tapahtuma.isPresent()) {
+        if (tapahtuma.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
