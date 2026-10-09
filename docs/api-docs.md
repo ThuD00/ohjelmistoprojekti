@@ -24,7 +24,8 @@
     "paikka": "Olympiastadion",
     "kaupunki": "Helsinki",
     "kuvaus": "Rock Festival 2026",
-    "maxLippumaara": 40000
+    "maxLippumaara": 40000,
+    "poistettu": false
   },
   {
     "tapahtumaId": 2,
@@ -32,7 +33,38 @@
     "paikka": "Helvetti",
     "kaupunki": "???",
     "kuvaus": "Helvetti jäätyy",
-    "maxLippumaara": 666666
+    "maxLippumaara": 666666,
+    "poistettu": false
+  }
+]
+```
+
+### Hae kaikki poistetut tapahtumat
+* **Metodi**: `GET`
+* **Polku**: `/tapahtumat?poistettu=true`
+* **Parametrit**: `poistettu (boolean)`
+* **Vastaus**:
+    * `200 OK`
+* **Vastauksen runko**:
+```json
+[
+  {
+    "tapahtumaId": 4,
+    "aika": "2026-11-20T19:00:00",
+    "paikka": "Helsingin jäähalli",
+    "kaupunki": "Helsinki",
+    "kuvaus": "Winter Rock Night",
+    "maxLippumaara": 8500,
+    "poistettu": true
+  },
+  {
+    "tapahtumaId": 5,
+    "aika": "2026-12-05T18:30:00",
+    "paikka": "Tampere-talo",
+    "kaupunki": "Tampere",
+    "kuvaus": "Joulun taikaa",
+    "maxLippumaara": 2000,
+    "poistettu": true
   }
 ]
 ```
@@ -53,7 +85,8 @@
   "paikka": "Olympiastadion",
   "kaupunki": "Helsinki",
   "kuvaus": "Rock Festival 2026",
-  "maxLippumaara": 40000
+  "maxLippumaara": 40000,
+  "poistettu": false
 }
 ```
 
@@ -81,7 +114,8 @@
   "paikka": "Tavastia",
   "kaupunki": "Helsinki",
   "kuvaus": "Stand-up Comedy Night",
-  "maxLippumaara": 700
+  "maxLippumaara": 700,
+  "poistettu": false
 }
 ```
 
@@ -111,7 +145,8 @@
   "paikka": "Olympiastadion",
   "kaupunki": "Helsinki",
   "kuvaus": "Rock Festival 2026 (Päivitetty)",
-  "maxLippumaara": 45000
+  "maxLippumaara": 45000,
+  "poistettu": false
 }
 ```
 
@@ -339,7 +374,7 @@
       "lipputyyppi": {
         "lipputyyppiId": 1,
         "kuvaus": "Aikuinen",
-        "hinta": 15.00,
+        "hinta": 15.00
       },
       "lipunStatus": "VARATTU",
       "koodi": "PSMWVT-012597"
@@ -410,14 +445,14 @@ Käytän Postmanin Authorization-välilehteä. Valitsen siellä Basic Auth.
 *	**Vastauksen runko**:
 ```json
 {
-"myyntitapahtumaId": 3,
-"summa": 15.00,
-"liput”: [
-{
-  "lipputyyppiId":1,
-  "koodi": "JCWZDG-093114"
-}
-             ]
+  "myyntitapahtumaId": 3,
+  "summa": 15.00,
+  "liput": [
+    {
+      "lipputyyppiId": 1,
+      "koodi": "JCWZDG-093114"
+    }
+  ]
 }
 ```
 

@@ -1,28 +1,23 @@
 package ohjelmistoprojekti.lipputoimisto.domain;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @JsonPropertyOrder({
-    "tapahtumaId",
-    "aika",
-    "paikka",
-    "kaupunki",
-    "kuvaus",
-    "maxLippumaara",
-    "lipputyypit"
+        "tapahtumaId",
+        "aika",
+        "paikka",
+        "kaupunki",
+        "kuvaus",
+        "maxLippumaara",
+        "lipputyypit"
 })
 
 @Entity
@@ -50,18 +45,22 @@ public class Tapahtuma {
     @OneToMany(mappedBy = "tapahtuma")
     @JsonIgnore
     private List<Lipputyyppi> lipputyypit;
-    
+
+    @Column(nullable = false)
+    private boolean poistettu = false;
+
     public Tapahtuma() {
     }
 
 
     public Tapahtuma(LocalDateTime aika, String paikka, String kaupunki, String kuvaus,
-            int maxLippumaara) {
+                     int maxLippumaara, boolean poistettu) {
         this.aika = aika;
         this.paikka = paikka;
         this.kaupunki = kaupunki;
         this.kuvaus = kuvaus;
         this.maxLippumaara = maxLippumaara;
+        this.poistettu = poistettu;
     }
 
 
@@ -139,6 +138,12 @@ public class Tapahtuma {
                 + kaupunki + ", kuvaus=" + kuvaus + ", maxLippumaara=" + maxLippumaara + "]";
     }
 
-    
 
+    public boolean isPoistettu() {
+        return poistettu;
+    }
+
+    public void setPoistettu(boolean poistettu) {
+        this.poistettu = poistettu;
+    }
 }

@@ -43,6 +43,10 @@ public class LippuService {
 
         Tapahtuma tapahtuma = tapahtumaOptional.get();
 
+        if (tapahtuma.isPoistettu()) {
+            return ResponseEntity.notFound().build();
+        }
+
         BigDecimal summa = BigDecimal.ZERO;
 
         for (LippuVaraus varaus : pyynto.getLiput()) {
