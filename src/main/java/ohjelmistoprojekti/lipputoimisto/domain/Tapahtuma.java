@@ -3,6 +3,7 @@ package ohjelmistoprojekti.lipputoimisto.domain;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import jakarta.persistence.Entity;
@@ -47,6 +48,7 @@ public class Tapahtuma {
     private int maxLippumaara;
 
     @OneToMany(mappedBy = "tapahtuma")
+    @JsonIgnore
     private List<Lipputyyppi> lipputyypit;
     
     public Tapahtuma() {
