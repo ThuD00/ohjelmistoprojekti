@@ -366,8 +366,185 @@ API käyttää HTTP-metodeja niiden käyttötarkoituksen mukaisesti:
 * `PUT` käytetään olemassa olevien tietojen päivittämiseen
 * `DELETE` käytetään tietojen poistamiseen
 
-URL-rakenteissa käytetään resursseja kuvaavia nimiä, esimerkiksi `/tapahtumat`, `/liput` ja `/myyntitapahtumat`. Yksittäisiin resursseihin viitataan niiden tunnisteen avulla, esimerkiksi `/tapahtumat/{id}`.
+URL-rakenteissa käytetään resursseja kuvaavia nimiä, esimerkiksi `/tapahtumat`, `/liput` ja `/myyntitapahtumat`. Yksittäisiin resursseihin viitataan niiden tunnisteiden avulla, esimerkiksi `/tapahtumat/{id}`.
 
 API palauttaa tilanteen mukaiset HTTP-tilakoodit. Onnistuneiden pyyntöjen yhteydessä se käyttää esimerkiksi koodeja `200 OK`, `201 CREATED` ja `204 NO CONTENT`. Virhetilanteissa se käyttää esimerkiksi koodeja `404 NOT FOUND` ja `409 CONFLICT`.
 
 Tapahtuman ja sen lipputyyppien välinen suhde näkyy myös URL-rakenteessa, esimerkiksi `/tapahtumat/{id}/lipputyypit`.
+
+## 5. Rajapintojen autentikoinnin testaus
+
+Tässä kaikki testaukset on tehty Postmanin avulla. Testasin rajapintoja ilman tunnuksia, user- ja admin-käyttäjillä sekä väärällä salasanalla.
+
+### 5.1	Ei kirjautumista
+
+`GET http://localhost:8080/api/tapahtumat`
+* **Metodi**: `GET`
+*	**Polku**: `/api/tapahtumat`
+*	**Vastaus**:
+	*	`200 OK`
+
+### 5.2	Testaa USER-käyttäjällä
+
+Käytän Postmanin Authorization-välilehteä. Valitsen siellä Basic Auth.
+
+`POST http://localhost:8080/api/liput/varaa`
+* **Metodi**: `POST`
+*	**Polku**: `/api/liput/varaa`
+*	**Käyttäjä**: `user`
+*	**Pyynnön runko**:
+```json
+{
+  "tapahtumaId": 1,
+  "liput": [
+    {
+      "lipputyyppiId": 1,
+      "qty": 1
+    }
+  ]
+}
+```
+*	**Vastaus**:
+	* `201 Created`
+
+*	**Vastauksen runko**:
+```json
+{
+"myyntitapahtumaId": 3,
+"summa": 15.00,
+"liput”: [
+{
+  "lipputyyppiId":1,
+  "koodi": "JCWZDG-093114"
+}
+             ]
+}
+```
+
+### 5.3	Testaa USERillä toiminto, jota sen ei pitäisi saa tehdä
+
+`POST http://localhost:8080/api/tapahtumat`
+* **Metodi**: `POST`
+*	**Polku**: `/api/tapahtumat`
+*	**Käyttäjä**: `user`
+*	**Pyynnön runko**:
+```json
+{
+  "aika": "2026-10-10T18:00:00",
+  "paikka": "Tavastia",
+  "kaupunki": "Helsinki",
+  "kuvaus": "Testitapahtuma",
+  "maxLippumaara": 100
+}
+```
+*	**Vastaus**:
+	* `403 Forbidden`
+
+### 5.4	Testaa sama ADMIN:illa
+
+`POST http://localhost:8080/api/tapahtumat`
+* **Metodi**: POST
+*	**Polku**: /api/tapahtumat
+*	**Käyttäjä**: admin
+*	**Pyynnön runko**:
+```json
+{
+  "aika": "2026-10-10T18:00:00",
+  "paikka": "Tavastia",
+  "kaupunki": "Helsinki",
+  "kuvaus": "Testitapahtuma",
+  "maxLippumaara": 100
+}
+```
+*	**Vastaus**:
+	* `201 Created`
+*	**Vastauksen runko**:
+```json
+{
+  "tapahtumaId": 4,
+  "aika": "2026-10-10T18:00:00",
+  "paikka": "Tavastia",
+  "kaupunki": "Helsinki",
+  "kuvaus": "Testitapahtuma",
+  "maxLippumaara": 100,
+  "lipputyypit": null
+}
+```
+
+### 5.5	Testaa muokkaus ja poisto userilla
+`PUT http://localhost:8080/api/tapahtumat/4`
+*	**Metodi**: `PUT`
+*	**Polku**: `/api/tapahtumat/4`
+*	**Käyttäjä**: `user`
+*	**Pyynnön runko**:
+```json
+{
+  "aika": "2026-10-10T19:00:00",
+  "paikka": "Tavastia",
+  "kaupunki": "Helsinki",
+  "kuvaus": "Testitapahtuma päivitetty",
+  "maxLippumaara": 120
+}
+```
+*	**Vastaus**:
+	* `403 Forbidden`
+
+`DELETE http://localhost:8080/api/tapahtumat/4`
+*	**Metodi**: `DELETE`
+*	**Polku**: `/api/tapahtumat/4`
+*	**Käyttäjä**: `user`
+*	**Vastaus**:
+	* `403 Forbidden`
+   
+Eli sain molemmista 403 Forbidden, koska user on käyttäjä.
+
+### 5.6	 Testaa muokkaus ja poisto myös adminilla
+
+`PUT http://localhost:8080/api/tapahtumat/4`
+*	**Metodi**: `PUT`
+*	**Polku**: `/api/tapahtumat/4`
+*	**Käyttäjä**: `admin`
+*	**Pyynnön runko**:
+```json
+{
+  "aika": "2026-10-10T19:00:00",
+  "paikka": "Tavastia",
+  "kaupunki": "Helsinki",
+  "kuvaus": "Testitapahtuma päivitetty",
+  "maxLippumaara": 120
+}
+```
+*	**Vastaus**:
+	* `200 OK`
+*	**Vastauksen runko**:
+```json
+{
+  "tapahtumaId": 4,
+  "aika": "2026-10-10T19:00:00",
+  "paikka": "Tavastia",
+  "kaupunki": "Helsinki",
+  "kuvaus": "Testitapahtuma päivitetty",
+  "maxLippumaara": 120,
+  "lipputyypit": []
+}
+```
+`DELETE http://localhost:8080/api/tapahtumat/4`
+*	**Metodi**: `DELETE`
+*	**Polku**: `/api/tapahtumat/4`
+*	**Käyttäjä**: `admin`
+*	**Vastaus**:
+	* `204 No Content`
+   
+Muokkaus ja poisto onnistuivat, koska admin-käyttäjällä on siihen oikeudet.
+
+### 5.7 Testaa väärällä salasanalla
+* **Username**: `user`
+* **Password**: `väärä-salasana`
+
+`GET http://localhost:8080/api/tapahtumat`
+
+*	**Metodi**: `GET`
+*	**Polku**: `/api/tapahtumat`
+*	**Käyttäjä**: `user`
+*	**Vastaus**:
+	* `401 Unauthorized`
