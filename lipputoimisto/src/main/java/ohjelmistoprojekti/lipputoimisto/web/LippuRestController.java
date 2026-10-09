@@ -24,75 +24,31 @@ import ohjelmistoprojekti.lipputoimisto.repository.TapahtumaRepository;
 @RequestMapping("/api/liput")
 public class LippuRestController {
 
-  private final LippuService lippuService;
-  private final LippuRepository lippuRepository;
+    private final LippuService lippuService;
+    private final LippuRepository lippuRepository;
 
-  public LippuRestController(
-      LippuRepository lippuRepository,
-      LipputyyppiRepository lipputyyppiRepository,
-      MyyntitapahtumaRepository myyntitapahtumaRepository,
-      TapahtumaRepository tapahtumaRepository, LippuService lippuService) {
+    public LippuRestController(
+            LippuRepository lippuRepository,
+            LipputyyppiRepository lipputyyppiRepository,
+            MyyntitapahtumaRepository myyntitapahtumaRepository,
+            TapahtumaRepository tapahtumaRepository, LippuService lippuService) {
 
-    this.lippuRepository = lippuRepository;
-    this.lippuService = lippuService;
-  }
-
-  @PostMapping("/varaa")
-  public ResponseEntity<?> varaaLiput(@Valid @RequestBody LippuVarausPyynto pyynto) {
-    return lippuService.varaaLiput(pyynto);
-  }
-
-  @PostMapping("/lunasta")
-  public ResponseEntity<?> lunastaLippu(@RequestBody LippuLunastus pyynto) {
-
-    if (pyynto.getKoodi() == null || pyynto.getKoodi().isBlank()) {
-      return ResponseEntity.badRequest().build();
+        this.lippuRepository = lippuRepository;
+        this.lippuService = lippuService;
     }
 
-    Optional<Lippu> optLippu = lippuRepository.findByKoodi(pyynto.getKoodi());
-
-    if (optLippu.isEmpty()) {
-      return ResponseEntity.notFound().build();
+    @PostMapping("/varaa")
+    public ResponseEntity<?> varaaLiput(@Valid @RequestBody LippuVarausPyynto pyynto) {
+        return lippuService.varaaLiput(pyynto);
     }
 
-    Lippu lippu = optLippu.get();
-
-    LippuTila status = lippu.getLipunStatus();
-
-    if (status != LippuTila.VARATTU) {
-      return ResponseEntity.status(HttpStatus.CONFLICT).build();
+    @PostMapping("/lunasta")
+    public ResponseEntity<?> lunastaLippu(@RequestBody LippuLunastus pyynto) {
+        return lippuService.lunastaLippu(pyynto);
     }
 
-    lippu.setLipunStatus(LippuTila.LUNASTETTU);
-    lippuRepository.save(lippu);
-
-    return ResponseEntity.ok().build();
-  }
-
-  @PostMapping("/peru")
-  public ResponseEntity<?> peruLippu(@RequestBody LippuLunastus pyynto) {
-
-    if (pyynto.getKoodi() == null || pyynto.getKoodi().isBlank()) {
-      return ResponseEntity.badRequest().build();
+    @PostMapping("/peru")
+    public ResponseEntity<?> peruLippu(@RequestBody LippuLunastus pyynto) {
+        return lippuService.peruLippu(pyynto);
     }
-
-    Optional<Lippu> optLippu = lippuRepository.findByKoodi(pyynto.getKoodi());
-
-    if (optLippu.isEmpty()) {
-      return ResponseEntity.notFound().build();
-    }
-
-    Lippu lippu = optLippu.get();
-
-    LippuTila status = lippu.getLipunStatus();
-
-    if (status != LippuTila.VARATTU) {
-      return ResponseEntity.status(HttpStatus.CONFLICT).build();
-    }
-
-    lippu.setLipunStatus(LippuTila.PERUTTU);
-    lippuRepository.save(lippu);
-
-    return ResponseEntity.ok().build();
-  }
 }
