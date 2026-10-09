@@ -28,7 +28,7 @@ public class WebSecurityConfig {
 
                         .requestMatchers(toH2Console()).permitAll() // h2 consolea varten
 
-                        .anyRequest().authenticated())
+                        .anyRequest().permitAll())
                 .httpBasic(Customizer.withDefaults())
 
                 // h2 consolea varten

@@ -73,6 +73,7 @@
 ```
 * **Vastaus**: 
   * `201 CREATED`
+  * `400 BAD REQUEST` (Jos pyynnössä on virheitä)
 * **Vastauksen runko**:
 ```json
 {
@@ -102,6 +103,7 @@
 ```
 * **Vastaus**: 
   * `200 OK`
+  * `400 BAD REQUEST` (Jos pyynnössä on virheitä)
   * `404 NOT FOUND` (Jos id:tä ei löydy)
 * **Vastauksen runko**:
 ```json
