@@ -1,8 +1,10 @@
 package ohjelmistoprojekti.lipputoimisto;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 
+import org.h2.tools.Server;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -23,6 +25,18 @@ public class LipputoimistoApplication {
 
         public static void main(String[] args) {
                 SpringApplication.run(LipputoimistoApplication.class, args);
+        }
+
+        // vain kehityskäyttöön: mahdollistaa intellij idean tietokantayhteyden
+        @Bean(initMethod="start", destroyMethod="stop")
+        public Server h2Server() {
+                Server h2Server;
+                try {
+                        h2Server = Server.createTcpServer();
+                } catch (SQLException e) {
+                        throw new RuntimeException("Failed to start H2 server: ", e);
+                }
+                return h2Server;
         }
 
         @Bean
