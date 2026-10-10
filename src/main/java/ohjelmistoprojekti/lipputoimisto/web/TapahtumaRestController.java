@@ -1,34 +1,23 @@
 package ohjelmistoprojekti.lipputoimisto.web;
 
-import java.util.Optional;
-
+import jakarta.validation.Valid;
+import ohjelmistoprojekti.lipputoimisto.domain.Tapahtuma;
+import ohjelmistoprojekti.lipputoimisto.repository.TapahtumaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
-import ohjelmistoprojekti.lipputoimisto.domain.Tapahtuma;
-import ohjelmistoprojekti.lipputoimisto.repository.LipputyyppiRepository;
-import ohjelmistoprojekti.lipputoimisto.repository.TapahtumaRepository;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PutMapping;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/tapahtumat")
 public class TapahtumaRestController {
 
     private final TapahtumaRepository tapahtumaRepository;
-    private final LipputyyppiRepository lipputyyppiRepository;
 
-    public TapahtumaRestController(TapahtumaRepository tapahtumaRepository, LipputyyppiRepository lipputyyppiRepository) {
+    public TapahtumaRestController(TapahtumaRepository tapahtumaRepository) {
         this.tapahtumaRepository = tapahtumaRepository;
-        this.lipputyyppiRepository = lipputyyppiRepository;
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -42,19 +31,16 @@ public class TapahtumaRestController {
     }
 
     @GetMapping
-    public Iterable<Tapahtuma> findAllTapahtumat() {
-        return tapahtumaRepository.findAll();
+    public Iterable<Tapahtuma> findAllTapahtumat(@RequestParam(defaultValue = "false") boolean poistettu) {
+        return tapahtumaRepository.findAllByPoistettu(poistettu);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Tapahtuma> findById(@PathVariable("id") long tapahtumaId) {
         Optional<Tapahtuma> tapahtuma = tapahtumaRepository.findById(tapahtumaId);
 
-        if (tapahtuma.isPresent()) {
-            return ResponseEntity.ok(tapahtuma.get());
-        }
+        return tapahtuma.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
 
-        return ResponseEntity.notFound().build();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -83,18 +69,17 @@ public class TapahtumaRestController {
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTapahtuma(@PathVariable("id") long tapahtumaId) {
+        Optional<Tapahtuma> tapahtuma = tapahtumaRepository.findById(tapahtumaId);
 
-        if (!tapahtumaRepository.existsById(tapahtumaId)) {
+        if (tapahtuma.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
-        Tapahtuma loydettyTapahtuma = tapahtumaRepository.findById(tapahtumaId).get();
+        Tapahtuma loydettyTapahtuma = tapahtuma.get();
 
-        if (lipputyyppiRepository.existsByTapahtuma(loydettyTapahtuma)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
+        loydettyTapahtuma.setPoistettu(true);
+        tapahtumaRepository.save(loydettyTapahtuma);
 
-        tapahtumaRepository.deleteById(tapahtumaId);
         return ResponseEntity.noContent().build();
     }
 

@@ -414,7 +414,7 @@ Käytän Postmanin Authorization-välilehteä. Valitsen siellä Basic Auth.
 {
 "myyntitapahtumaId": 3,
 "summa": 15.00,
-"liput”: [
+"liput": [
 {
   "lipputyyppiId":1,
   "koodi": "JCWZDG-093114"

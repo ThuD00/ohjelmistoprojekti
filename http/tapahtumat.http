@@ -2,6 +2,10 @@
 GET http://localhost:8080/api/tapahtumat
 Authorization: Basic admin admin
 
+### Hae kaikki poistetut tapahtumat
+GET http://localhost:8080/api/tapahtumat?poistettu=true
+Authorization: Basic admin admin
+
 ### Hae tapahtuma
 GET http://localhost:8080/api/tapahtumat/1
 Authorization: Basic user user
@@ -92,7 +96,7 @@ Authorization: Basic admin admin
 }
 
 ### Poista tapahtuma
-DELETE http://localhost:8080/api/tapahtumat/6
+DELETE http://localhost:8080/api/tapahtumat/3
 Authorization: Basic admin admin
 
 ### Poista tapahtuma, jota ei ole
