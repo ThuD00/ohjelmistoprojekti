@@ -29,6 +29,8 @@ class TapahtumaRestControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    // TODO: testaa myös tapahtuman omistajuus
+
     @Test
     void getTapahtumatReturnsOk() throws Exception {
         mockMvc.perform(get(BASE_URL))
