@@ -70,7 +70,7 @@ public class LipputyyppiService {
         return ResponseEntity.notFound().build();
     }
 
-    public ResponseEntity<LipputyyppiDto> updateLipputyyppi(long tapahtumaId, long lipputyyppiId, LipputyyppiDto body) {
+    public ResponseEntity<LipputyyppiDto> updateLipputyyppi(long tapahtumaId, long lipputyyppiId, LipputyyppiPyyntoDto body) {
 
         Optional<Tapahtuma> tapahtuma = tapahtumaRepository.findById(tapahtumaId);
 

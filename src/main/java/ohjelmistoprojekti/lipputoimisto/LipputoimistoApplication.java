@@ -82,12 +82,21 @@ public class LipputoimistoApplication {
                     2000,
                     true
             );
+            Tapahtuma tapahtuma6 = new Tapahtuma(
+                    LocalDateTime.of(2027, 1, 22, 18, 0),
+                    "Sibeliustalo",
+                    "Lahti",
+                    "Desucon Frostbite 2027",
+                    2700,
+                    false
+            );
 
             tapahtumaRepository.save(tapahtuma1);
             tapahtumaRepository.save(tapahtuma2);
             tapahtumaRepository.save(tapahtuma3);
             tapahtumaRepository.save(tapahtuma4);
             tapahtumaRepository.save(tapahtuma5);
+            tapahtumaRepository.save(tapahtuma6);
 
             // Lipputyypit
             Lipputyyppi aikuinen1 = new Lipputyyppi(

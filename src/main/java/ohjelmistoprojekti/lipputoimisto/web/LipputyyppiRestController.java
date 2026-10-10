@@ -48,7 +48,7 @@ public class LipputyyppiRestController {
     public ResponseEntity<LipputyyppiDto> updateLipputyyppi(
             @PathVariable("id") long tapahtumaId,
             @PathVariable long lipputyyppiId,
-            @Valid @RequestBody LipputyyppiDto body) {
+            @Valid @RequestBody LipputyyppiPyyntoDto body) {
 
         return lipputyyppiService.updateLipputyyppi(tapahtumaId, lipputyyppiId, body);
     }
