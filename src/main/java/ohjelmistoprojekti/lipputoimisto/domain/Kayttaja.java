@@ -22,7 +22,7 @@ public class Kayttaja {
   private long kayttajaId;
 
   @Column(nullable = false, unique = true)
-  private String kayttajamimi;
+  private String kayttajanimi;
 
   @Column(nullable = false, unique = true)
   private String email;
@@ -36,7 +36,7 @@ public class Kayttaja {
   }
 
   public Kayttaja(String kayttajamimi, String email, KayttajaRooli rooli) {
-    this.kayttajamimi = kayttajamimi;
+    this.kayttajanimi = kayttajamimi;
     this.email = email;
     this.rooli = rooli;
   }
@@ -50,11 +50,11 @@ public class Kayttaja {
   }
 
   public String getKayttajamimi() {
-    return kayttajamimi;
+    return kayttajanimi;
   }
 
   public void setKayttajamimi(String kayttajamimi) {
-    this.kayttajamimi = kayttajamimi;
+    this.kayttajanimi = kayttajamimi;
   }
 
   public String getEmail() {
@@ -75,7 +75,7 @@ public class Kayttaja {
 
   @Override
   public String toString() {
-    return "Kayttaja [kayttajaId=" + kayttajaId + ", kayttajamimi=" + kayttajamimi + ", email=" + email + ", rooli="
+    return "Kayttaja [kayttajaId=" + kayttajaId + ", kayttajamimi=" + kayttajanimi + ", email=" + email + ", rooli="
         + rooli + "]";
   }
 

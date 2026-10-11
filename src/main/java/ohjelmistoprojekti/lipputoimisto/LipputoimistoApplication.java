@@ -1,10 +1,7 @@
 package ohjelmistoprojekti.lipputoimisto;
 
 import ohjelmistoprojekti.lipputoimisto.domain.*;
-import ohjelmistoprojekti.lipputoimisto.repository.LippuRepository;
-import ohjelmistoprojekti.lipputoimisto.repository.LipputyyppiRepository;
-import ohjelmistoprojekti.lipputoimisto.repository.MyyntitapahtumaRepository;
-import ohjelmistoprojekti.lipputoimisto.repository.TapahtumaRepository;
+import ohjelmistoprojekti.lipputoimisto.repository.*;
 import org.h2.tools.Server;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -39,12 +36,27 @@ public class LipputoimistoApplication {
             LippuRepository lippuRepository,
             LipputyyppiRepository lipputyyppiRepository,
             MyyntitapahtumaRepository myyntitapahtumaRepository,
-            TapahtumaRepository tapahtumaRepository) {
+            TapahtumaRepository tapahtumaRepository, KayttajaRepository kayttajaRepository) {
 
         return (args) -> {
 
+            Kayttaja user1 = new Kayttaja("user1",
+                    "user1@example.com",
+                    Kayttaja.KayttajaRooli.JARJESTAJA);
+            Kayttaja user2 = new Kayttaja("user2",
+                    "user2@example.com",
+                    Kayttaja.KayttajaRooli.JARJESTAJA);
+            Kayttaja admin = new Kayttaja("admin",
+                    "admin@example.com",
+                    Kayttaja.KayttajaRooli.JARJESTAJA);
+
+            kayttajaRepository.save(user1);
+            kayttajaRepository.save(user2);
+            kayttajaRepository.save(admin);
+
             // Tapahtumat
             Tapahtuma tapahtuma1 = new Tapahtuma(
+                    user1,
                     LocalDateTime.of(2026, 10, 5, 20, 0),
                     "Tavastia",
                     "Helsinki",
@@ -53,6 +65,7 @@ public class LipputoimistoApplication {
                     false);
 
             Tapahtuma tapahtuma2 = new Tapahtuma(
+                    user2,
                     LocalDateTime.of(2026, 11, 15, 19, 0),
                     "Olympiastadion",
                     "Helsinki",
@@ -60,6 +73,7 @@ public class LipputoimistoApplication {
                     40000, false);
 
             Tapahtuma tapahtuma3 = new Tapahtuma(
+                    user1,
                     LocalDateTime.of(2026, 12, 10, 18, 0),
                     "Finlandia-talo",
                     "Helsinki",
@@ -67,6 +81,7 @@ public class LipputoimistoApplication {
                     1700,
                     false);
             Tapahtuma tapahtuma4 = new Tapahtuma(
+                    user1,
                     LocalDateTime.of(2026, 11, 20, 19, 0),
                     "Helsingin jäähalli",
                     "Helsinki",
@@ -75,6 +90,7 @@ public class LipputoimistoApplication {
                     true
             );
             Tapahtuma tapahtuma5 = new Tapahtuma(
+                    user2,
                     LocalDateTime.of(2026, 12, 5, 18, 30),
                     "Tampere-talo",
                     "Tampere",

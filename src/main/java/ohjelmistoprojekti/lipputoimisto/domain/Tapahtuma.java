@@ -27,6 +27,10 @@ public class Tapahtuma {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long tapahtumaId;
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "jarjestaja_id", nullable = false)
+    private Kayttaja jarjestaja;
+
     @NotNull
     private LocalDateTime aika;
 
@@ -53,8 +57,9 @@ public class Tapahtuma {
     }
 
 
-    public Tapahtuma(LocalDateTime aika, String paikka, String kaupunki, String kuvaus,
+    public Tapahtuma(Kayttaja jarjestaja, LocalDateTime aika, String paikka, String kaupunki, String kuvaus,
                      int maxLippumaara, boolean poistettu) {
+        this.jarjestaja = jarjestaja;
         this.aika = aika;
         this.paikka = paikka;
         this.kaupunki = kaupunki;
@@ -145,5 +150,13 @@ public class Tapahtuma {
 
     public void setPoistettu(boolean poistettu) {
         this.poistettu = poistettu;
+    }
+
+    public Kayttaja getJarjestaja() {
+        return jarjestaja;
+    }
+
+    public void setJarjestaja(Kayttaja jarjestaja) {
+        this.jarjestaja = jarjestaja;
     }
 }
