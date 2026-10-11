@@ -33,7 +33,7 @@ public class LippuService {
         this.myyntitapahtumaRepository = myyntitapahtumaRepository;
     }
 
-    public ResponseEntity<?> varaaLiput(LippuVarausPyynto pyynto) {
+    public ResponseEntity<?> varaaLiput(LippuVarausPyynto pyynto) { // TODO: tarkista onko lippuja jäljellä valittuun lipputyyppiin / tapahtumaan
 
         Optional<Tapahtuma> tapahtumaOptional = tapahtumaRepository.findById(pyynto.getTapahtumaId());
 
@@ -56,6 +56,10 @@ public class LippuService {
 
             if (lipputyyppi.isEmpty()) {
                 return ResponseEntity.notFound().build();
+            }
+
+            if (lipputyyppi.get().isPoistettu()) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).build();
             }
 
             if (lipputyyppi.get().getTapahtuma().getTapahtumaId() != pyynto.getTapahtumaId()) {

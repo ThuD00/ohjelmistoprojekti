@@ -9,4 +9,6 @@ import ohjelmistoprojekti.lipputoimisto.domain.Lipputyyppi;
 public interface LippuRepository extends JpaRepository<Lippu, Long> {
     Optional<Lippu> findByKoodi(String koodi);
     boolean existsByLipputyyppi(Lipputyyppi lipputyyppi);
+
+    long countByLipputyyppi(Lipputyyppi lipputyyppi);
 }

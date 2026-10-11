@@ -1,19 +1,14 @@
 package ohjelmistoprojekti.lipputoimisto.domain;
 
-import java.math.BigDecimal;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+
+import java.math.BigDecimal;
 
 @JsonPropertyOrder({
         "lipputyyppiId",
@@ -41,14 +36,21 @@ public class Lipputyyppi implements Comparable<Lipputyyppi> {
     @Column(name = "lipun_hinta")
     private BigDecimal lipunHinta;
 
+    @Positive
+    private Integer maxLippumaara;
+
+    @Column(nullable = false)
+    private boolean poistettu = false;
+
     public Lipputyyppi() {
     }
 
-    public Lipputyyppi(LipputyyppiId id,Tapahtuma tapahtuma, String kuvaus, BigDecimal lipunHinta) {
+    public Lipputyyppi(LipputyyppiId id, Tapahtuma tapahtuma, String kuvaus, BigDecimal lipunHinta, Integer maxLippumaara) {
         this.id = id;
         this.tapahtuma = tapahtuma;
         this.kuvaus = kuvaus;
         this.lipunHinta = lipunHinta;
+        this.maxLippumaara = maxLippumaara;
     }
 
     public LipputyyppiId getId() {
@@ -89,6 +91,22 @@ public class Lipputyyppi implements Comparable<Lipputyyppi> {
                 + ", lipputyyppiId=" + id.getLipputyyppiId()
                 + ", kuvaus=" + kuvaus
                 + ", lipunHinta=" + lipunHinta + "]";
+    }
+
+    public boolean isPoistettu() {
+        return poistettu;
+    }
+
+    public void setPoistettu(boolean poistettu) {
+        this.poistettu = poistettu;
+    }
+
+    public Integer getMaxLippumaara() {
+        return maxLippumaara;
+    }
+
+    public void setMaxLippumaara(int maxLippumaara) {
+        this.maxLippumaara = maxLippumaara;
     }
 
     @Override
