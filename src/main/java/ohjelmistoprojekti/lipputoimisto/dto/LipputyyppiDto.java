@@ -9,7 +9,7 @@ public class LipputyyppiDto {
     private long lipputyyppiId;
     private String kuvaus;
     private BigDecimal lipunHinta;
-    private int maxLippumaara;
+    private Integer maxLippumaara;
 
 
     public LipputyyppiDto() {
@@ -52,11 +52,11 @@ public class LipputyyppiDto {
                 + "]";
     }
 
-    public int getMaxLippumaara() {
+    public Integer getMaxLippumaara() {
         return maxLippumaara;
     }
 
-    public void setMaxLippumaara(int maxLippumaara) {
+    public void setMaxLippumaara(Integer maxLippumaara) {
         this.maxLippumaara = maxLippumaara;
     }
 }

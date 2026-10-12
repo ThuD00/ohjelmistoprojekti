@@ -1,5 +1,6 @@
 package ohjelmistoprojekti.lipputoimisto.service;
 
+import ohjelmistoprojekti.lipputoimisto.domain.Lippu;
 import ohjelmistoprojekti.lipputoimisto.domain.Lipputyyppi;
 import ohjelmistoprojekti.lipputoimisto.domain.LipputyyppiId;
 import ohjelmistoprojekti.lipputoimisto.domain.Tapahtuma;
@@ -59,11 +60,11 @@ public class LipputyyppiService {
             if (max != null) {
                 jaljella -= max;
             } else {
-                jaljella -= lippuRepository.countByLipputyyppi(lipputyyppi);
+                jaljella -= lippuRepository.countByLipputyyppiAndLipunStatusNot(lipputyyppi, Lippu.LippuTila.PERUTTU);
             }
         }
 
-        long myyty = lippuRepository.countByLipputyyppi(uusiLipputyyppi);
+        long myyty = lippuRepository.countByLipputyyppiAndLipunStatusNot(uusiLipputyyppi, Lippu.LippuTila.PERUTTU);
 
         if (uusiMax < myyty) {
             return false;
@@ -77,7 +78,13 @@ public class LipputyyppiService {
         Optional<Tapahtuma> tapahtuma = tapahtumaRepository.findById(tapahtumaId);
 
         if (tapahtuma.isPresent()) {
-            return ResponseEntity.ok(tapahtuma.get().getLipputyypit().stream().map(e -> new LipputyyppiDto(e.getId().getLipputyyppiId(), e.getKuvaus(), e.getLipunHinta(), e.getMaxLippumaara())).toList());
+            return ResponseEntity.ok(tapahtuma.get().getLipputyypit().stream().filter(e -> !e.isPoistettu())
+                    .map(e -> new LipputyyppiDto(
+                            e.getId().getLipputyyppiId(),
+                            e.getKuvaus(),
+                            e.getLipunHinta(),
+                            e.getMaxLippumaara()))
+                    .toList());
         }
         return ResponseEntity.notFound().build();
     }

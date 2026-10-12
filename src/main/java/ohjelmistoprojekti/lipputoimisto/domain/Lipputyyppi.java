@@ -105,7 +105,7 @@ public class Lipputyyppi implements Comparable<Lipputyyppi> {
         return maxLippumaara;
     }
 
-    public void setMaxLippumaara(int maxLippumaara) {
+    public void setMaxLippumaara(Integer maxLippumaara) {
         this.maxLippumaara = maxLippumaara;
     }
 
