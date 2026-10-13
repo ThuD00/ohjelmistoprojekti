@@ -1,5 +1,6 @@
 package ohjelmistoprojekti.lipputoimisto.domain;
 
+import java.math.BigDecimal;
 import java.util.Random;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -16,6 +17,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinColumns;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 @JsonPropertyOrder({
         "lippuId",
@@ -46,6 +49,10 @@ public class Lippu {
     })
     private Lipputyyppi lipputyyppi;
 
+    @NotNull
+    @Positive
+    private BigDecimal hinta;
+
     @ManyToOne
     @JoinColumn(name = "myyntitapahtumaId", nullable = false)
     @JsonIgnore
@@ -56,15 +63,21 @@ public class Lippu {
 
     @Column(name = "lipun_status")
     @Enumerated(EnumType.STRING)
-    private LippuTila lipunStatus;
+    private LippuTila lipunStatus = LippuTila.VARATTU;
 
     public Lippu() {
     }
 
-    public Lippu(Lipputyyppi lipputyyppi, Myyntitapahtuma myyntitapahtuma, LippuTila lipunStatus) {
+    public Lippu(Lipputyyppi lipputyyppi, Myyntitapahtuma myyntitapahtuma, LippuTila lipunStatus, BigDecimal hinta) {
         this.lipputyyppi = lipputyyppi;
         this.myyntitapahtuma = myyntitapahtuma;
         this.lipunStatus = lipunStatus;
+        this.hinta = hinta;
+    }
+
+    public Lippu(Lipputyyppi lipputyyppi, BigDecimal hinta) {
+        this.lipputyyppi = lipputyyppi;
+        this.hinta = hinta;
     }
 
     @PrePersist
@@ -101,6 +114,14 @@ public class Lippu {
 
     public void setLipputyyppi(Lipputyyppi lipputyyppi) {
         this.lipputyyppi = lipputyyppi;
+    }
+
+    public BigDecimal getHinta() {
+        return hinta;
+    }
+
+    public void setHinta(BigDecimal hinta) {
+        this.hinta = hinta;
     }
 
     public Myyntitapahtuma getMyyntitapahtuma() {

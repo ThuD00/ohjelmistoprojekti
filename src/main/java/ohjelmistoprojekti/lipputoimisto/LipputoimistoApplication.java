@@ -103,53 +103,60 @@ public class LipputoimistoApplication {
                     new LipputyyppiId(1, 1),
                     tapahtuma1,
                     "Aikuinen",
-                    new BigDecimal("15.00"));
+                    new BigDecimal("15.00"),
+                    null);
 
             Lipputyyppi lapsi1 = new Lipputyyppi(
                     new LipputyyppiId(1, 2),
                     tapahtuma1,
                     "Lapsi",
-                    new BigDecimal("7.50"));
+                    new BigDecimal("7.50"),
+                    null);
 
             Lipputyyppi opiskelija1 = new Lipputyyppi(
                     new LipputyyppiId(1, 3),
                     tapahtuma1,
                     "Opiskelija",
-                    new BigDecimal("10.00"));
+                    new BigDecimal("10.00"),
+                    null);
 
             Lipputyyppi aikuinen2 = new Lipputyyppi(
                     new LipputyyppiId(2, 1),
                     tapahtuma2,
                     "Aikuinen",
-                    new BigDecimal("45.00"));
+                    new BigDecimal("45.00"),
+                    null);
 
             Lipputyyppi opiskelija2 = new Lipputyyppi(
                     new LipputyyppiId(2, 2),
 
                     tapahtuma2,
                     "Opiskelija",
-                    new BigDecimal("30.00"));
+                    new BigDecimal("30.00"),
+                    null);
 
             Lipputyyppi aikuinen3 = new Lipputyyppi(
                     new LipputyyppiId(3, 1),
 
                     tapahtuma3,
                     "Aikuinen",
-                    new BigDecimal("60.00"));
+                    new BigDecimal("60.00"),
+                    null);
 
             Lipputyyppi opiskelija3 = new Lipputyyppi(
                     new LipputyyppiId(3, 2),
 
                     tapahtuma3,
                     "Opiskelija",
-                    new BigDecimal("40.00"));
+                    new BigDecimal("40.00"),
+                    null);
 
             Lipputyyppi aikuinen4 = new Lipputyyppi(
                     new LipputyyppiId(4, 1),
                     tapahtuma4,
                     "Aikuinen",
-                    new BigDecimal("10.00")
-            );
+                    new BigDecimal("10.00"),
+                    null);
 
             lipputyyppiRepository.save(aikuinen1);
             lipputyyppiRepository.save(lapsi1);
@@ -176,30 +183,35 @@ public class LipputoimistoApplication {
             Lippu lippu1 = new Lippu(
                     aikuinen1,
                     myynti1,
-                    Lippu.LippuTila.VARATTU);
+                    Lippu.LippuTila.VARATTU,
+                    aikuinen1.getLipunHinta());
             lippu1.setKoodi("ABCDEF-123456");
 
             Lippu lippu2 = new Lippu(
                     aikuinen1,
                     myynti1,
-                    Lippu.LippuTila.VARATTU);
+                    Lippu.LippuTila.VARATTU,
+                    aikuinen1.getLipunHinta());
             lippu2.setKoodi("CCBBAA-332211");
 
             Lippu lippu3 = new Lippu(
                     lapsi1,
                     myynti1,
-                    Lippu.LippuTila.VARATTU);
+                    Lippu.LippuTila.VARATTU,
+                    lapsi1.getLipunHinta());
 
             Lippu lippu4 = new Lippu(
                     aikuinen2,
                     myynti2,
-                    Lippu.LippuTila.LUNASTETTU);
+                    Lippu.LippuTila.LUNASTETTU,
+                    aikuinen2.getLipunHinta());
             lippu4.setKoodi("FEDCBA-654321");
 
             Lippu lippu5 = new Lippu(
                     opiskelija2,
                     myynti2,
-                    Lippu.LippuTila.PERUTTU);
+                    Lippu.LippuTila.PERUTTU,
+                    opiskelija2.getLipunHinta());
             lippu5.setKoodi("AABBCC-112233");
 
             lippuRepository.save(lippu1);

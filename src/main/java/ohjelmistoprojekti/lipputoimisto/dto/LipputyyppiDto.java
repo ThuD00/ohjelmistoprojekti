@@ -9,14 +9,17 @@ public class LipputyyppiDto {
     private long lipputyyppiId;
     private String kuvaus;
     private BigDecimal lipunHinta;
+    private Integer maxLippumaara;
+
 
     public LipputyyppiDto() {
     }
 
-    public LipputyyppiDto(long lipputyyppiId, String kuvaus, BigDecimal lipunHinta) {
+    public LipputyyppiDto(long lipputyyppiId, String kuvaus, BigDecimal lipunHinta, Integer maxLippumaara) {
         this.lipputyyppiId = lipputyyppiId;
         this.kuvaus = kuvaus;
         this.lipunHinta = lipunHinta;
+        this.maxLippumaara = maxLippumaara;
     }
 
     public long getLipputyyppiId() {
@@ -49,4 +52,11 @@ public class LipputyyppiDto {
                 + "]";
     }
 
+    public Integer getMaxLippumaara() {
+        return maxLippumaara;
+    }
+
+    public void setMaxLippumaara(Integer maxLippumaara) {
+        this.maxLippumaara = maxLippumaara;
+    }
 }

@@ -26,6 +26,18 @@ Authorization: Basic admin admin
   "lipunHinta": 7.50
 }
 
+### Lisää VIP-lipputyyppi tapahtumalle 1
+POST http://localhost:8080/api/tapahtumat/1/lipputyypit
+Content-Type: application/json
+Authorization: Basic admin admin
+
+{
+  "kuvaus": "VIP",
+  "lipunHinta": 7.50,
+  "maxLippumaara": 100
+}
+
+
 ### Lisää lipputyyppi tapahtumaan, jota ei ole
 POST http://localhost:8080/api/tapahtumat/99999/lipputyypit
 Content-Type: application/json
@@ -43,6 +55,38 @@ Authorization: Basic admin admin
 
 {
   "kuvaus": "Aikuinen"
+}
+
+### Lisää lipputyyppi negatiivisella hinnalla
+POST http://localhost:8080/api/tapahtumat/1/lipputyypit
+Content-Type: application/json
+Authorization: Basic admin admin
+
+{
+  "kuvaus": "Aikuinen",
+  "lipunHinta": -20.00
+}
+
+### Lisää lipputyyppi negatiivisella maxLippumäärällä
+POST http://localhost:8080/api/tapahtumat/1/lipputyypit
+Content-Type: application/json
+Authorization: Basic admin admin
+
+{
+  "kuvaus": "VIP",
+  "lipunHinta": 7.50,
+  "maxLippumaara": -50
+}
+
+### Lisää lipputyyppi jonka maxLippumäärä on enemmän kuin tapahtuman maxLippumäärä
+POST http://localhost:8080/api/tapahtumat/1/lipputyypit
+Content-Type: application/json
+Authorization: Basic admin admin
+
+{
+  "kuvaus": "VIP",
+  "lipunHinta": 7.50,
+  "maxLippumaara": 701
 }
 
 ### Muokkaa lipputyyppiä
@@ -66,14 +110,26 @@ Authorization: Basic admin admin
   "lipunHinta": 8.00
 }
 
-### Muokkaa lipputyyppiä väärän tapahtuman kautta
-PUT http://localhost:8080/api/tapahtumat/99999/lipputyypit/1
+### Muokkaa lipputyyppiä negatiivisella lipputyyppimäärällä
+PUT http://localhost:8080/api/tapahtumat/1/lipputyypit/1
 Content-Type: application/json
 Authorization: Basic admin admin
 
 {
   "kuvaus": "Aikuinen",
-  "lipunHinta": 10.00
+  "lipunHinta": 8.00,
+  "maxLippumaara": -10
+}
+
+### Muokkaa lipputyypin maxLippumäärä null
+PUT http://localhost:8080/api/tapahtumat/1/lipputyypit/4
+Content-Type: application/json
+Authorization: Basic admin admin
+
+{
+  "kuvaus": "VIP",
+  "lipunHinta": 8.00,
+  "maxLippumaara": null
 }
 
 ### Poista lipputyyppi
