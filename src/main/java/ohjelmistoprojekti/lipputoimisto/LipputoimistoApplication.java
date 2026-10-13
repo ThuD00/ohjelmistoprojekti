@@ -90,6 +90,14 @@ public class LipputoimistoApplication {
                     2700,
                     false
             );
+            Tapahtuma tapahtuma7 = new Tapahtuma(
+                    LocalDateTime.of(2027,2,3,10,0),
+                    "Elon talo",
+                    "Luusniemi",
+                    "Luusniemi Blues",
+                    100,
+                    false
+            );
 
             tapahtumaRepository.save(tapahtuma1);
             tapahtumaRepository.save(tapahtuma2);
@@ -97,6 +105,8 @@ public class LipputoimistoApplication {
             tapahtumaRepository.save(tapahtuma4);
             tapahtumaRepository.save(tapahtuma5);
             tapahtumaRepository.save(tapahtuma6);
+            tapahtumaRepository.save(tapahtuma7);
+
 
             // Lipputyypit
             Lipputyyppi aikuinen1 = new Lipputyyppi(
@@ -158,6 +168,25 @@ public class LipputoimistoApplication {
                     new BigDecimal("10.00"),
                     null);
 
+            Lipputyyppi aikuinen5 = new Lipputyyppi(
+                    new LipputyyppiId(5, 1),
+                    tapahtuma5,
+                    "aikuinen",
+                    new BigDecimal("10.00"),
+                    null);
+            Lipputyyppi aikuinen7 = new Lipputyyppi(
+                    new LipputyyppiId(7, 1),
+                    tapahtuma7,
+                    "Aikuinen",
+                    new BigDecimal("10.00"),
+                    null);
+            Lipputyyppi vip7 = new Lipputyyppi(
+                    new LipputyyppiId(7, 2),
+                    tapahtuma7,
+                    "VIP",
+                    new BigDecimal("20.00"),
+                    10);
+
             lipputyyppiRepository.save(aikuinen1);
             lipputyyppiRepository.save(lapsi1);
             lipputyyppiRepository.save(opiskelija1);
@@ -166,6 +195,9 @@ public class LipputoimistoApplication {
             lipputyyppiRepository.save(aikuinen3);
             lipputyyppiRepository.save(opiskelija3);
             lipputyyppiRepository.save(aikuinen4);
+            lipputyyppiRepository.save(aikuinen5);
+            lipputyyppiRepository.save(aikuinen7);
+            lipputyyppiRepository.save(vip7);
 
             // Myyntitapahtumat
             Myyntitapahtuma myynti1 = new Myyntitapahtuma(

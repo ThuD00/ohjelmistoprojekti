@@ -77,22 +77,6 @@ Authorization: Basic user user
   ]
 }
 
-### Varaa tapahtuman lipputyypin, joka kuuluu väärään tapahtumaan
-//esim. tapahtuma 1 -> lipputyypi 1 ja tapahtuma 2 -> lipputyypi 2
-POST http://localhost:8080/api/liput/varaa
-Content-Type: application/json
-Authorization: Basic user user
-
-{
-  "tapahtumaId": 1,
-  "liput": [
-    {
-      "lipputyyppiId": 99999,
-      "qty": 1
-    }
-  ]
-}
-
 ### Virheellinen varaus - ei lippuja
 POST http://localhost:8080/api/liput/varaa
 Content-Type: application/json
