@@ -2,6 +2,8 @@ package ohjelmistoprojekti.lipputoimisto.web;
 
 import jakarta.validation.Valid;
 import ohjelmistoprojekti.lipputoimisto.domain.Tapahtuma;
+import ohjelmistoprojekti.lipputoimisto.dto.TapahtumaDto;
+import ohjelmistoprojekti.lipputoimisto.dto.TapahtumaVastausDto;
 import ohjelmistoprojekti.lipputoimisto.repository.TapahtumaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,12 +24,17 @@ public class TapahtumaRestController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<Tapahtuma> addTapahtuma(
-            @Valid @RequestBody Tapahtuma tapahtuma) {
+    public ResponseEntity<TapahtumaVastausDto> addTapahtuma(
+            @Valid @RequestBody TapahtumaDto pyynto) {
 
-        Tapahtuma tallennettuTapahtuma = tapahtumaRepository.save(tapahtuma);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(tallennettuTapahtuma);
+        Tapahtuma tapahtuma = tapahtumaRepository.save(new Tapahtuma(
+                pyynto.getAika(),
+                pyynto.getPaikka(),
+                pyynto.getKaupunki(),
+                pyynto.getKuvaus(),
+                pyynto.getMaxLippumaara(),
+                false));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new TapahtumaVastausDto(tapahtuma));
     }
 
     @GetMapping

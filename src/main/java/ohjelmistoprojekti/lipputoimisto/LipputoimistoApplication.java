@@ -174,30 +174,35 @@ public class LipputoimistoApplication {
             Lippu lippu1 = new Lippu(
                     aikuinen1,
                     myynti1,
-                    Lippu.LippuTila.VARATTU);
+                    Lippu.LippuTila.VARATTU,
+                    aikuinen1.getLipunHinta());
             lippu1.setKoodi("ABCDEF-123456");
 
             Lippu lippu2 = new Lippu(
                     aikuinen1,
                     myynti1,
-                    Lippu.LippuTila.VARATTU);
+                    Lippu.LippuTila.VARATTU,
+                    aikuinen1.getLipunHinta());
             lippu2.setKoodi("CCBBAA-332211");
 
             Lippu lippu3 = new Lippu(
                     lapsi1,
                     myynti1,
-                    Lippu.LippuTila.VARATTU);
+                    Lippu.LippuTila.VARATTU,
+                    lapsi1.getLipunHinta());
 
             Lippu lippu4 = new Lippu(
                     aikuinen2,
                     myynti2,
-                    Lippu.LippuTila.LUNASTETTU);
+                    Lippu.LippuTila.LUNASTETTU,
+                    aikuinen2.getLipunHinta());
             lippu4.setKoodi("FEDCBA-654321");
 
             Lippu lippu5 = new Lippu(
                     opiskelija2,
                     myynti2,
-                    Lippu.LippuTila.PERUTTU);
+                    Lippu.LippuTila.PERUTTU,
+                    opiskelija2.getLipunHinta());
             lippu5.setKoodi("AABBCC-112233");
 
             lippuRepository.save(lippu1);
