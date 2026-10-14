@@ -96,7 +96,7 @@ public class TapahtumaVastausDto {
 
     @Override
     public String toString() {
-        return "TapahtumaDto{" +
+        return "TapahtumaPyyntoDto{" +
                 "aika=" + aika +
                 ", paikka='" + paikka + '\'' +
                 ", kaupunki='" + kaupunki + '\'' +

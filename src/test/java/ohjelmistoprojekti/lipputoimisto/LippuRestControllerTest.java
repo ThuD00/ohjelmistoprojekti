@@ -55,7 +55,7 @@ public class LippuRestControllerTest {
                                 }
                                 """))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.myyntitapahtumaId").value(3))
+                .andExpect(jsonPath("$.myyntitapahtumaId").value(5))
                 .andExpect(jsonPath("$.summa").value(37.5))
                 .andExpect(jsonPath("$.liput").isArray())
                 .andExpect(jsonPath("$.liput.length()").value(3))

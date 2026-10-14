@@ -91,10 +91,26 @@ public class LipputoimistoApplication {
                     false
             );
             Tapahtuma tapahtuma7 = new Tapahtuma(
-                    LocalDateTime.of(2027,2,3,10,0),
+                    LocalDateTime.of(2027, 7, 17, 18, 0),
                     "Elon talo",
                     "Luusniemi",
                     "Luusniemi Blues",
+                    100,
+                    false
+            );
+            Tapahtuma tapahtuma8 = new Tapahtuma(
+                    LocalDateTime.of(2027, 5, 18, 10, 0),
+                    "Messukeskus",
+                    "Helsinki",
+                    "Kyberturvallisuuden seminaari",
+                    1000,
+                    false
+            );
+            Tapahtuma tapahtuma9 = new Tapahtuma(
+                    LocalDateTime.of(2027, 8, 1, 18, 0),
+                    "Test",
+                    "Helsinki",
+                    "kapasiteettitesti",
                     100,
                     false
             );
@@ -106,7 +122,8 @@ public class LipputoimistoApplication {
             tapahtumaRepository.save(tapahtuma5);
             tapahtumaRepository.save(tapahtuma6);
             tapahtumaRepository.save(tapahtuma7);
-
+            tapahtumaRepository.save(tapahtuma8);
+            tapahtumaRepository.save(tapahtuma9);
 
             // Lipputyypit
             Lipputyyppi aikuinen1 = new Lipputyyppi(
@@ -171,9 +188,15 @@ public class LipputoimistoApplication {
             Lipputyyppi aikuinen5 = new Lipputyyppi(
                     new LipputyyppiId(5, 1),
                     tapahtuma5,
-                    "aikuinen",
+                    "Aikuinen",
                     new BigDecimal("10.00"),
                     null);
+            Lipputyyppi event6 = new Lipputyyppi(
+                    new LipputyyppiId(6, 1),
+                    tapahtuma6,
+                    "Tapahtumalippu",
+                    new BigDecimal("39.00"),
+                    2700);
             Lipputyyppi aikuinen7 = new Lipputyyppi(
                     new LipputyyppiId(7, 1),
                     tapahtuma7,
@@ -186,6 +209,47 @@ public class LipputoimistoApplication {
                     "VIP",
                     new BigDecimal("20.00"),
                     10);
+            Lipputyyppi std8 = new Lipputyyppi(
+                    new LipputyyppiId(8, 1),
+                    tapahtuma8,
+                    "Standard",
+                    new BigDecimal("150.00"),
+                    300);
+            Lipputyyppi vip8 = new Lipputyyppi(
+                    new LipputyyppiId(8, 2),
+                    tapahtuma8,
+                    "VIP",
+                    new BigDecimal("300.00"),
+                    100);
+            Lipputyyppi online8 = new Lipputyyppi(
+                    new LipputyyppiId(8, 3),
+                    tapahtuma8,
+                    "Online",
+                    new BigDecimal("50"),
+                    null);
+            Lipputyyppi varattu9 = new Lipputyyppi(
+                    new LipputyyppiId(9, 1),
+                    tapahtuma9,
+                    "varatut liput",
+                    new BigDecimal("20.00"),
+                    20
+            );
+
+            Lipputyyppi peruttu9 = new Lipputyyppi(
+                    new LipputyyppiId(9, 2),
+                    tapahtuma9,
+                    "perutut liput",
+                    new BigDecimal("15.00"),
+                    20
+            );
+
+            Lipputyyppi lipputyyppi9 = new Lipputyyppi(
+                    new LipputyyppiId(9, 3),
+                    tapahtuma9,
+                    "muut liput",
+                    new BigDecimal("10.00"),
+                    60
+            );
 
             lipputyyppiRepository.save(aikuinen1);
             lipputyyppiRepository.save(lapsi1);
@@ -196,8 +260,16 @@ public class LipputoimistoApplication {
             lipputyyppiRepository.save(opiskelija3);
             lipputyyppiRepository.save(aikuinen4);
             lipputyyppiRepository.save(aikuinen5);
+            lipputyyppiRepository.save(event6);
             lipputyyppiRepository.save(aikuinen7);
             lipputyyppiRepository.save(vip7);
+            lipputyyppiRepository.save(std8);
+            lipputyyppiRepository.save(vip8);
+            lipputyyppiRepository.save(online8);
+            lipputyyppiRepository.save(varattu9);
+            lipputyyppiRepository.save(peruttu9);
+            lipputyyppiRepository.save(lipputyyppi9);
+
 
             // Myyntitapahtumat
             Myyntitapahtuma myynti1 = new Myyntitapahtuma(
@@ -208,8 +280,19 @@ public class LipputoimistoApplication {
                     LocalDateTime.of(2026, 9, 26, 16, 45),
                     new BigDecimal("75.00"));
 
+            Myyntitapahtuma myynti3 = new Myyntitapahtuma(
+                    LocalDateTime.of(2026, 10, 1, 12, 0),
+                    new BigDecimal("200.00")
+            );
+            Myyntitapahtuma myynti4 = new Myyntitapahtuma(
+                    LocalDateTime.of(2026, 10, 1, 12, 30),
+                    new BigDecimal("15.00")
+            );
+
             myyntitapahtumaRepository.save(myynti1);
             myyntitapahtumaRepository.save(myynti2);
+            myyntitapahtumaRepository.save(myynti3);
+            myyntitapahtumaRepository.save(myynti4);
 
             // Liput
             Lippu lippu1 = new Lippu(
@@ -246,11 +329,33 @@ public class LipputoimistoApplication {
                     opiskelija2.getLipunHinta());
             lippu5.setKoodi("AABBCC-112233");
 
+            for (long i = 6; i < 16; i++) {
+                Lippu lippu = lippuRepository.save(new Lippu(
+                                varattu9,
+                                myynti3,
+                                Lippu.LippuTila.VARATTU,
+                                varattu9.getLipunHinta()
+                        )
+                );
+                lippu.setKoodi("FFFFFF-00000" + i);
+                lippuRepository.save(lippu);
+            }
+
+            Lippu lippu16 = new Lippu(
+                    peruttu9,
+                    myynti4,
+                    Lippu.LippuTila.PERUTTU,
+                    peruttu9.getLipunHinta()
+            );
+            lippu16.setKoodi("CCCCCC-000001");
+
             lippuRepository.save(lippu1);
             lippuRepository.save(lippu2);
             lippuRepository.save(lippu3);
             lippuRepository.save(lippu4);
             lippuRepository.save(lippu5);
+            lippuRepository.save(lippu16);
+
         };
     }
 }

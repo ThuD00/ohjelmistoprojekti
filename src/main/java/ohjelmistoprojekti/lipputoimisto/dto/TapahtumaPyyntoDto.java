@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Positive;
 
 import java.time.LocalDateTime;
 
-public class TapahtumaDto {
+public class TapahtumaPyyntoDto {
     @NotNull
     private LocalDateTime aika;
 
@@ -22,7 +22,7 @@ public class TapahtumaDto {
     @Positive
     private int maxLippumaara;
 
-    public TapahtumaDto(LocalDateTime aika, String paikka, String kaupunki, String kuvaus, int maxLippumaara) {
+    public TapahtumaPyyntoDto(LocalDateTime aika, String paikka, String kaupunki, String kuvaus, int maxLippumaara) {
         this.aika = aika;
         this.paikka = paikka;
         this.kaupunki = kaupunki;
@@ -72,7 +72,7 @@ public class TapahtumaDto {
 
     @Override
     public String toString() {
-        return "TapahtumaDto{" +
+        return "TapahtumaPyyntoDto{" +
                 "aika=" + aika +
                 ", paikka='" + paikka + '\'' +
                 ", kaupunki='" + kaupunki + '\'' +

@@ -10,8 +10,7 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -20,11 +19,11 @@ class TapahtumaRestControllerTest {
     private static final String BASE_URL = "/api/tapahtumat";
 
     private static final RequestPostProcessor USER1 =
-            httpBasic("user1", "");
+            httpBasic("user", "user");
     private static final RequestPostProcessor USER2 =
             httpBasic("user2", "");
     private static final RequestPostProcessor ADMIN =
-            httpBasic("admin", "");
+            httpBasic("admin", "admin");
 
     @Autowired
     private MockMvc mockMvc;
@@ -35,54 +34,26 @@ class TapahtumaRestControllerTest {
     void getTapahtumatReturnsOk() throws Exception {
         mockMvc.perform(get(BASE_URL))
                 .andExpect(status().isOk())
-                .andExpect(content().json("""
-                        [
-                          {
-                            "tapahtumaId": 1,
-                            "jarjestajaId": 1,
-                            "aika": "2026-10-05T20:00:00",
-                            "paikka": "Tavastia",
-                            "kaupunki": "Helsinki",
-                            "kuvaus": "Stand-up Comedy Night",
-                            "maxLippumaara": 700
-                          },
-                          {
-                            "tapahtumaId": 2,
-                            "jarjestajaId": 2,
-                            "aika": "2026-11-15T19:00:00",
-                            "paikka": "Olympiastadion",
-                            "kaupunki": "Helsinki",
-                            "kuvaus": "Rock Festival",
-                            "maxLippumaara": 40000
-                          },
-                          {
-                            "tapahtumaId": 3,
-                            "jarjestajaId": 1,
-                            "aika": "2026-12-10T18:00:00",
-                            "paikka": "Finlandia-talo",
-                            "kaupunki": "Helsinki",
-                            "kuvaus": "Super-Gaala",
-                            "maxLippumaara": 1700
-                          }
-                        ]
-                        """));
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(7))
+                .andExpect(jsonPath("$[0].tapahtumaId").value(1))
+                .andExpect(jsonPath("$[0].aika").value("2026-10-05T20:00:00"))
+                .andExpect(jsonPath("$[0].paikka").value("Tavastia"))
+                .andExpect(jsonPath("$[0].kaupunki").value("Helsinki"))
+                .andExpect(jsonPath("$[0].kuvaus").value("Stand-up Comedy Night"))
+                .andExpect(jsonPath("$[0].maxLippumaara").value(700));
     }
 
     @Test
     void getTapahtumatByIdReturnsOk() throws Exception {
         mockMvc.perform(get(BASE_URL + "/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("""
-                        {
-                          "tapahtumaId": 1,
-                          "jarjestajaId": 1,
-                          "aika": "2026-10-05T20:00:00",
-                          "paikka": "Tavastia",
-                          "kaupunki": "Helsinki",
-                          "kuvaus": "Stand-up Comedy Night",
-                          "maxLippumaara": 700
-                        }
-                        """));
+                .andExpect(jsonPath("$.tapahtumaId").value(1))
+                .andExpect(jsonPath("$.aika").value("2026-10-05T20:00:00"))
+                .andExpect(jsonPath("$.paikka").value("Tavastia"))
+                .andExpect(jsonPath("$.kaupunki").value("Helsinki"))
+                .andExpect(jsonPath("$.kuvaus").value("Stand-up Comedy Night"))
+                .andExpect(jsonPath("$.maxLippumaara").value(700));
     }
 
     @Test
@@ -94,7 +65,7 @@ class TapahtumaRestControllerTest {
     @Test
     void createTapahtumaReturnsCreated() throws Exception {
         mockMvc.perform(post(BASE_URL)
-                        .with(USER1)
+                        .with(ADMIN)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -109,20 +80,20 @@ class TapahtumaRestControllerTest {
                 .andExpect(
                         content().json("""
                                 {
-                                  "tapahtumaId": 4,
+                                  "tapahtumaId": 10,
                                   "aika": "2027-01-01T00:00:00",
                                   "paikka": "Kansalaistori",
                                   "kaupunki": "Helsinki",
                                   "kuvaus": "Uusivuosi",
                                   "maxLippumaara": 1000
                                 }
-                                """));
+                                """, true));
     }
 
     @Test
     void createTapahtumaReturnsBadRequest() throws Exception {
         mockMvc.perform(post(BASE_URL)
-                        .with(USER1)
+                        .with(ADMIN)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -134,12 +105,25 @@ class TapahtumaRestControllerTest {
                                 }
                                 """))
                 .andExpect(status().isBadRequest());
+        mockMvc.perform(post(BASE_URL)
+                        .with(ADMIN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "aika": "2027-01-01T00:00:00",
+                                  "paikka": "joku",
+                                  "kaupunki": "Helsinki",
+                                  "kuvaus": "kuvaus",
+                                  "maxLippumaara": 0
+                                }
+                                """))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     void modifyTapahtumaReturnsOk() throws Exception {
         mockMvc.perform(put(BASE_URL + "/2")
-                        .with(USER1)
+                        .with(ADMIN)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -155,20 +139,19 @@ class TapahtumaRestControllerTest {
                         content().json("""
                                 {
                                   "tapahtumaId": 2,
-                                  "jarjestajaId": 2,
                                   "aika": "2026-11-15T19:00:00",
                                   "paikka": "Olympiastadion",
                                   "kaupunki": "Helsinki",
                                   "kuvaus": "Rock Festival",
                                   "maxLippumaara": 30000
                                 }
-                                """));
+                                """, true));
     }
 
     @Test
     void modifyTapahtumaReturnsBadRequest() throws Exception {
         mockMvc.perform(put(BASE_URL + "/2")
-                        .with(USER1)
+                        .with(ADMIN)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -180,10 +163,11 @@ class TapahtumaRestControllerTest {
                                 """))
                 .andExpect(status().isBadRequest());
     }
+
     @Test
     void modifyTapahtumaReturnsNotFound() throws Exception {
         mockMvc.perform(put(BASE_URL + "/333")
-                        .with(USER1)
+                        .with(ADMIN)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -196,12 +180,33 @@ class TapahtumaRestControllerTest {
                                 """))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    void modifyTapahtumaReturnsConflict() throws Exception {
+        // tapahtuman maxLippumaara on pienempi kuin myytyjen lippujen määrä
+        mockMvc.perform(put(BASE_URL + "/9")
+                        .with(ADMIN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "aika": "2027-08-01T18:00:00",
+                                  "paikka": "test",
+                                  "kaupunki": "Helsinki",
+                                  "kuvaus": "kapasiteettitesti",
+                                  "maxLippumaara": 9,
+                                  "poistettu": false
+                                }
+                                """))
+                .andExpect(status().isConflict());
+    }
+
     @Test
     void deleteTapahtumaReturnsNoContent() throws Exception {
         mockMvc.perform(delete(BASE_URL + "/3")
-                .with(ADMIN))
+                        .with(ADMIN))
                 .andExpect(status().isNoContent());
     }
+
     @Test
     void deleteTapahtumaReturnsNotFound() throws Exception {
         mockMvc.perform(delete(BASE_URL + "/99")

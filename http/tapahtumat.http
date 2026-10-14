@@ -70,16 +70,16 @@ Authorization: Basic admin admin
 }
 
 ### Muokkaa tapahtumaa
-PUT http://localhost:8080/api/tapahtumat/5
+PUT http://localhost:8080/api/tapahtumat/1
 Content-Type: application/json
 Authorization: Basic admin admin
 
 {
-  "aika": "2026-07-15T19:00:00",
-  "paikka": "Olympiastadion",
+  "aika": "2026-10-05T20:00:00",
+  "paikka": "Tavastia",
   "kaupunki": "Helsinki",
-  "kuvaus": "Rock Festival 2026 (Päivitetty)",
-  "maxLippumaara": 45000
+  "kuvaus": "Stand-up Comedy Night",
+  "maxLippumaara": 800
 }
 
 ### Muokkaa tapahtumaa, jota ei ole

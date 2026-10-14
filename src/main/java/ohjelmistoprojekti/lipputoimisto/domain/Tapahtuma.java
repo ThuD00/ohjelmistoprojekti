@@ -16,9 +16,7 @@ import java.util.List;
         "paikka",
         "kaupunki",
         "kuvaus",
-        "maxLippumaara",
-        "lipputyypit"
-})
+        "maxLippumaara"})
 
 @Entity
 public class Tapahtuma {
@@ -52,6 +50,14 @@ public class Tapahtuma {
     public Tapahtuma() {
     }
 
+    public Tapahtuma(LocalDateTime aika, String paikka, String kaupunki, String kuvaus,
+                     int maxLippumaara) {
+        this.aika = aika;
+        this.paikka = paikka;
+        this.kaupunki = kaupunki;
+        this.kuvaus = kuvaus;
+        this.maxLippumaara = maxLippumaara;
+    }
 
     public Tapahtuma(LocalDateTime aika, String paikka, String kaupunki, String kuvaus,
                      int maxLippumaara, boolean poistettu) {

@@ -2,6 +2,11 @@
 GET http://localhost:8080/api/tapahtumat/1/lipputyypit
 Authorization: Basic user user
 
+### Hae tapahtuman lipputyypit, maxLippumaara
+GET http://localhost:8080/api/tapahtumat/7/lipputyypit
+Authorization: Basic user user
+
+
 ### Hae lipputyypit tapahtumasta, jota ei ole
 GET http://localhost:8080/api/tapahtumat/99999/lipputyypit
 Authorization: Basic admin admin
