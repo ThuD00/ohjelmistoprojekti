@@ -10,7 +10,8 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 // TODO: tarkista käyttöoikeudet
 @SpringBootTest
@@ -64,24 +65,20 @@ public class LipputyyppiRestControllerTest {
     @Test
     void createLipputyyppiReturnsCreated() throws Exception {
         // ilman maxLippumaara
-        mockMvc.perform(post(BASE_URL + "/4/lipputyypit")
+        mockMvc.perform(post(BASE_URL + "/3/lipputyypit")
                         .with(ADMIN)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
-                                  "kuvaus": "Opiskelija",
+                                  "kuvaus": "Eläkeläinen",
                                   "lipunHinta": 5.00
                                 }
                                 """))
                 .andExpect(status().isCreated())
-                .andExpect(
-                        content().json("""
-                                {
-                                  "lipputyyppiId": 2,
-                                  "kuvaus": "Opiskelija",
-                                  "lipunHinta": 5.00
-                                }
-                                """));
+                .andExpect(jsonPath("$.lipputyyppiId").value(3))
+                .andExpect(jsonPath("$.kuvaus").value("Eläkeläinen"))
+                .andExpect(jsonPath("$.lipunHinta").value(5.00));
+
         // maxLippumaara
         mockMvc.perform(post(BASE_URL + "/2/lipputyypit")
                         .with(ADMIN)
@@ -94,15 +91,10 @@ public class LipputyyppiRestControllerTest {
                                 }
                                 """))
                 .andExpect(status().isCreated())
-                .andExpect(
-                        content().json("""
-                                {
-                                  "lipputyyppiId": 3,
-                                  "kuvaus": "VIP",
-                                  "lipunHinta": 80.00,
-                                  "maxLippumaara": 500
-                                }
-                                """));
+                .andExpect(jsonPath("$.lipputyyppiId").value(3))
+                .andExpect(jsonPath("$.kuvaus").value("VIP"))
+                .andExpect(jsonPath("$.lipunHinta").value(80.00))
+                .andExpect(jsonPath("$.maxLippumaara").value(500));
     }
 
     @Test
@@ -129,10 +121,11 @@ public class LipputyyppiRestControllerTest {
                                 {
                                   "kuvaus": "Iltabilelippu",
                                   "lipunHinta": 17.00,
-                                  "maxLippumaara": 1000
+                                  "maxLippumaara": 3000
                                 }
                                 """))
                 .andExpect(status().isConflict());
+
         // ylittää muiden lipputyyppien kanssa maxLippumaara
         mockMvc.perform(post(BASE_URL + "/8/lipputyypit")
                         .with(ADMIN)
@@ -159,14 +152,9 @@ public class LipputyyppiRestControllerTest {
                                 }
                                 """))
                 .andExpect(status().isOk())
-                .andExpect(
-                        content().json("""
-                                {
-                                  "lipputyyppiId": 2,
-                                  "kuvaus": "Aikuinen",
-                                  "lipunHinta": 60.00
-                                }
-                                """));
+                .andExpect(jsonPath("$.lipputyyppiId").value(2))
+                .andExpect(jsonPath("$.kuvaus").value("Aikuinen"))
+                .andExpect(jsonPath("$.lipunHinta").value(60.00));
     }
 
     @Test
@@ -175,32 +163,34 @@ public class LipputyyppiRestControllerTest {
                         .with(ADMIN)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                            {
-                              "kuvaus": "Standard",
-                              "lipunHinta": 175.00,
-                              "maxLippumaara": 400
-                            }
-                            """))
+                                {
+                                  "kuvaus": "Standard",
+                                  "lipunHinta": 175.00,
+                                  "maxLippumaara": 400
+                                }
+                                """))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.lipputyyppiId").value(1))
                 .andExpect(jsonPath("$.kuvaus").value("Standard"))
                 .andExpect(jsonPath("$.lipunHinta").value(175.00))
                 .andExpect(jsonPath("$.maxLippumaara").value(400));
-        // maxlippumaara nulliksi
+
+        // maxLippumaara nulliksi
         mockMvc.perform(put(BASE_URL + "/6/lipputyypit/1")
                         .with(ADMIN)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                            {
-                              "kuvaus": "Tapahtumalippu",
-                              "lipunHinta": 39.00,
-                              "maxLippumaara": null
-                            }
-                            """))
+                                {
+                                  "kuvaus": "Tapahtumalippu",
+                                  "lipunHinta": 39.00,
+                                  "maxLippumaara": null
+                                }
+                                """))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.lipputyyppiId").value(1))
                 .andExpect(jsonPath("$.kuvaus").value("Tapahtumalippu"))
-                .andExpect(jsonPath("$.lipunHinta").value(39.00));
+                .andExpect(jsonPath("$.lipunHinta").value(39.00))
+                .andExpect(jsonPath("$.maxLippumaara").doesNotExist());
     }
 
     @Test
@@ -238,35 +228,37 @@ public class LipputyyppiRestControllerTest {
                         .with(ADMIN)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                            {
-                              "kuvaus": "Standard",
-                              "lipunHinta": 150.00,
-                              "maxLippumaara": 901
-                            }
-                            """))
+                                {
+                                  "kuvaus": "Standard",
+                                  "lipunHinta": 150.00,
+                                  "maxLippumaara": 901
+                                }
+                                """))
                 .andExpect(status().isConflict());
-        // lipputyypin maxLippumaara ei saa olla pienempi kuin jo lipputyypillä myytyjen lippujen määrä
+
+        // lipputyypin maxLippumaara ei saa olla pienempi kuin jo myytyjen lippujen määrä
         mockMvc.perform(put(BASE_URL + "/9/lipputyypit/1")
                         .with(ADMIN)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                            {
-                              "kuvaus": "varatut liput",
-                              "lipunHinta": 20.00,
-                              "maxLippumaara": 9
-                            }
-                            """))
+                                {
+                                  "kuvaus": "varatut liput",
+                                  "lipunHinta": 20.00,
+                                  "maxLippumaara": 9
+                                }
+                                """))
                 .andExpect(status().isConflict());
+
         mockMvc.perform(put(BASE_URL + "/9/lipputyypit/1")
                         .with(ADMIN)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                            {
-                              "kuvaus": "varatut liput",
-                              "lipunHinta": 20.00,
-                              "maxLippumaara": 9
-                            }
-                            """))
+                                {
+                                  "kuvaus": "varatut liput",
+                                  "lipunHinta": 20.00,
+                                  "maxLippumaara": 9
+                                }
+                                """))
                 .andExpect(status().isConflict());
     }
 

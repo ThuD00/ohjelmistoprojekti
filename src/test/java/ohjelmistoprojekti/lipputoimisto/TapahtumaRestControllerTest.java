@@ -1,3 +1,4 @@
+
 package ohjelmistoprojekti.lipputoimisto;
 
 import org.junit.jupiter.api.Test;
@@ -10,7 +11,8 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -77,17 +79,12 @@ class TapahtumaRestControllerTest {
                                 }
                                 """))
                 .andExpect(status().isCreated())
-                .andExpect(
-                        content().json("""
-                                {
-                                  "tapahtumaId": 10,
-                                  "aika": "2027-01-01T00:00:00",
-                                  "paikka": "Kansalaistori",
-                                  "kaupunki": "Helsinki",
-                                  "kuvaus": "Uusivuosi",
-                                  "maxLippumaara": 1000
-                                }
-                                """, true));
+                .andExpect(jsonPath("$.tapahtumaId").value(10))
+                .andExpect(jsonPath("$.aika").value("2027-01-01T00:00:00"))
+                .andExpect(jsonPath("$.paikka").value("Kansalaistori"))
+                .andExpect(jsonPath("$.kaupunki").value("Helsinki"))
+                .andExpect(jsonPath("$.kuvaus").value("Uusivuosi"))
+                .andExpect(jsonPath("$.maxLippumaara").value(1000));
     }
 
     @Test
@@ -105,6 +102,7 @@ class TapahtumaRestControllerTest {
                                 }
                                 """))
                 .andExpect(status().isBadRequest());
+
         mockMvc.perform(post(BASE_URL)
                         .with(ADMIN)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -135,17 +133,12 @@ class TapahtumaRestControllerTest {
                                 }
                                 """))
                 .andExpect(status().isOk())
-                .andExpect(
-                        content().json("""
-                                {
-                                  "tapahtumaId": 2,
-                                  "aika": "2026-11-15T19:00:00",
-                                  "paikka": "Olympiastadion",
-                                  "kaupunki": "Helsinki",
-                                  "kuvaus": "Rock Festival",
-                                  "maxLippumaara": 30000
-                                }
-                                """, true));
+                .andExpect(jsonPath("$.tapahtumaId").value(2))
+                .andExpect(jsonPath("$.aika").value("2026-11-15T19:00:00"))
+                .andExpect(jsonPath("$.paikka").value("Olympiastadion"))
+                .andExpect(jsonPath("$.kaupunki").value("Helsinki"))
+                .andExpect(jsonPath("$.kuvaus").value("Rock Festival"))
+                .andExpect(jsonPath("$.maxLippumaara").value(30000));
     }
 
     @Test

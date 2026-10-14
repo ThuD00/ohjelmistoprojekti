@@ -1,7 +1,6 @@
 package ohjelmistoprojekti.lipputoimisto.service;
 
 import ohjelmistoprojekti.lipputoimisto.domain.Lippu;
-import ohjelmistoprojekti.lipputoimisto.domain.Lipputyyppi;
 import ohjelmistoprojekti.lipputoimisto.domain.Tapahtuma;
 import ohjelmistoprojekti.lipputoimisto.repository.LippuRepository;
 import ohjelmistoprojekti.lipputoimisto.repository.LipputyyppiRepository;
@@ -11,12 +10,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class TapahtumaService {
     private final LipputyyppiRepository lipputyyppiRepository;
-    private final TapahtumaRepository tapahtumaRepository;
     private final LippuRepository lippuRepository;
 
-    public TapahtumaService(LipputyyppiRepository lipputyyppiRepository, TapahtumaRepository tapahtumaRepository, LippuRepository lippuRepository) {
+    public TapahtumaService(LipputyyppiRepository lipputyyppiRepository, LippuRepository lippuRepository) {
         this.lipputyyppiRepository = lipputyyppiRepository;
-        this.tapahtumaRepository = tapahtumaRepository;
         this.lippuRepository = lippuRepository;
     }
 
