@@ -114,6 +114,14 @@ public class LipputoimistoApplication {
                     100,
                     false
             );
+            Tapahtuma tapahtuma10 = new Tapahtuma(
+                    LocalDateTime.of(2027, 12, 12, 12, 12),
+                    "Test",
+                    "Helsinki",
+                    "testitapahtuma",
+                    10,
+                    false
+            );
 
             tapahtumaRepository.save(tapahtuma1);
             tapahtumaRepository.save(tapahtuma2);
@@ -124,6 +132,7 @@ public class LipputoimistoApplication {
             tapahtumaRepository.save(tapahtuma7);
             tapahtumaRepository.save(tapahtuma8);
             tapahtumaRepository.save(tapahtuma9);
+            tapahtumaRepository.save(tapahtuma10);
 
             // Lipputyypit
             Lipputyyppi aikuinen1 = new Lipputyyppi(
@@ -250,6 +259,21 @@ public class LipputoimistoApplication {
                     new BigDecimal("10.00"),
                     60
             );
+            Lipputyyppi lipputyyppi10 = new Lipputyyppi(
+                    new LipputyyppiId(10, 1),
+                    tapahtuma10,
+                    "poistettu lipputyyppi",
+                    new BigDecimal("10.00"),
+                    5
+            );
+            lipputyyppi10.setPoistettu(true);
+            Lipputyyppi lipputyyppi11 = new Lipputyyppi(
+                    new LipputyyppiId(10, 2),
+                    tapahtuma10,
+                    "ei poistettu",
+                    new BigDecimal("10.00"),
+                    null
+            );
 
             lipputyyppiRepository.save(aikuinen1);
             lipputyyppiRepository.save(lapsi1);
@@ -269,7 +293,8 @@ public class LipputoimistoApplication {
             lipputyyppiRepository.save(varattu9);
             lipputyyppiRepository.save(peruttu9);
             lipputyyppiRepository.save(lipputyyppi9);
-
+            lipputyyppiRepository.save(lipputyyppi10);
+            lipputyyppiRepository.save(lipputyyppi11);
 
             // Myyntitapahtumat
             Myyntitapahtuma myynti1 = new Myyntitapahtuma(
@@ -288,11 +313,16 @@ public class LipputoimistoApplication {
                     LocalDateTime.of(2026, 10, 1, 12, 30),
                     new BigDecimal("15.00")
             );
+            Myyntitapahtuma myynti5 = new Myyntitapahtuma(
+                    LocalDateTime.of(2027, 12, 12, 12, 24),
+                    new BigDecimal("10.00")
+            );
 
             myyntitapahtumaRepository.save(myynti1);
             myyntitapahtumaRepository.save(myynti2);
             myyntitapahtumaRepository.save(myynti3);
             myyntitapahtumaRepository.save(myynti4);
+            myyntitapahtumaRepository.save(myynti5);
 
             // Liput
             Lippu lippu1 = new Lippu(
@@ -349,12 +379,21 @@ public class LipputoimistoApplication {
             );
             lippu16.setKoodi("CCCCCC-000001");
 
+            Lippu lippu17 = new Lippu(
+                    lipputyyppi10,
+                    myynti5,
+                    Lippu.LippuTila.VARATTU,
+                    lipputyyppi10.getLipunHinta()
+            );
+            lippu16.setKoodi("ABCDEF-000001");
+
             lippuRepository.save(lippu1);
             lippuRepository.save(lippu2);
             lippuRepository.save(lippu3);
             lippuRepository.save(lippu4);
             lippuRepository.save(lippu5);
             lippuRepository.save(lippu16);
+            lippuRepository.save(lippu17);
 
         };
     }

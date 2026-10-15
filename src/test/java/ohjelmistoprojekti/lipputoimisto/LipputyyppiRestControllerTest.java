@@ -54,6 +54,15 @@ public class LipputyyppiRestControllerTest {
                 .andExpect(jsonPath("$[1].kuvaus").value("VIP"))
                 .andExpect(jsonPath("$[1].lipunHinta").value(20.00))
                 .andExpect(jsonPath("$[1].maxLippumaara").value(10));
+        // poistettujen lipputyyppien ei pitäisi näkyä
+        mockMvc.perform(get(BASE_URL + "/10/lipputyypit"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[?(@.lipputyyppiId == 1)]").isEmpty())
+                .andExpect(jsonPath("$[0].lipputyyppiId").value(2))
+                .andExpect(jsonPath("$[0].kuvaus").value("ei poistettu"))
+                .andExpect(jsonPath("$[0].lipunHinta").value(10.00))
+                .andExpect(jsonPath("$[0].maxLippumaara").doesNotExist());
     }
 
     @Test

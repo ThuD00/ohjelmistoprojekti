@@ -77,6 +77,21 @@ Authorization: Basic user user
   ]
 }
 
+### Varaa lippuja lipputyypillä, joka on poistettu
+POST http://localhost:8080/api/liput/varaa
+Content-Type: application/json
+Authorization: Basic user user
+
+{
+  "tapahtumaId": 10,
+  "liput": [
+    {
+      "lipputyyppiId": 1,
+      "qty": 2
+    }
+  ]
+}
+
 ### Virheellinen varaus - ei lippuja
 POST http://localhost:8080/api/liput/varaa
 Content-Type: application/json

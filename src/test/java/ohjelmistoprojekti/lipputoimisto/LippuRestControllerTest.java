@@ -55,7 +55,7 @@ public class LippuRestControllerTest {
                                 }
                                 """))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.myyntitapahtumaId").value(5))
+                .andExpect(jsonPath("$.myyntitapahtumaId").value(6))
                 .andExpect(jsonPath("$.summa").value(37.5))
                 .andExpect(jsonPath("$.liput").isArray())
                 .andExpect(jsonPath("$.liput.length()").value(3))
@@ -112,6 +112,22 @@ public class LippuRestControllerTest {
                         .content("""
                                 {
                                     "tapahtumaId": 5,
+                                    "liput": [
+                                        {
+                                            "lipputyyppiId": 1,
+                                            "qty": 2
+                                        }
+                                    ]
+                                }
+                                """))
+                .andExpect(status().isNotFound());
+        // lipputyyppi on poistettu
+        mockMvc.perform(post(BASE_URL + "/varaa")
+                        .with(USER1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "tapahtumaId": 10,
                                     "liput": [
                                         {
                                             "lipputyyppiId": 1,

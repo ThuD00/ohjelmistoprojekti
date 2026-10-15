@@ -65,7 +65,7 @@ public class LippuService {
             Lipputyyppi lipputyyppi = lipputyyppiOptional.get();
 
             if (lipputyyppi.isPoistettu()) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).build();
+                return ResponseEntity.notFound().build();
             }
 
             if (lipputyyppi.getTapahtuma().getTapahtumaId() != pyynto.getTapahtumaId()) {

@@ -6,6 +6,9 @@ Authorization: Basic user user
 GET http://localhost:8080/api/tapahtumat/7/lipputyypit
 Authorization: Basic user user
 
+### Hae tapahtuman lipputyypit, yksi poistettu lipputyyppi
+GET http://localhost:8080/api/tapahtumat/10/lipputyypit
+Authorization: Basic user user
 
 ### Hae lipputyypit tapahtumasta, jota ei ole
 GET http://localhost:8080/api/tapahtumat/99999/lipputyypit
