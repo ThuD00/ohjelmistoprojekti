@@ -5,4 +5,5 @@ import ohjelmistoprojekti.lipputoimisto.domain.Kayttaja;
 
 public interface KayttajaRepository extends JpaRepository <Kayttaja, Long> {
 
+    Kayttaja findKayttajaByKayttajamimi(String kayttajanimi);
 }

@@ -1,10 +1,7 @@
 package ohjelmistoprojekti.lipputoimisto;
 
 import ohjelmistoprojekti.lipputoimisto.domain.*;
-import ohjelmistoprojekti.lipputoimisto.repository.LippuRepository;
-import ohjelmistoprojekti.lipputoimisto.repository.LipputyyppiRepository;
-import ohjelmistoprojekti.lipputoimisto.repository.MyyntitapahtumaRepository;
-import ohjelmistoprojekti.lipputoimisto.repository.TapahtumaRepository;
+import ohjelmistoprojekti.lipputoimisto.repository.*;
 import org.h2.tools.Server;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -36,12 +33,37 @@ public class LipputoimistoApplication {
 
     @Bean
     public CommandLineRunner demo(
+            KayttajaRepository kayttajaRepository,
             LippuRepository lippuRepository,
             LipputyyppiRepository lipputyyppiRepository,
             MyyntitapahtumaRepository myyntitapahtumaRepository,
             TapahtumaRepository tapahtumaRepository) {
 
         return (args) -> {
+
+            // käyttäjät
+            Kayttaja myyja = new Kayttaja(
+                    "myyja",
+                    "$2a$10$ro75qmPcppB5wthRzNQ6K.b/qZ0RolqT2eUf3pVH50w2RPwNPDsmG",
+                    "myyja@example.com",
+                    Kayttaja.KayttajaRooli.MYYJA
+            );
+            Kayttaja jarjestaja = new Kayttaja(
+                    "jarjestaja",
+                    "$2a$10$ro75qmPcppB5wthRzNQ6K.b/qZ0RolqT2eUf3pVH50w2RPwNPDsmG",
+                    "jarjestaja@example.com",
+                    Kayttaja.KayttajaRooli.JARJESTAJA
+            );
+            Kayttaja admin = new Kayttaja(
+                    "admin",
+                    "$2a$10$ro75qmPcppB5wthRzNQ6K.b/qZ0RolqT2eUf3pVH50w2RPwNPDsmG",
+                    "admin@example.com",
+                    Kayttaja.KayttajaRooli.ADMIN
+            );
+
+            kayttajaRepository.save(admin);
+            kayttajaRepository.save(myyja);
+            kayttajaRepository.save(jarjestaja);
 
             // Tapahtumat
             Tapahtuma tapahtuma1 = new Tapahtuma(

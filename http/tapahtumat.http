@@ -1,24 +1,19 @@
 ### Hae kaikki tapahtumat
 GET http://localhost:8080/api/tapahtumat
-Authorization: Basic admin admin
 
 ### Hae kaikki poistetut tapahtumat
 GET http://localhost:8080/api/tapahtumat?poistettu=true
-Authorization: Basic admin admin
+Authorization: Basic admin salasana
 
 ### Hae tapahtuma
 GET http://localhost:8080/api/tapahtumat/1
-Authorization: Basic user user
-
 
 ### Hae tapahtuma jota ei ole
 GET http://localhost:8080/api/tapahtumat/99999
-Authorization: Basic user user
-
 
 ### Lisää tapahtuma
 POST http://localhost:8080/api/tapahtumat
-Authorization: Basic admin admin
+Authorization: Basic admin salasana
 Content-Type: application/json
 
 {

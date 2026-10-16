@@ -37,7 +37,7 @@ public class TapahtumaRestController {
 
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('JARJESTAJA')")
     @PostMapping
     public ResponseEntity<TapahtumaVastausDto> addTapahtuma(
             @Valid @RequestBody TapahtumaPyyntoDto pyynto) {
@@ -51,7 +51,7 @@ public class TapahtumaRestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new TapahtumaVastausDto(tapahtuma));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('JARJESTAJA')")
     @PutMapping("/{id}")
     public ResponseEntity<TapahtumaVastausDto> updateTapahtuma(
             @PathVariable("id") long tapahtumaId,
@@ -86,7 +86,7 @@ public class TapahtumaRestController {
         return ResponseEntity.notFound().build();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('JARJESTAJA')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTapahtuma(@PathVariable("id") long tapahtumaId) {
         Optional<Tapahtuma> tapahtuma = tapahtumaRepository.findById(tapahtumaId);
