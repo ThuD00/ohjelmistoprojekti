@@ -2,6 +2,7 @@ package ohjelmistoprojekti.lipputoimisto.dto;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.Positive;
 
 public class LipputyyppiDto {
@@ -10,13 +11,18 @@ public class LipputyyppiDto {
     private String kuvaus;
     private BigDecimal lipunHinta;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer maxLippumaara;
+
+
     public LipputyyppiDto() {
     }
 
-    public LipputyyppiDto(long lipputyyppiId, String kuvaus, BigDecimal lipunHinta) {
+    public LipputyyppiDto(long lipputyyppiId, String kuvaus, BigDecimal lipunHinta, Integer maxLippumaara) {
         this.lipputyyppiId = lipputyyppiId;
         this.kuvaus = kuvaus;
         this.lipunHinta = lipunHinta;
+        this.maxLippumaara = maxLippumaara;
     }
 
     public long getLipputyyppiId() {
@@ -49,4 +55,11 @@ public class LipputyyppiDto {
                 + "]";
     }
 
+    public Integer getMaxLippumaara() {
+        return maxLippumaara;
+    }
+
+    public void setMaxLippumaara(Integer maxLippumaara) {
+        this.maxLippumaara = maxLippumaara;
+    }
 }

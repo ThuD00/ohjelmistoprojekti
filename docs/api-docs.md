@@ -1,6 +1,6 @@
 # Lipputoimisto API dokumentaatio
 
-*Versio: V0.1*
+*Versio: V0.2*
 
 ## URL
 `http://.../api`
@@ -33,6 +33,34 @@
     "kaupunki": "???",
     "kuvaus": "Helvetti jäätyy",
     "maxLippumaara": 666666
+  }
+]
+```
+
+### Hae kaikki poistetut tapahtumat
+
+* **Metodi**: `GET`
+* **Polku**: `/tapahtumat?poistettu=true`
+* **Vastaus**:
+    * `200 OK`
+* **Vastauksen runko**:
+```json
+[
+  {
+    "tapahtumaId": 4,
+    "aika": "2026-11-20T19:00:00",
+    "paikka": "Helsingin jäähalli",
+    "kaupunki": "Helsinki",
+    "kuvaus": "Winter Rock Night",
+    "maxLippumaara": 8500
+  },
+  {
+    "tapahtumaId": 5,
+    "aika": "2026-12-05T18:30:00",
+    "paikka": "Tampere-talo",
+    "kaupunki": "Tampere",
+    "kuvaus": "Joulun taikaa",
+    "maxLippumaara": 2000
   }
 ]
 ```
@@ -73,6 +101,7 @@
 ```
 * **Vastaus**: 
   * `201 CREATED`
+  * `400 BAD REQUEST` (Jos pyynnössä on virheitä)
 * **Vastauksen runko**:
 ```json
 {
@@ -102,7 +131,9 @@
 ```
 * **Vastaus**: 
   * `200 OK`
+  * `400 BAD REQUEST` (Jos pyynnössä on virheitä)
   * `404 NOT FOUND` (Jos id:tä ei löydy)
+  * `409 CONFLICT` (Jos uusi maxLippumaara < tapahtumaan varatut liput)
 * **Vastauksen runko**:
 ```json
 {
@@ -142,12 +173,18 @@
   {
     "lipputyyppiId": 1,
     "kuvaus": "Aikuinen",
-    "lipunHinta": 25.00
+    "lipunHinta": 10.00
   },
   {
     "lipputyyppiId": 2,
     "kuvaus": "Opiskelija",
-    "lipunHinta": 15.00
+    "lipunHinta": 5.00
+  },
+  {
+    "lipputyyppiId": 3,
+    "kuvaus": "VIP",
+    "lipunHinta": 20.00,
+    "maxLippumaara": 10 
   }
 ]
 ```
@@ -166,12 +203,21 @@
 ```
 * **Vastaus**: 
   * `201 CREATED`
+  * `400 BAD REQUEST` (Jos pyynnössä on virheitä)
 * **Vastauksen runko**:
 ```json
 {
   "lipputyyppiId": 1,
   "kuvaus": "Aikuinen",
   "lipunHinta": 25.00
+}
+```
+**Lipputyypille voidaan myös asettaa erillinen maxLippumaara:**
+```json
+{
+  "kuvaus": "VIP",
+  "lipunHinta": 50.00,
+  "maxLippumaara": 100
 }
 ```
 
@@ -191,7 +237,9 @@
 ```
 * **Vastaus**:
   * `200 OK`
+  * `400 BAD REQUEST` (Jos pyynnössä on virheitä)
   * `404 NOT FOUND` (Jos tapahtumaa tai lipputyyppiä ei löydy)
+  * `409 CONFLICT` (Jos uusi maxLippumaara < lipputyypillä varatut liput)
 * **Vastauksen runko**:
 ```json
 {
@@ -236,7 +284,9 @@
 ```
 * **Vastaus**: 
   * `201 CREATED`
-  * `404 NOT FOUND` (Jos tapahtumaa tai lipputyyppiä ei löydy tai lipputyyppi kuuluu eri tapahtumaan)
+  * `400 BAD REQUEST` (Jos pyynnössä on virheitä)
+  * `404 NOT FOUND` (Jos tapahtumaa tai lipputyyppiä ei löydy)
+  * `409 CONFLICT` (Jos lippuja ei ole jäljellä tapahtumaan tai lipputyyppiin)
 * **Vastauksen runko**:
 ```json
 {
@@ -339,7 +389,7 @@
       "lipputyyppi": {
         "lipputyyppiId": 1,
         "kuvaus": "Aikuinen",
-        "hinta": 15.00,
+        "hinta": 15.00
       },
       "lipunStatus": "VARATTU",
       "koodi": "PSMWVT-012597"

@@ -1,24 +1,23 @@
+@myyjaToken = bXl5amE6cGFzc3dvcmQ=
+@jarjestajaToken = amFyamVzdGFqYTpwYXNzd29yZA==
+@adminToken = YWRtaW46cGFzc3dvcmQ=
+
 ### Hae kaikki tapahtumat
 GET http://localhost:8080/api/tapahtumat
-Authorization: Basic admin admin
 
 ### Hae kaikki poistetut tapahtumat
 GET http://localhost:8080/api/tapahtumat?poistettu=true
-Authorization: Basic admin admin
+Authorization: Basic {{adminToken}}
 
 ### Hae tapahtuma
 GET http://localhost:8080/api/tapahtumat/1
-Authorization: Basic user user
-
 
 ### Hae tapahtuma jota ei ole
 GET http://localhost:8080/api/tapahtumat/99999
-Authorization: Basic user user
-
 
 ### Lisää tapahtuma
 POST http://localhost:8080/api/tapahtumat
-Authorization: Basic admin admin
+Authorization: Basic {{jarjestajaToken}}
 Content-Type: application/json
 
 {
@@ -31,7 +30,7 @@ Content-Type: application/json
 
 ### Lisää tapahtuma
 POST http://localhost:8080/api/tapahtumat
-Authorization: Basic admin admin
+Authorization: Basic {{jarjestajaToken}}
 Content-Type: application/json
 
 {
@@ -45,7 +44,7 @@ Content-Type: application/json
 ### Lisää tapahtuma
 POST http://localhost:8080/api/tapahtumat
 Content-Type: application/json
-Authorization: Basic admin admin
+Authorization: Basic {{jarjestajaToken}}
 
 {
   "id": 1,
@@ -59,7 +58,7 @@ Authorization: Basic admin admin
 ### Lisää virheellinen tapahtuma
 POST http://localhost:8080/api/tapahtumat
 Content-Type: application/json
-Authorization: Basic admin admin
+Authorization: Basic {{jarjestajaToken}}
 
 {
   "aika": "",
@@ -70,22 +69,22 @@ Authorization: Basic admin admin
 }
 
 ### Muokkaa tapahtumaa
-PUT http://localhost:8080/api/tapahtumat/5
+PUT http://localhost:8080/api/tapahtumat/1
 Content-Type: application/json
-Authorization: Basic admin admin
+Authorization: Basic {{jarjestajaToken}}
 
 {
-  "aika": "2026-07-15T19:00:00",
-  "paikka": "Olympiastadion",
+  "aika": "2026-10-05T20:00:00",
+  "paikka": "Tavastia",
   "kaupunki": "Helsinki",
-  "kuvaus": "Rock Festival 2026 (Päivitetty)",
-  "maxLippumaara": 45000
+  "kuvaus": "Stand-up Comedy Night",
+  "maxLippumaara": 800
 }
 
 ### Muokkaa tapahtumaa, jota ei ole
 PUT http://localhost:8080/api/tapahtumat/99999
 Content-Type: application/json
-Authorization: Basic admin admin
+Authorization: Basic {{jarjestajaToken}}
 
 {
   "aika": "2026-07-15T19:00:00",
@@ -97,12 +96,12 @@ Authorization: Basic admin admin
 
 ### Poista tapahtuma
 DELETE http://localhost:8080/api/tapahtumat/3
-Authorization: Basic admin admin
+Authorization: Basic {{jarjestajaToken}}
 
 ### Poista tapahtuma, jota ei ole
 DELETE http://localhost:8080/api/tapahtumat/99999
-Authorization: Basic admin admin
+Authorization: Basic {{jarjestajaToken}}
 
 ### Poista tapahtuma ilman oikeuksia
 DELETE http://localhost:8080/api/tapahtumat/1
-Authorization: Basic user user
+Authorization: Basic {{myyjaToken}}

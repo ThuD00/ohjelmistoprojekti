@@ -8,6 +8,7 @@ import ohjelmistoprojekti.lipputoimisto.repository.MyyntitapahtumaRepository;
 import ohjelmistoprojekti.lipputoimisto.repository.TapahtumaRepository;
 import ohjelmistoprojekti.lipputoimisto.service.LippuService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,16 +28,19 @@ public class LippuRestController {
         this.lippuService = lippuService;
     }
 
+    @PreAuthorize("hasRole('MYYJA')")
     @PostMapping("/varaa")
     public ResponseEntity<?> varaaLiput(@Valid @RequestBody LippuVarausPyynto pyynto) {
         return lippuService.varaaLiput(pyynto);
     }
 
+    @PreAuthorize("hasRole('MYYJA')")
     @PostMapping("/lunasta")
     public ResponseEntity<?> lunastaLippu(@RequestBody LippuLunastus pyynto) {
         return lippuService.lunastaLippu(pyynto);
     }
 
+    @PreAuthorize("hasRole('MYYJA')")
     @PostMapping("/peru")
     public ResponseEntity<?> peruLippu(@RequestBody LippuLunastus pyynto) {
         return lippuService.peruLippu(pyynto);

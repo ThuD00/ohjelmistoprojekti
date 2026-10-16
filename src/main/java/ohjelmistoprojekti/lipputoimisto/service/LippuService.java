@@ -13,9 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class LippuService {
@@ -49,46 +47,71 @@ public class LippuService {
 
         BigDecimal summa = BigDecimal.ZERO;
 
+        List<Lippu> liput = new ArrayList<>();
+
+        long tapahtumaMax = tapahtuma.getMaxLippumaara() - lippuRepository.countLippuWithoutMaxLippumaara(tapahtuma, Lippu.LippuTila.PERUTTU)
+                - lipputyyppiRepository.sumMaxLippumaaraByTapahtuma(tapahtuma);
+        Map<Lipputyyppi, Integer> lippuQty = new HashMap<>();
+
         for (LippuVaraus varaus : pyynto.getLiput()) {
 
-            Optional<Lipputyyppi> lipputyyppi = lipputyyppiRepository
+            Optional<Lipputyyppi> lipputyyppiOptional = lipputyyppiRepository
                     .findById(new LipputyyppiId(tapahtuma.getTapahtumaId(), varaus.getLipputyyppiId()));
 
-            if (lipputyyppi.isEmpty()) {
+            if (lipputyyppiOptional.isEmpty()) {
                 return ResponseEntity.notFound().build();
             }
 
-            if (lipputyyppi.get().getTapahtuma().getTapahtumaId() != pyynto.getTapahtumaId()) {
+            Lipputyyppi lipputyyppi = lipputyyppiOptional.get();
+
+            if (lipputyyppi.isPoistettu()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            if (lipputyyppi.getTapahtuma().getTapahtumaId() != pyynto.getTapahtumaId()) {
                 return ResponseEntity.badRequest().build();
             }
 
-            BigDecimal maara = BigDecimal.valueOf(varaus.getQty());
-            summa = summa.add(lipputyyppi.get().getLipunHinta().multiply(maara));
+
+            for (int i = 0; i < varaus.getQty(); i++) {
+                liput.add(new Lippu(lipputyyppi, lipputyyppi.getLipunHinta()));
+                lippuQty.put(lipputyyppi, lippuQty.getOrDefault(lipputyyppi, 0) + 1);
+                summa = summa.add(lipputyyppi.getLipunHinta());
+            }
         }
+
+        for (Map.Entry<Lipputyyppi, Integer> e : lippuQty.entrySet()) {
+            Lipputyyppi lipputyyppi = e.getKey();
+            Integer qty = e.getValue();
+            if (lipputyyppi.getMaxLippumaara() == null) {
+                if (tapahtumaMax < qty) {
+                    return ResponseEntity.status(HttpStatus.CONFLICT).build();
+                }
+                tapahtumaMax -= qty;
+            } else {
+                long liputJaljella = lipputyyppi.getMaxLippumaara() - lippuRepository.countByLipputyyppiAndLipunStatusNot(lipputyyppi, Lippu.LippuTila.PERUTTU);
+                if (liputJaljella < qty) {
+                    return ResponseEntity.status(HttpStatus.CONFLICT).build();
+                }
+            }
+        }
+
         Myyntitapahtuma myyntitapahtuma = new Myyntitapahtuma(LocalDateTime.now(), summa);
         myyntitapahtumaRepository.save(myyntitapahtuma);
 
         List<VarattuLippu> varatutLiput = new ArrayList<>();
 
-        for (LippuVaraus varaus : pyynto.getLiput()) {
+        for (Lippu lippu : liput) {
 
-            Lipputyyppi lipputyyppi = lipputyyppiRepository
-                    .findById(new LipputyyppiId(tapahtuma.getTapahtumaId(), varaus.getLipputyyppiId())).get();
+            lippu.setMyyntitapahtuma(myyntitapahtuma);
 
-            for (int i = 0; i < varaus.getQty(); i++) {
+            lippuRepository.save(lippu);
 
-                Lippu lippu = new Lippu(
-                        lipputyyppi,
-                        myyntitapahtuma,
-                        Lippu.LippuTila.VARATTU);
-
-                lippuRepository.save(lippu);
-
-                varatutLiput.add(new VarattuLippu(
-                        lipputyyppi.getId().getLipputyyppiId(),
-                        lippu.getKoodi()));
-            }
+            varatutLiput.add(new VarattuLippu(
+                    lippu.getLipputyyppi().getId().getLipputyyppiId(),
+                    lippu.getKoodi()));
         }
+
         LippuVarausVastaus vastaus = new LippuVarausVastaus(
                 myyntitapahtuma.getMyyntitapahtumaId(),
                 summa,

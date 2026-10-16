@@ -1,5 +1,6 @@
 package ohjelmistoprojekti.lipputoimisto.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -11,18 +12,22 @@ import jakarta.persistence.Id;
 @Entity 
 public class Kayttaja {
 
-  public enum KayttajaRooli {
+    public enum KayttajaRooli {
     ADMIN,
     MYYJA,
     JARJESTAJA
   }
 
   @Id 
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private long kayttajaId;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long id;
 
   @Column(nullable = false, unique = true)
   private String kayttajanimi;
+
+  @JsonIgnore
+  @Column(nullable = false)
+  private String salasana;
 
   @Column(nullable = false, unique = true)
   private String email;
@@ -35,26 +40,35 @@ public class Kayttaja {
 
   }
 
-  public Kayttaja(String kayttajamimi, String email, KayttajaRooli rooli) {
-    this.kayttajanimi = kayttajamimi;
+  public Kayttaja(String kayttajanimi, String salasana, String email, KayttajaRooli rooli) {
+    this.kayttajanimi = kayttajanimi;
+    this.salasana = salasana;
     this.email = email;
     this.rooli = rooli;
   }
 
-  public long getKayttajaId() {
-    return kayttajaId;
+  public long getId() {
+    return id;
   }
 
-  public void setKayttajaId(long kayttajaId) {
-    this.kayttajaId = kayttajaId;
+  public void setId(long id) {
+    this.id = id;
   }
 
-  public String getKayttajamimi() {
+  public String getKayttajanimi() {
     return kayttajanimi;
   }
 
-  public void setKayttajamimi(String kayttajamimi) {
-    this.kayttajanimi = kayttajamimi;
+  public void setKayttajanimi(String kayttajanimi) {
+    this.kayttajanimi = kayttajanimi;
+  }
+
+  public String getSalasana() {
+    return salasana;
+  }
+
+  public void setSalasana(String salasana) {
+    this.salasana = salasana;
   }
 
   public String getEmail() {
@@ -75,7 +89,7 @@ public class Kayttaja {
 
   @Override
   public String toString() {
-    return "Kayttaja [kayttajaId=" + kayttajaId + ", kayttajamimi=" + kayttajanimi + ", email=" + email + ", rooli="
+    return "Kayttaja [kayttajaId=" + id + ", kayttajanimi=" + kayttajanimi + ", email=" + email + ", rooli="
         + rooli + "]";
   }
 
