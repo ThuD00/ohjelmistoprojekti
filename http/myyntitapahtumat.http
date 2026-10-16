@@ -1,13 +1,15 @@
+@myyjaToken = bXl5amE6cGFzc3dvcmQ=
+@jarjestajaToken = amFyamVzdGFqYTpwYXNzd29yZA==
+@adminToken = YWRtaW46cGFzc3dvcmQ=
+
 ### Hae kaikki myyntitapahtumat
 GET http://localhost:8080/api/myyntitapahtumat
-Authorization: Basic user user
-
+Authorization: Basic {{myyjaToken}}
 
 ### Hae myyntitapahtuma ID:llä
 GET http://localhost:8080/api/myyntitapahtumat/1
-Authorization: Basic admin admin
-
+Authorization: Basic {{myyjaToken}}
 
 ### Hae myyntitapahtuma ID:llä, jota ei ole
 GET http://localhost:8080/api/myyntitapahtumat/99999
-Authorization: Basic user user
+Authorization: Basic {{myyjaToken}}

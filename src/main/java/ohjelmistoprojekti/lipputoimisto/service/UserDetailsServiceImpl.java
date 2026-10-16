@@ -22,7 +22,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Kayttaja currentUser = repository.findKayttajaByKayttajamimi(username);
+        Kayttaja currentUser = repository.findKayttajaByKayttajanimi(username);
+        if (currentUser == null) {
+            throw new UsernameNotFoundException("Käyttäjä ei löytynyt: " + username);
+        }
         return new org.springframework.security.core.userdetails.User(username, currentUser.getSalasana(),
                 AuthorityUtils.createAuthorityList("ROLE_" + currentUser.getRooli()));
     }

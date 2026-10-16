@@ -1,23 +1,23 @@
+@myyjaToken = bXl5amE6cGFzc3dvcmQ=
+@jarjestajaToken = amFyamVzdGFqYTpwYXNzd29yZA==
+@adminToken = YWRtaW46cGFzc3dvcmQ=
+
 ### Hae tapahtuman lipputyypit
 GET http://localhost:8080/api/tapahtumat/1/lipputyypit
-Authorization: Basic user user
 
 ### Hae tapahtuman lipputyypit, maxLippumaara
 GET http://localhost:8080/api/tapahtumat/7/lipputyypit
-Authorization: Basic user user
 
 ### Hae tapahtuman lipputyypit, yksi poistettu lipputyyppi
 GET http://localhost:8080/api/tapahtumat/10/lipputyypit
-Authorization: Basic user user
 
 ### Hae lipputyypit tapahtumasta, jota ei ole
 GET http://localhost:8080/api/tapahtumat/99999/lipputyypit
-Authorization: Basic admin admin
 
 ### Lisää Aikuinen-lipputyyppi tapahtumalle 1
 POST http://localhost:8080/api/tapahtumat/1/lipputyypit
 Content-Type: application/json
-Authorization: Basic admin admin
+Authorization: Basic {{jarjestajaToken}}
 
 {
   "kuvaus": "Aikuinen",
@@ -27,7 +27,7 @@ Authorization: Basic admin admin
 ### Lisää Lapsi-lipputyyppi tapahtumalle 1
 POST http://localhost:8080/api/tapahtumat/1/lipputyypit
 Content-Type: application/json
-Authorization: Basic admin admin
+Authorization: Basic {{jarjestajaToken}}
 
 {
   "kuvaus": "Lapsi",
@@ -37,7 +37,7 @@ Authorization: Basic admin admin
 ### Lisää VIP-lipputyyppi tapahtumalle 1
 POST http://localhost:8080/api/tapahtumat/1/lipputyypit
 Content-Type: application/json
-Authorization: Basic admin admin
+Authorization: Basic {{jarjestajaToken}}
 
 {
   "kuvaus": "VIP",
@@ -49,7 +49,7 @@ Authorization: Basic admin admin
 ### Lisää lipputyyppi tapahtumaan, jota ei ole
 POST http://localhost:8080/api/tapahtumat/99999/lipputyypit
 Content-Type: application/json
-Authorization: Basic admin admin
+Authorization: Basic {{jarjestajaToken}}
 
 {
   "kuvaus": "Aikuinen",
@@ -59,7 +59,7 @@ Authorization: Basic admin admin
 ### Lisää lipputyyppi ilman hintaa
 POST http://localhost:8080/api/tapahtumat/1/lipputyypit
 Content-Type: application/json
-Authorization: Basic admin admin
+Authorization: Basic {{jarjestajaToken}}
 
 {
   "kuvaus": "Aikuinen"
@@ -68,7 +68,7 @@ Authorization: Basic admin admin
 ### Lisää lipputyyppi negatiivisella hinnalla
 POST http://localhost:8080/api/tapahtumat/1/lipputyypit
 Content-Type: application/json
-Authorization: Basic admin admin
+Authorization: Basic {{jarjestajaToken}}
 
 {
   "kuvaus": "Aikuinen",
@@ -78,7 +78,7 @@ Authorization: Basic admin admin
 ### Lisää lipputyyppi negatiivisella maxLippumäärällä
 POST http://localhost:8080/api/tapahtumat/1/lipputyypit
 Content-Type: application/json
-Authorization: Basic admin admin
+Authorization: Basic {{jarjestajaToken}}
 
 {
   "kuvaus": "VIP",
@@ -89,7 +89,7 @@ Authorization: Basic admin admin
 ### Lisää lipputyyppi jonka maxLippumäärä on enemmän kuin tapahtuman maxLippumäärä
 POST http://localhost:8080/api/tapahtumat/1/lipputyypit
 Content-Type: application/json
-Authorization: Basic admin admin
+Authorization: Basic {{jarjestajaToken}}
 
 {
   "kuvaus": "VIP",
@@ -100,7 +100,7 @@ Authorization: Basic admin admin
 ### Muokkaa lipputyyppiä
 PUT http://localhost:8080/api/tapahtumat/1/lipputyypit/2
 Content-Type: application/json
-Authorization: Basic admin admin
+Authorization: Basic {{jarjestajaToken}}
 
 {
   "lipputyyppiId": 2,
@@ -111,7 +111,7 @@ Authorization: Basic admin admin
 ### Muokkaa lipputyyppiä, jota ei ole
 PUT http://localhost:8080/api/tapahtumat/1/lipputyypit/99999
 Content-Type: application/json
-Authorization: Basic admin admin
+Authorization: Basic {{jarjestajaToken}}
 
 {
   "kuvaus": "Lapsi",
@@ -121,7 +121,7 @@ Authorization: Basic admin admin
 ### Muokkaa lipputyyppiä negatiivisella lipputyyppimäärällä
 PUT http://localhost:8080/api/tapahtumat/1/lipputyypit/1
 Content-Type: application/json
-Authorization: Basic admin admin
+Authorization: Basic {{jarjestajaToken}}
 
 {
   "kuvaus": "Aikuinen",
@@ -132,7 +132,7 @@ Authorization: Basic admin admin
 ### Muokkaa lipputyypin maxLippumäärä null
 PUT http://localhost:8080/api/tapahtumat/1/lipputyypit/4
 Content-Type: application/json
-Authorization: Basic admin admin
+Authorization: Basic {{jarjestajaToken}}
 
 {
   "kuvaus": "VIP",
@@ -142,12 +142,12 @@ Authorization: Basic admin admin
 
 ### Poista lipputyyppi
 DELETE http://localhost:8080/api/tapahtumat/1/lipputyypit/6
-Authorization: Basic admin admin
+Authorization: Basic {{jarjestajaToken}}
 
 ### Poista lipputyyppi, jota ei ole
 DELETE http://localhost:8080/api/tapahtumat/1/lipputyypit/99999
-Authorization: Basic admin admin
+Authorization: Basic {{jarjestajaToken}}
 
 ### Poista lipputyyppi ilman oikeuksia
 DELETE http://localhost:8080/api/tapahtumat/1/lipputyypit/2
-Authorization: Basic user user
+Authorization: Basic {{myyjaToken}}

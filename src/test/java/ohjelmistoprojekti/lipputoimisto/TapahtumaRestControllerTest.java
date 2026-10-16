@@ -20,12 +20,12 @@ class TapahtumaRestControllerTest {
 
     private static final String BASE_URL = "/api/tapahtumat";
 
-    private static final RequestPostProcessor USER1 =
-            httpBasic("user", "user");
-    private static final RequestPostProcessor USER2 =
-            httpBasic("user2", "");
+    private static final RequestPostProcessor MYYJA =
+            httpBasic("myyja", "password");
+    private static final RequestPostProcessor JARJESTAJA =
+            httpBasic("jarjestaja", "password");
     private static final RequestPostProcessor ADMIN =
-            httpBasic("admin", "admin");
+            httpBasic("admin", "password");
 
     @Autowired
     private MockMvc mockMvc;
@@ -37,7 +37,7 @@ class TapahtumaRestControllerTest {
         mockMvc.perform(get(BASE_URL))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$.length()").value(7))
+                .andExpect(jsonPath("$.length()").value(8))
                 .andExpect(jsonPath("$[0].tapahtumaId").value(1))
                 .andExpect(jsonPath("$[0].aika").value("2026-10-05T20:00:00"))
                 .andExpect(jsonPath("$[0].paikka").value("Tavastia"))
@@ -67,7 +67,7 @@ class TapahtumaRestControllerTest {
     @Test
     void createTapahtumaReturnsCreated() throws Exception {
         mockMvc.perform(post(BASE_URL)
-                        .with(ADMIN)
+                        .with(JARJESTAJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -79,7 +79,7 @@ class TapahtumaRestControllerTest {
                                 }
                                 """))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.tapahtumaId").value(10))
+                .andExpect(jsonPath("$.tapahtumaId").value(11))
                 .andExpect(jsonPath("$.aika").value("2027-01-01T00:00:00"))
                 .andExpect(jsonPath("$.paikka").value("Kansalaistori"))
                 .andExpect(jsonPath("$.kaupunki").value("Helsinki"))
@@ -90,7 +90,7 @@ class TapahtumaRestControllerTest {
     @Test
     void createTapahtumaReturnsBadRequest() throws Exception {
         mockMvc.perform(post(BASE_URL)
-                        .with(ADMIN)
+                        .with(JARJESTAJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -104,7 +104,7 @@ class TapahtumaRestControllerTest {
                 .andExpect(status().isBadRequest());
 
         mockMvc.perform(post(BASE_URL)
-                        .with(ADMIN)
+                        .with(JARJESTAJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -121,7 +121,7 @@ class TapahtumaRestControllerTest {
     @Test
     void modifyTapahtumaReturnsOk() throws Exception {
         mockMvc.perform(put(BASE_URL + "/2")
-                        .with(ADMIN)
+                        .with(JARJESTAJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -144,7 +144,7 @@ class TapahtumaRestControllerTest {
     @Test
     void modifyTapahtumaReturnsBadRequest() throws Exception {
         mockMvc.perform(put(BASE_URL + "/2")
-                        .with(ADMIN)
+                        .with(JARJESTAJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -160,7 +160,7 @@ class TapahtumaRestControllerTest {
     @Test
     void modifyTapahtumaReturnsNotFound() throws Exception {
         mockMvc.perform(put(BASE_URL + "/333")
-                        .with(ADMIN)
+                        .with(JARJESTAJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -178,7 +178,7 @@ class TapahtumaRestControllerTest {
     void modifyTapahtumaReturnsConflict() throws Exception {
         // tapahtuman maxLippumaara on pienempi kuin myytyjen lippujen määrä
         mockMvc.perform(put(BASE_URL + "/9")
-                        .with(ADMIN)
+                        .with(JARJESTAJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -196,14 +196,14 @@ class TapahtumaRestControllerTest {
     @Test
     void deleteTapahtumaReturnsNoContent() throws Exception {
         mockMvc.perform(delete(BASE_URL + "/3")
-                        .with(ADMIN))
+                        .with(JARJESTAJA))
                 .andExpect(status().isNoContent());
     }
 
     @Test
     void deleteTapahtumaReturnsNotFound() throws Exception {
         mockMvc.perform(delete(BASE_URL + "/99")
-                        .with(ADMIN))
+                        .with(JARJESTAJA))
                 .andExpect(status().isNotFound());
     }
 }

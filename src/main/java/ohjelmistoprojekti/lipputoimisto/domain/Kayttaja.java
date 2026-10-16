@@ -23,7 +23,7 @@ public class Kayttaja {
   private long id;
 
   @Column(nullable = false, unique = true)
-  private String kayttajamimi;
+  private String kayttajanimi;
 
   @JsonIgnore
   @Column(nullable = false)
@@ -40,8 +40,8 @@ public class Kayttaja {
 
   }
 
-  public Kayttaja(String kayttajamimi, String salasana, String email, KayttajaRooli rooli) {
-    this.kayttajamimi = kayttajamimi;
+  public Kayttaja(String kayttajanimi, String salasana, String email, KayttajaRooli rooli) {
+    this.kayttajanimi = kayttajanimi;
     this.salasana = salasana;
     this.email = email;
     this.rooli = rooli;
@@ -55,12 +55,12 @@ public class Kayttaja {
     this.id = id;
   }
 
-  public String getKayttajamimi() {
-    return kayttajamimi;
+  public String getKayttajanimi() {
+    return kayttajanimi;
   }
 
-  public void setKayttajamimi(String kayttajamimi) {
-    this.kayttajamimi = kayttajamimi;
+  public void setKayttajanimi(String kayttajanimi) {
+    this.kayttajanimi = kayttajanimi;
   }
 
   public String getSalasana() {
@@ -89,7 +89,7 @@ public class Kayttaja {
 
   @Override
   public String toString() {
-    return "Kayttaja [kayttajaId=" + id + ", kayttajamimi=" + kayttajamimi + ", email=" + email + ", rooli="
+    return "Kayttaja [kayttajaId=" + id + ", kayttajanimi=" + kayttajanimi + ", email=" + email + ", rooli="
         + rooli + "]";
   }
 

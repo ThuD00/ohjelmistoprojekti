@@ -3,10 +3,12 @@ package ohjelmistoprojekti.lipputoimisto;
 import ohjelmistoprojekti.lipputoimisto.domain.*;
 import ohjelmistoprojekti.lipputoimisto.repository.*;
 import org.h2.tools.Server;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -14,6 +16,8 @@ import java.time.LocalDateTime;
 
 @SpringBootApplication
 public class LipputoimistoApplication {
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     public static void main(String[] args) {
         SpringApplication.run(LipputoimistoApplication.class, args);
@@ -44,19 +48,19 @@ public class LipputoimistoApplication {
             // käyttäjät
             Kayttaja myyja = new Kayttaja(
                     "myyja",
-                    "$2a$10$ro75qmPcppB5wthRzNQ6K.b/qZ0RolqT2eUf3pVH50w2RPwNPDsmG",
+                    passwordEncoder.encode("password"),
                     "myyja@example.com",
                     Kayttaja.KayttajaRooli.MYYJA
             );
             Kayttaja jarjestaja = new Kayttaja(
                     "jarjestaja",
-                    "$2a$10$ro75qmPcppB5wthRzNQ6K.b/qZ0RolqT2eUf3pVH50w2RPwNPDsmG",
+                    passwordEncoder.encode("password"),
                     "jarjestaja@example.com",
                     Kayttaja.KayttajaRooli.JARJESTAJA
             );
             Kayttaja admin = new Kayttaja(
                     "admin",
-                    "$2a$10$ro75qmPcppB5wthRzNQ6K.b/qZ0RolqT2eUf3pVH50w2RPwNPDsmG",
+                    passwordEncoder.encode("password"),
                     "admin@example.com",
                     Kayttaja.KayttajaRooli.ADMIN
             );

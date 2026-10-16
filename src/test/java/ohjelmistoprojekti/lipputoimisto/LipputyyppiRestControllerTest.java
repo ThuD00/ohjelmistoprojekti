@@ -13,18 +13,19 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-// TODO: tarkista käyttöoikeudet
+// TODO: testaa myös tapahtuman omistajuus
+
 @SpringBootTest
 @AutoConfigureMockMvc
 public class LipputyyppiRestControllerTest {
     private static final String BASE_URL = "/api/tapahtumat";
 
-    private static final RequestPostProcessor USER1 =
-            httpBasic("user", "user");
-    private static final RequestPostProcessor USER2 =
-            httpBasic("user2", "");
+    private static final RequestPostProcessor MYYJA =
+            httpBasic("myyja", "password");
+    private static final RequestPostProcessor JARJESTAJA =
+            httpBasic("jarjestaja", "password");
     private static final RequestPostProcessor ADMIN =
-            httpBasic("admin", "admin");
+            httpBasic("admin", "password");
 
     @Autowired
     private MockMvc mockMvc;
@@ -75,7 +76,7 @@ public class LipputyyppiRestControllerTest {
     void createLipputyyppiReturnsCreated() throws Exception {
         // ilman maxLippumaara
         mockMvc.perform(post(BASE_URL + "/3/lipputyypit")
-                        .with(ADMIN)
+                        .with(JARJESTAJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -90,7 +91,7 @@ public class LipputyyppiRestControllerTest {
 
         // maxLippumaara
         mockMvc.perform(post(BASE_URL + "/2/lipputyypit")
-                        .with(ADMIN)
+                        .with(JARJESTAJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -109,7 +110,7 @@ public class LipputyyppiRestControllerTest {
     @Test
     void createLipputyyppiReturnsBadRequest() throws Exception {
         mockMvc.perform(post(BASE_URL + "/2/lipputyypit")
-                        .with(USER1)
+                        .with(JARJESTAJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -124,7 +125,7 @@ public class LipputyyppiRestControllerTest {
     void createLipputyyppiReturnsConflict() throws Exception {
         // ylittää koko tapahtuman maxLippumaara
         mockMvc.perform(post(BASE_URL + "/6/lipputyypit")
-                        .with(ADMIN)
+                        .with(JARJESTAJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -137,7 +138,7 @@ public class LipputyyppiRestControllerTest {
 
         // ylittää muiden lipputyyppien kanssa maxLippumaara
         mockMvc.perform(post(BASE_URL + "/8/lipputyypit")
-                        .with(ADMIN)
+                        .with(JARJESTAJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -152,7 +153,7 @@ public class LipputyyppiRestControllerTest {
     @Test
     void modifyLipputyyppiReturnsOk() throws Exception {
         mockMvc.perform(put(BASE_URL + "/2/lipputyypit/2")
-                        .with(ADMIN)
+                        .with(JARJESTAJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -169,7 +170,7 @@ public class LipputyyppiRestControllerTest {
     @Test
     void modifyLipputyyppiReturnsOkWithMaxLippumaara() throws Exception {
         mockMvc.perform(put(BASE_URL + "/8/lipputyypit/1")
-                        .with(ADMIN)
+                        .with(JARJESTAJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -186,7 +187,7 @@ public class LipputyyppiRestControllerTest {
 
         // maxLippumaara nulliksi
         mockMvc.perform(put(BASE_URL + "/6/lipputyypit/1")
-                        .with(ADMIN)
+                        .with(JARJESTAJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -205,7 +206,7 @@ public class LipputyyppiRestControllerTest {
     @Test
     void modifyLipputyyppiReturnsBadRequest() throws Exception {
         mockMvc.perform(put(BASE_URL + "/2/lipputyypit/2")
-                        .with(USER1)
+                        .with(JARJESTAJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -219,7 +220,7 @@ public class LipputyyppiRestControllerTest {
     @Test
     void modifyLipputyyppiReturnsNotFound() throws Exception {
         mockMvc.perform(put(BASE_URL + "/1/lipputyypit/4")
-                        .with(ADMIN)
+                        .with(JARJESTAJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -234,7 +235,7 @@ public class LipputyyppiRestControllerTest {
     void modifyLipputyyppiReturnsConflict() throws Exception {
         // muiden lipputyyppien maxLippumaara yhteenlaskettuna ylittää tapahtuman maxLippumaara
         mockMvc.perform(put(BASE_URL + "/8/lipputyypit/1")
-                        .with(ADMIN)
+                        .with(JARJESTAJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -247,7 +248,7 @@ public class LipputyyppiRestControllerTest {
 
         // lipputyypin maxLippumaara ei saa olla pienempi kuin jo myytyjen lippujen määrä
         mockMvc.perform(put(BASE_URL + "/9/lipputyypit/1")
-                        .with(ADMIN)
+                        .with(JARJESTAJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -259,7 +260,7 @@ public class LipputyyppiRestControllerTest {
                 .andExpect(status().isConflict());
 
         mockMvc.perform(put(BASE_URL + "/9/lipputyypit/1")
-                        .with(ADMIN)
+                        .with(JARJESTAJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -274,14 +275,14 @@ public class LipputyyppiRestControllerTest {
     @Test
     void deleteLipputyyppiReturnsNoContent() throws Exception {
         mockMvc.perform(delete(BASE_URL + "/3/lipputyypit/1")
-                        .with(ADMIN))
+                        .with(JARJESTAJA))
                 .andExpect(status().isNoContent());
     }
 
     @Test
     void deleteLipputyyppiReturnsNotFound() throws Exception {
         mockMvc.perform(delete(BASE_URL + "/3/lipputyypit/99")
-                        .with(ADMIN))
+                        .with(JARJESTAJA))
                 .andExpect(status().isNotFound());
     }
 }

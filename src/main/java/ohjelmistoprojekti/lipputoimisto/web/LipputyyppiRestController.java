@@ -34,7 +34,7 @@ public class LipputyyppiRestController {
         return lipputyyppiService.getLipputyypit(tapahtumaId);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('JARJESTAJA')")
     @PostMapping
     public ResponseEntity<LipputyyppiDto> addLipputyyppi(
             @PathVariable("id") long tapahtumaId,
@@ -43,7 +43,7 @@ public class LipputyyppiRestController {
         return lipputyyppiService.addLipputyyppi(tapahtumaId, body);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('JARJESTAJA')")
     @PutMapping("/{lipputyyppiId}")
     public ResponseEntity<LipputyyppiDto> updateLipputyyppi(
             @PathVariable("id") long tapahtumaId,
@@ -53,7 +53,7 @@ public class LipputyyppiRestController {
         return lipputyyppiService.updateLipputyyppi(tapahtumaId, lipputyyppiId, body);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('JARJESTAJA')")
     @DeleteMapping("/{lipputyyppiId}")
     public ResponseEntity<Void> deleteLipputyyppi(
             @PathVariable("id") long tapahtumaId,

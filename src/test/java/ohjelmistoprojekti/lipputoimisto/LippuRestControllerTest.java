@@ -16,18 +16,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-// TODO: tarkista käyttöoikeudet
 @SpringBootTest
 @AutoConfigureMockMvc
 public class LippuRestControllerTest {
     private static final String BASE_URL = "/api/liput";
 
-    private static final RequestPostProcessor USER1 =
-            httpBasic("user", "user");
-    private static final RequestPostProcessor USER2 =
-            httpBasic("user2", "");
+    private static final RequestPostProcessor MYYJA =
+            httpBasic("myyja", "password");
+    private static final RequestPostProcessor JARJESTAJA =
+            httpBasic("jarjestaja", "password");
     private static final RequestPostProcessor ADMIN =
-            httpBasic("admin", "admin");
+            httpBasic("admin", "password");
 
     @Autowired
     private MockMvc mockMvc;
@@ -37,7 +36,7 @@ public class LippuRestControllerTest {
     @Test
     void reserveTicketReturnsCreated() throws Exception {
         mockMvc.perform(post(BASE_URL + "/varaa")
-                        .with(USER1)
+                        .with(MYYJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -75,7 +74,7 @@ public class LippuRestControllerTest {
     void reserveTicketReturnsNotFound() throws Exception {
         // tapahtumaId ei löydy
         mockMvc.perform(post(BASE_URL + "/varaa")
-                        .with(USER1)
+                        .with(MYYJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -91,7 +90,7 @@ public class LippuRestControllerTest {
                 .andExpect(status().isNotFound());
         // lipputyyppiId ei löydy
         mockMvc.perform(post(BASE_URL + "/varaa")
-                        .with(USER1)
+                        .with(MYYJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -107,7 +106,7 @@ public class LippuRestControllerTest {
                 .andExpect(status().isNotFound());
         // tapahtuma on poistettu
         mockMvc.perform(post(BASE_URL + "/varaa")
-                        .with(USER1)
+                        .with(MYYJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -123,7 +122,7 @@ public class LippuRestControllerTest {
                 .andExpect(status().isNotFound());
         // lipputyyppi on poistettu
         mockMvc.perform(post(BASE_URL + "/varaa")
-                        .with(USER1)
+                        .with(MYYJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -143,7 +142,7 @@ public class LippuRestControllerTest {
     void reserveTicketReturnsBadRequest() throws Exception {
         // ilman lippuja
         mockMvc.perform(post(BASE_URL + "/varaa")
-                        .with(USER1)
+                        .with(MYYJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -154,7 +153,7 @@ public class LippuRestControllerTest {
                 .andExpect(status().isBadRequest());
         // negatiivinen määrä
         mockMvc.perform(post(BASE_URL + "/varaa")
-                        .with(USER1)
+                        .with(MYYJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -170,7 +169,7 @@ public class LippuRestControllerTest {
                 .andExpect(status().isBadRequest());
         // lipputyyppiId puuttuu
         mockMvc.perform(post(BASE_URL + "/varaa")
-                        .with(USER1)
+                        .with(MYYJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -185,7 +184,7 @@ public class LippuRestControllerTest {
                 .andExpect(status().isBadRequest());
         // tapahtumaId puuttuu
         mockMvc.perform(post(BASE_URL + "/varaa")
-                        .with(USER1)
+                        .with(MYYJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -203,7 +202,7 @@ public class LippuRestControllerTest {
     void reserveTicketExceedsMaxLippumaaraCapacityReturnsConflict() throws Exception {
         // tapahtuma.maxLippumaara ylittyy
         mockMvc.perform(post(BASE_URL + "/varaa")
-                        .with(USER1)
+                        .with(MYYJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -219,7 +218,7 @@ public class LippuRestControllerTest {
                 .andExpect(status().isConflict());
         // lipputyyppi.maxLippumaara ylittyy
         mockMvc.perform(post(BASE_URL + "/varaa")
-                        .with(USER1)
+                        .with(MYYJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -235,7 +234,7 @@ public class LippuRestControllerTest {
                 .andExpect(status().isConflict());
         // molemmat ylittyy
         mockMvc.perform(post(BASE_URL + "/varaa")
-                        .with(USER1)
+                        .with(MYYJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -258,7 +257,7 @@ public class LippuRestControllerTest {
     @Test
     void redeemTicketReturnsOk() throws Exception {
         mockMvc.perform(post(BASE_URL + "/lunasta")
-                        .with(USER1)
+                        .with(MYYJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {"koodi": "ABCDEF-123456"}
@@ -272,7 +271,7 @@ public class LippuRestControllerTest {
     @Test
     void redeemTicketReturnsNotFound() throws Exception {
         mockMvc.perform(post(BASE_URL + "/lunasta")
-                        .with(USER1)
+                        .with(MYYJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {"koodi": "AAAAAA-111111"}
@@ -283,7 +282,7 @@ public class LippuRestControllerTest {
     @Test
     void redeemTicketReturnsBadRequest() throws Exception {
         mockMvc.perform(post(BASE_URL + "/lunasta")
-                        .with(USER1)
+                        .with(MYYJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {}
@@ -295,7 +294,7 @@ public class LippuRestControllerTest {
     void redeemTicketReturnsConflict() throws Exception {
         // lippu on jo lunastettu
         mockMvc.perform(post(BASE_URL + "/lunasta")
-                        .with(USER1)
+                        .with(MYYJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {"koodi": "FEDCBA-654321"}
@@ -303,7 +302,7 @@ public class LippuRestControllerTest {
                 .andExpect(status().isConflict());
         // lippu on peruttu
         mockMvc.perform(post(BASE_URL + "/lunasta")
-                        .with(USER1)
+                        .with(MYYJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {"koodi": "AABBCC-112233"}
@@ -314,7 +313,7 @@ public class LippuRestControllerTest {
     @Test
     void cancelTicketReturnsOk() throws Exception {
         mockMvc.perform(post(BASE_URL + "/peru")
-                        .with(USER1)
+                        .with(MYYJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {"koodi": "CCBBAA-332211"}
@@ -327,7 +326,7 @@ public class LippuRestControllerTest {
     @Test
     void cancelTicketReturnsNotFound() throws Exception {
         mockMvc.perform(post(BASE_URL + "/peru")
-                        .with(USER1)
+                        .with(MYYJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {"koodi": "AAAAAA-111111"}
@@ -338,7 +337,7 @@ public class LippuRestControllerTest {
     @Test
     void cancelTicketReturnsBadRequest() throws Exception {
         mockMvc.perform(post(BASE_URL + "/peru")
-                        .with(USER1)
+                        .with(MYYJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {}
@@ -350,7 +349,7 @@ public class LippuRestControllerTest {
     void cancelTicketReturnsConflict() throws Exception {
         // lippu on lunastettu
         mockMvc.perform(post(BASE_URL + "/peru")
-                        .with(USER1)
+                        .with(MYYJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {"koodi": "FEDCBA-654321"}
@@ -358,7 +357,7 @@ public class LippuRestControllerTest {
                 .andExpect(status().isConflict());
         // lippu on jo peruttu
         mockMvc.perform(post(BASE_URL + "/peru")
-                        .with(USER1)
+                        .with(MYYJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {"koodi": "AABBCC-112233"}
