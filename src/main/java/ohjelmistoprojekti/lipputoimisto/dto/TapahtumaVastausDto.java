@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 
 @JsonPropertyOrder({
         "tapahtumaId",
+        "jarjestajaId",
         "aika",
         "paikka",
         "kaupunki",
@@ -20,6 +21,9 @@ import java.time.LocalDateTime;
 public class TapahtumaVastausDto {
     @NotNull
     private long tapahtumaId;
+
+    @NotNull
+    private long jarjestajaId;
 
     @NotNull
     private LocalDateTime aika;
@@ -38,6 +42,7 @@ public class TapahtumaVastausDto {
 
     public TapahtumaVastausDto(Tapahtuma tapahtuma) {
         this.tapahtumaId = tapahtuma.getTapahtumaId();
+        this.jarjestajaId = tapahtuma.getJarjestaja().getId();
         this.aika = tapahtuma.getAika();
         this.paikka = tapahtuma.getPaikka();
         this.kaupunki = tapahtuma.getKaupunki();
@@ -45,8 +50,9 @@ public class TapahtumaVastausDto {
         this.maxLippumaara = tapahtuma.getMaxLippumaara();
     }
 
-    public TapahtumaVastausDto(long tapahtumaId, LocalDateTime aika, String paikka, String kaupunki, String kuvaus, int maxLippumaara) {
+    public TapahtumaVastausDto(long tapahtumaId, long jarjestajaId, LocalDateTime aika, String paikka, String kaupunki, String kuvaus, int maxLippumaara) {
         this.tapahtumaId = tapahtumaId;
+        this.jarjestajaId = jarjestajaId;
         this.aika = aika;
         this.paikka = paikka;
         this.kaupunki = kaupunki;
@@ -111,6 +117,14 @@ public class TapahtumaVastausDto {
 
     public void setTapahtumaId(long tapahtumaId) {
         this.tapahtumaId = tapahtumaId;
+    }
+
+    public long getJarjestajaId() {
+        return jarjestajaId;
+    }
+
+    public void setJarjestajaId(long jarjestajaId) {
+        this.jarjestajaId = jarjestajaId;
     }
 }
 

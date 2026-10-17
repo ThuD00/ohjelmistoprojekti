@@ -1,15 +1,14 @@
 package ohjelmistoprojekti.lipputoimisto;
 
 import ohjelmistoprojekti.lipputoimisto.domain.*;
-import ohjelmistoprojekti.lipputoimisto.repository.LippuRepository;
-import ohjelmistoprojekti.lipputoimisto.repository.LipputyyppiRepository;
-import ohjelmistoprojekti.lipputoimisto.repository.MyyntitapahtumaRepository;
-import ohjelmistoprojekti.lipputoimisto.repository.TapahtumaRepository;
+import ohjelmistoprojekti.lipputoimisto.repository.*;
 import org.h2.tools.Server;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -17,6 +16,8 @@ import java.time.LocalDateTime;
 
 @SpringBootApplication
 public class LipputoimistoApplication {
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     public static void main(String[] args) {
         SpringApplication.run(LipputoimistoApplication.class, args);
@@ -36,6 +37,7 @@ public class LipputoimistoApplication {
 
     @Bean
     public CommandLineRunner demo(
+            KayttajaRepository kayttajaRepository,
             LippuRepository lippuRepository,
             LipputyyppiRepository lipputyyppiRepository,
             MyyntitapahtumaRepository myyntitapahtumaRepository,
@@ -43,8 +45,40 @@ public class LipputoimistoApplication {
 
         return (args) -> {
 
+            // käyttäjät
+            Kayttaja myyja = new Kayttaja(
+                    "myyja",
+                    passwordEncoder.encode("password"),
+                    "myyja@example.com",
+                    Kayttaja.KayttajaRooli.MYYJA
+            );
+            Kayttaja jarjestaja = new Kayttaja(
+                    "jarjestaja",
+                    passwordEncoder.encode("password"),
+                    "jarjestaja@example.com",
+                    Kayttaja.KayttajaRooli.JARJESTAJA
+            );
+            Kayttaja jarjestaja1 = new Kayttaja(
+                    "jarjestaja1",
+                    passwordEncoder.encode("password"),
+                    "jarjestaja1@example.com",
+                    Kayttaja.KayttajaRooli.JARJESTAJA
+            );
+            Kayttaja admin = new Kayttaja(
+                    "admin",
+                    passwordEncoder.encode("password"),
+                    "admin@example.com",
+                    Kayttaja.KayttajaRooli.ADMIN
+            );
+
+            kayttajaRepository.save(admin);
+            kayttajaRepository.save(jarjestaja);
+            kayttajaRepository.save(jarjestaja1);
+            kayttajaRepository.save(myyja);
+
             // Tapahtumat
             Tapahtuma tapahtuma1 = new Tapahtuma(
+                    jarjestaja,
                     LocalDateTime.of(2026, 10, 5, 20, 0),
                     "Tavastia",
                     "Helsinki",
@@ -53,6 +87,7 @@ public class LipputoimistoApplication {
                     false);
 
             Tapahtuma tapahtuma2 = new Tapahtuma(
+                    jarjestaja1,
                     LocalDateTime.of(2026, 11, 15, 19, 0),
                     "Olympiastadion",
                     "Helsinki",
@@ -60,6 +95,7 @@ public class LipputoimistoApplication {
                     40000, false);
 
             Tapahtuma tapahtuma3 = new Tapahtuma(
+                    jarjestaja,
                     LocalDateTime.of(2026, 12, 10, 18, 0),
                     "Finlandia-talo",
                     "Helsinki",
@@ -67,6 +103,7 @@ public class LipputoimistoApplication {
                     1700,
                     false);
             Tapahtuma tapahtuma4 = new Tapahtuma(
+                    jarjestaja1,
                     LocalDateTime.of(2026, 11, 20, 19, 0),
                     "Helsingin jäähalli",
                     "Helsinki",
@@ -75,6 +112,7 @@ public class LipputoimistoApplication {
                     true
             );
             Tapahtuma tapahtuma5 = new Tapahtuma(
+                    jarjestaja,
                     LocalDateTime.of(2026, 12, 5, 18, 30),
                     "Tampere-talo",
                     "Tampere",
@@ -83,6 +121,7 @@ public class LipputoimistoApplication {
                     true
             );
             Tapahtuma tapahtuma6 = new Tapahtuma(
+                    jarjestaja,
                     LocalDateTime.of(2027, 1, 22, 18, 0),
                     "Sibeliustalo",
                     "Lahti",
@@ -91,6 +130,7 @@ public class LipputoimistoApplication {
                     false
             );
             Tapahtuma tapahtuma7 = new Tapahtuma(
+                    jarjestaja,
                     LocalDateTime.of(2027, 7, 17, 18, 0),
                     "Elon talo",
                     "Luusniemi",
@@ -99,6 +139,7 @@ public class LipputoimistoApplication {
                     false
             );
             Tapahtuma tapahtuma8 = new Tapahtuma(
+                    jarjestaja,
                     LocalDateTime.of(2027, 5, 18, 10, 0),
                     "Messukeskus",
                     "Helsinki",
@@ -107,6 +148,7 @@ public class LipputoimistoApplication {
                     false
             );
             Tapahtuma tapahtuma9 = new Tapahtuma(
+                    jarjestaja,
                     LocalDateTime.of(2027, 8, 1, 18, 0),
                     "Test",
                     "Helsinki",
@@ -115,6 +157,7 @@ public class LipputoimistoApplication {
                     false
             );
             Tapahtuma tapahtuma10 = new Tapahtuma(
+                    jarjestaja,
                     LocalDateTime.of(2027, 12, 12, 12, 12),
                     "Test",
                     "Helsinki",
