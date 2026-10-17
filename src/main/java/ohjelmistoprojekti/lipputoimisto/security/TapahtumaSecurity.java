@@ -2,42 +2,30 @@ package ohjelmistoprojekti.lipputoimisto.security;
 
 import ohjelmistoprojekti.lipputoimisto.domain.Kayttaja;
 import ohjelmistoprojekti.lipputoimisto.domain.Tapahtuma;
-import ohjelmistoprojekti.lipputoimisto.repository.KayttajaRepository;
 import ohjelmistoprojekti.lipputoimisto.repository.TapahtumaRepository;
+import ohjelmistoprojekti.lipputoimisto.service.UserContextService;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.Optional;
 
 @Component("tapahtumaSecurity")
 public class TapahtumaSecurity {
     private final TapahtumaRepository tapahtumaRepository;
-    private final KayttajaRepository kayttajaRepository;
+    private final UserContextService userContextService;
 
-    public TapahtumaSecurity(TapahtumaRepository tapahtumaRepository, KayttajaRepository kayttajaRepository) {
+    public TapahtumaSecurity(
+            TapahtumaRepository tapahtumaRepository,
+            UserContextService userContextService) {
         this.tapahtumaRepository = tapahtumaRepository;
-        this.kayttajaRepository = kayttajaRepository;
+        this.userContextService = userContextService;
     }
+
     public boolean isOwner(long tapahtumaId) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null) {
-            throw new IllegalStateException();
-        }
-        String currentPrincipalName = auth.getName();
+        Kayttaja kayttaja = userContextService.getCurrentUser();
 
-        Kayttaja kayttaja = kayttajaRepository.findKayttajaByKayttajanimi(currentPrincipalName);
-        if (kayttaja == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Käyttäjää ei löytynyt");
-        }
-
-        Optional<Tapahtuma> tapahtumaOptional = tapahtumaRepository.findById(tapahtumaId);
-        if (tapahtumaOptional.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Tapahtumaa ei löytynyt");
-        }
-        Tapahtuma tapahtuma = tapahtumaOptional.get();
+        Tapahtuma tapahtuma = tapahtumaRepository.findById(tapahtumaId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Tapahtumaa ei löytynyt"));
 
         return tapahtuma.getJarjestaja().equals(kayttaja);
     }

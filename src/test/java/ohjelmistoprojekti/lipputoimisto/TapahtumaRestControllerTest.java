@@ -85,7 +85,6 @@ class TapahtumaRestControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.tapahtumaId").value(11))
                 .andExpect(jsonPath("$.jarjestajaId").value(2))
-
                 .andExpect(jsonPath("$.aika").value("2027-01-01T00:00:00"))
                 .andExpect(jsonPath("$.paikka").value("Kansalaistori"))
                 .andExpect(jsonPath("$.kaupunki").value("Helsinki"))

@@ -55,6 +55,16 @@ public class Tapahtuma {
     public Tapahtuma() {
     }
 
+    public Tapahtuma(Kayttaja jarjestaja, LocalDateTime aika, String paikka, String kaupunki, String kuvaus,
+                     int maxLippumaara) {
+        this.jarjestaja = jarjestaja;
+        this.aika = aika;
+        this.paikka = paikka;
+        this.kaupunki = kaupunki;
+        this.kuvaus = kuvaus;
+        this.maxLippumaara = maxLippumaara;
+    }
+
     public Tapahtuma(LocalDateTime aika, String paikka, String kaupunki, String kuvaus,
                      int maxLippumaara) {
         this.aika = aika;

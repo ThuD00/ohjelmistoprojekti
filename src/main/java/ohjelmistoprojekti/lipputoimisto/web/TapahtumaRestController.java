@@ -1,11 +1,13 @@
 package ohjelmistoprojekti.lipputoimisto.web;
 
 import jakarta.validation.Valid;
+import ohjelmistoprojekti.lipputoimisto.domain.Kayttaja;
 import ohjelmistoprojekti.lipputoimisto.domain.Tapahtuma;
 import ohjelmistoprojekti.lipputoimisto.dto.TapahtumaPyyntoDto;
 import ohjelmistoprojekti.lipputoimisto.dto.TapahtumaVastausDto;
 import ohjelmistoprojekti.lipputoimisto.repository.TapahtumaRepository;
 import ohjelmistoprojekti.lipputoimisto.service.TapahtumaService;
+import ohjelmistoprojekti.lipputoimisto.service.UserContextService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,10 +21,12 @@ public class TapahtumaRestController {
 
     private final TapahtumaRepository tapahtumaRepository;
     private final TapahtumaService tapahtumaService;
+    private final UserContextService userContextService;
 
-    public TapahtumaRestController(TapahtumaRepository tapahtumaRepository, TapahtumaService tapahtumaService) {
+    public TapahtumaRestController(TapahtumaRepository tapahtumaRepository, TapahtumaService tapahtumaService, UserContextService userContextService) {
         this.tapahtumaRepository = tapahtumaRepository;
         this.tapahtumaService = tapahtumaService;
+        this.userContextService = userContextService;
     }
 
     @GetMapping
@@ -42,7 +46,10 @@ public class TapahtumaRestController {
     public ResponseEntity<TapahtumaVastausDto> addTapahtuma(
             @Valid @RequestBody TapahtumaPyyntoDto pyynto) {
 
+        Kayttaja kayttaja = userContextService.getCurrentUser();
+
         Tapahtuma tapahtuma = tapahtumaRepository.save(new Tapahtuma(
+                kayttaja,
                 pyynto.getAika(),
                 pyynto.getPaikka(),
                 pyynto.getKaupunki(),

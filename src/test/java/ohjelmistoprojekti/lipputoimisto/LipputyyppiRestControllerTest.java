@@ -90,7 +90,7 @@ public class LipputyyppiRestControllerTest {
                 .andExpect(jsonPath("$.lipunHinta").value(5.00));
 
         // maxLippumaara
-        mockMvc.perform(post(BASE_URL + "/2/lipputyypit")
+        mockMvc.perform(post(BASE_URL + "/3/lipputyypit")
                         .with(JARJESTAJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
@@ -101,7 +101,7 @@ public class LipputyyppiRestControllerTest {
                                 }
                                 """))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.lipputyyppiId").value(3))
+                .andExpect(jsonPath("$.lipputyyppiId").value(4))
                 .andExpect(jsonPath("$.kuvaus").value("VIP"))
                 .andExpect(jsonPath("$.lipunHinta").value(80.00))
                 .andExpect(jsonPath("$.maxLippumaara").value(500));
@@ -152,7 +152,7 @@ public class LipputyyppiRestControllerTest {
 
     @Test
     void modifyLipputyyppiReturnsOk() throws Exception {
-        mockMvc.perform(put(BASE_URL + "/2/lipputyypit/2")
+        mockMvc.perform(put(BASE_URL + "/3/lipputyypit/2")
                         .with(JARJESTAJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
