@@ -24,6 +24,8 @@ class TapahtumaRestControllerTest {
             httpBasic("myyja", "password");
     private static final RequestPostProcessor JARJESTAJA =
             httpBasic("jarjestaja", "password");
+    private static final RequestPostProcessor JARJESTAJA1 =
+            httpBasic("jarjestaja1", "password");
     private static final RequestPostProcessor ADMIN =
             httpBasic("admin", "password");
 
@@ -39,6 +41,7 @@ class TapahtumaRestControllerTest {
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(8))
                 .andExpect(jsonPath("$[0].tapahtumaId").value(1))
+                .andExpect(jsonPath("$[0].jarjestajaId").value(2))
                 .andExpect(jsonPath("$[0].aika").value("2026-10-05T20:00:00"))
                 .andExpect(jsonPath("$[0].paikka").value("Tavastia"))
                 .andExpect(jsonPath("$[0].kaupunki").value("Helsinki"))
@@ -51,6 +54,7 @@ class TapahtumaRestControllerTest {
         mockMvc.perform(get(BASE_URL + "/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.tapahtumaId").value(1))
+                .andExpect(jsonPath("$.jarjestajaId").value(2))
                 .andExpect(jsonPath("$.aika").value("2026-10-05T20:00:00"))
                 .andExpect(jsonPath("$.paikka").value("Tavastia"))
                 .andExpect(jsonPath("$.kaupunki").value("Helsinki"))
@@ -80,6 +84,8 @@ class TapahtumaRestControllerTest {
                                 """))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.tapahtumaId").value(11))
+                .andExpect(jsonPath("$.jarjestajaId").value(2))
+
                 .andExpect(jsonPath("$.aika").value("2027-01-01T00:00:00"))
                 .andExpect(jsonPath("$.paikka").value("Kansalaistori"))
                 .andExpect(jsonPath("$.kaupunki").value("Helsinki"))
@@ -121,7 +127,7 @@ class TapahtumaRestControllerTest {
     @Test
     void modifyTapahtumaReturnsOk() throws Exception {
         mockMvc.perform(put(BASE_URL + "/2")
-                        .with(JARJESTAJA)
+                        .with(JARJESTAJA1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -134,6 +140,7 @@ class TapahtumaRestControllerTest {
                                 """))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.tapahtumaId").value(2))
+                .andExpect(jsonPath("$.jarjestajaId").value(3))
                 .andExpect(jsonPath("$.aika").value("2026-11-15T19:00:00"))
                 .andExpect(jsonPath("$.paikka").value("Olympiastadion"))
                 .andExpect(jsonPath("$.kaupunki").value("Helsinki"))
@@ -144,7 +151,7 @@ class TapahtumaRestControllerTest {
     @Test
     void modifyTapahtumaReturnsBadRequest() throws Exception {
         mockMvc.perform(put(BASE_URL + "/2")
-                        .with(JARJESTAJA)
+                        .with(JARJESTAJA1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {

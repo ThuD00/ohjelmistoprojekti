@@ -72,9 +72,9 @@ public class LipputoimistoApplication {
             );
 
             kayttajaRepository.save(admin);
-            kayttajaRepository.save(myyja);
             kayttajaRepository.save(jarjestaja);
             kayttajaRepository.save(jarjestaja1);
+            kayttajaRepository.save(myyja);
 
             // Tapahtumat
             Tapahtuma tapahtuma1 = new Tapahtuma(
