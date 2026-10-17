@@ -26,7 +26,7 @@ public class Tapahtuma {
     private long tapahtumaId;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "jarjestaja_id", nullable = false)
+    @JoinColumn(name = "kayttaja_id", nullable = false)
     private Kayttaja jarjestaja;
 
     @NotNull

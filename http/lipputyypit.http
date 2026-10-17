@@ -45,6 +45,25 @@ Authorization: Basic {{jarjestajaToken}}
   "maxLippumaara": 100
 }
 
+### Lisää lipputyyppi ilman oikeuksia (toisen järjestäjän tapahtumaan)
+POST http://localhost:8080/api/tapahtumat/2/lipputyypit
+Content-Type: application/json
+Authorization: Basic {{jarjestajaToken}}
+
+{
+  "kuvaus": "Aikuinen",
+  "lipunHinta": 15.00
+}
+
+### Lisää lipputyyppi toisen järjestäjän tapahtumaan adminina
+POST http://localhost:8080/api/tapahtumat/2/lipputyypit
+Content-Type: application/json
+Authorization: Basic {{adminToken}}
+
+{
+  "kuvaus": "Aikuinen",
+  "lipunHinta": 15.00
+}
 
 ### Lisää lipputyyppi tapahtumaan, jota ei ole
 POST http://localhost:8080/api/tapahtumat/99999/lipputyypit

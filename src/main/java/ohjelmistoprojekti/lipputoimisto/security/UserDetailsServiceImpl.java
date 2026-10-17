@@ -1,4 +1,4 @@
-package ohjelmistoprojekti.lipputoimisto.service;
+package ohjelmistoprojekti.lipputoimisto.security;
 
 import ohjelmistoprojekti.lipputoimisto.domain.Kayttaja;
 import ohjelmistoprojekti.lipputoimisto.repository.KayttajaRepository;
@@ -23,8 +23,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Kayttaja currentUser = repository.findKayttajaByKayttajanimi(username);
-        if (currentUser == null) {
-            throw new UsernameNotFoundException("Käyttäjä ei löytynyt: " + username);
+        if (currentUser == null || !currentUser.isEnabled()) {
+            throw new UsernameNotFoundException("Käyttäjää ei löytynyt: " + username);
         }
         return new org.springframework.security.core.userdetails.User(username, currentUser.getSalasana(),
                 AuthorityUtils.createAuthorityList("ROLE_" + currentUser.getRooli()));

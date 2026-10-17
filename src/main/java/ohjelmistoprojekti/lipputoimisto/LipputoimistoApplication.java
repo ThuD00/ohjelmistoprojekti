@@ -58,6 +58,12 @@ public class LipputoimistoApplication {
                     "jarjestaja@example.com",
                     Kayttaja.KayttajaRooli.JARJESTAJA
             );
+            Kayttaja jarjestaja1 = new Kayttaja(
+                    "jarjestaja1",
+                    passwordEncoder.encode("password"),
+                    "jarjestaja1@example.com",
+                    Kayttaja.KayttajaRooli.JARJESTAJA
+            );
             Kayttaja admin = new Kayttaja(
                     "admin",
                     passwordEncoder.encode("password"),
@@ -68,9 +74,11 @@ public class LipputoimistoApplication {
             kayttajaRepository.save(admin);
             kayttajaRepository.save(myyja);
             kayttajaRepository.save(jarjestaja);
+            kayttajaRepository.save(jarjestaja1);
 
             // Tapahtumat
             Tapahtuma tapahtuma1 = new Tapahtuma(
+                    jarjestaja,
                     LocalDateTime.of(2026, 10, 5, 20, 0),
                     "Tavastia",
                     "Helsinki",
@@ -79,6 +87,7 @@ public class LipputoimistoApplication {
                     false);
 
             Tapahtuma tapahtuma2 = new Tapahtuma(
+                    jarjestaja1,
                     LocalDateTime.of(2026, 11, 15, 19, 0),
                     "Olympiastadion",
                     "Helsinki",
@@ -86,6 +95,7 @@ public class LipputoimistoApplication {
                     40000, false);
 
             Tapahtuma tapahtuma3 = new Tapahtuma(
+                    jarjestaja,
                     LocalDateTime.of(2026, 12, 10, 18, 0),
                     "Finlandia-talo",
                     "Helsinki",
@@ -93,6 +103,7 @@ public class LipputoimistoApplication {
                     1700,
                     false);
             Tapahtuma tapahtuma4 = new Tapahtuma(
+                    jarjestaja1,
                     LocalDateTime.of(2026, 11, 20, 19, 0),
                     "Helsingin jäähalli",
                     "Helsinki",
@@ -101,6 +112,7 @@ public class LipputoimistoApplication {
                     true
             );
             Tapahtuma tapahtuma5 = new Tapahtuma(
+                    jarjestaja,
                     LocalDateTime.of(2026, 12, 5, 18, 30),
                     "Tampere-talo",
                     "Tampere",
@@ -109,6 +121,7 @@ public class LipputoimistoApplication {
                     true
             );
             Tapahtuma tapahtuma6 = new Tapahtuma(
+                    jarjestaja,
                     LocalDateTime.of(2027, 1, 22, 18, 0),
                     "Sibeliustalo",
                     "Lahti",
@@ -117,6 +130,7 @@ public class LipputoimistoApplication {
                     false
             );
             Tapahtuma tapahtuma7 = new Tapahtuma(
+                    jarjestaja,
                     LocalDateTime.of(2027, 7, 17, 18, 0),
                     "Elon talo",
                     "Luusniemi",
@@ -125,6 +139,7 @@ public class LipputoimistoApplication {
                     false
             );
             Tapahtuma tapahtuma8 = new Tapahtuma(
+                    jarjestaja,
                     LocalDateTime.of(2027, 5, 18, 10, 0),
                     "Messukeskus",
                     "Helsinki",
@@ -133,6 +148,7 @@ public class LipputoimistoApplication {
                     false
             );
             Tapahtuma tapahtuma9 = new Tapahtuma(
+                    jarjestaja,
                     LocalDateTime.of(2027, 8, 1, 18, 0),
                     "Test",
                     "Helsinki",
@@ -141,6 +157,7 @@ public class LipputoimistoApplication {
                     false
             );
             Tapahtuma tapahtuma10 = new Tapahtuma(
+                    jarjestaja,
                     LocalDateTime.of(2027, 12, 12, 12, 12),
                     "Test",
                     "Helsinki",

@@ -8,8 +8,10 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import org.hibernate.annotations.SQLDelete;
 
-@Entity 
+@Entity
+@SQLDelete(sql = "UPDATE kayttaja SET enabled = false WHERE id=?")
 public class Kayttaja {
 
     public enum KayttajaRooli {
@@ -35,6 +37,8 @@ public class Kayttaja {
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
   private KayttajaRooli rooli;
+
+  private boolean enabled = true;
 
   public Kayttaja() {
 
@@ -86,6 +90,15 @@ public class Kayttaja {
   public void setRooli(KayttajaRooli rooli) {
     this.rooli = rooli;
   }
+
+  public boolean isEnabled() {
+    return enabled;
+  }
+
+  public void setEnabled(boolean enabled) {
+    this.enabled = enabled;
+  }
+
 
   @Override
   public String toString() {

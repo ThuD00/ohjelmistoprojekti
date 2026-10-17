@@ -81,6 +81,34 @@ Authorization: Basic {{jarjestajaToken}}
   "maxLippumaara": 800
 }
 
+### Muokkaa tapahtumaa ilman oikeuksia (toisen järjestäjän tapahtuma)
+PUT http://localhost:8080/api/tapahtumat/2
+Content-Type: application/json
+Authorization: Basic {{jarjestajaToken}}
+
+{
+  "aika": "2026-07-15T19:00:00",
+  "paikka": "Olympiastadion",
+  "kaupunki": "Helsinki",
+  "kuvaus": "Rock Festival 2026 (Päivitetty)",
+  "maxLippumaara": 45000
+}
+
+### Muokkaa toisen järjestäjän tapahtumaa adminina
+PUT http://localhost:8080/api/tapahtumat/2
+Content-Type: application/json
+Authorization: Basic {{adminToken}}
+
+{
+  "aika": "2026-07-15T19:00:00",
+  "paikka": "Olympiastadion",
+  "kaupunki": "Helsinki",
+  "kuvaus": "Rock Festival 2026 (Päivitetty)",
+  "maxLippumaara": 45000
+}
+
+
+
 ### Muokkaa tapahtumaa, jota ei ole
 PUT http://localhost:8080/api/tapahtumat/99999
 Content-Type: application/json

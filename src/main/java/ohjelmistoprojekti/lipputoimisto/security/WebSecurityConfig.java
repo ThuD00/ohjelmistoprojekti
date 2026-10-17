@@ -1,4 +1,4 @@
-package ohjelmistoprojekti.lipputoimisto;
+package ohjelmistoprojekti.lipputoimisto.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
