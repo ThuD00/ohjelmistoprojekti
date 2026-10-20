@@ -3,6 +3,7 @@ package ohjelmistoprojekti.lipputoimisto.web;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,9 +30,15 @@ public class LipputyyppiRestController {
 
     @GetMapping
     public ResponseEntity<List<LipputyyppiDto>> getLipputyypit(
-            @PathVariable("id") long tapahtumaId) {
+            @PathVariable("id") long tapahtumaId,
+            Authentication authentication) {
 
-        return lipputyyppiService.getLipputyypit(tapahtumaId);
+        boolean isAdmin = authentication != null
+                && authentication.getAuthorities().stream()
+                    .anyMatch(authority ->
+                        authority.getAuthority().equals("ROLE_ADMIN"));
+
+        return lipputyyppiService.getLipputyypit(tapahtumaId, isAdmin);
     }
 
     @PreAuthorize("(hasRole('JARJESTAJA') and @tapahtumaSecurity.isOwner(#tapahtumaId)) or hasRole('ADMIN')")

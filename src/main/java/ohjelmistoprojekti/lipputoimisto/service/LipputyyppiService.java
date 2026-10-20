@@ -74,19 +74,29 @@ public class LipputyyppiService {
     }
 
 
-    public ResponseEntity<List<LipputyyppiDto>> getLipputyypit(long tapahtumaId) {
-        Optional<Tapahtuma> tapahtuma = tapahtumaRepository.findById(tapahtumaId);
+    public ResponseEntity<List<LipputyyppiDto>> getLipputyypit(long tapahtumaId, boolean isAdmin) {
 
-        if (tapahtuma.isPresent()) {
-            return ResponseEntity.ok(tapahtuma.get().getLipputyypit().stream().filter(e -> !e.isPoistettu())
-                    .map(e -> new LipputyyppiDto(
-                            e.getId().getLipputyyppiId(),
-                            e.getKuvaus(),
-                            e.getLipunHinta(),
-                            e.getMaxLippumaara()))
-                    .toList());
+        Optional<Tapahtuma> tapahtuma = tapahtumaRepository.findByIdIncludingPoistettu(tapahtumaId);
+
+        if (tapahtuma.isEmpty()) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
+
+        Tapahtuma loydettyTapahtuma = tapahtuma.get();
+
+        if (loydettyTapahtuma.isPoistettu() && !isAdmin) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        return ResponseEntity.ok(
+            loydettyTapahtuma.getLipputyypit().stream()
+                .filter(e -> !e.isPoistettu())
+                .map(e -> new LipputyyppiDto(
+                        e.getId().getLipputyyppiId(),
+                        e.getKuvaus(),
+                        e.getLipunHinta(),
+                        e.getMaxLippumaara()))
+                .toList());
     }
 
     public ResponseEntity<LipputyyppiDto> addLipputyyppi(long tapahtumaId, LipputyyppiPyyntoDto body) {

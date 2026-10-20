@@ -16,4 +16,6 @@ public interface TapahtumaRepository extends JpaRepository<Tapahtuma, Long> {
     @NonNull
     @Query("SELECT t FROM Tapahtuma t WHERE t.tapahtumaId = :id AND t.poistettu = false")
     Optional<Tapahtuma> findById(@Param("id") @NonNull Long id);
+    @Query("SELECT t FROM Tapahtuma t WHERE t.tapahtumaId = :id")
+    Optional<Tapahtuma> findByIdIncludingPoistettu(@Param("id") @NonNull Long id);
 }
