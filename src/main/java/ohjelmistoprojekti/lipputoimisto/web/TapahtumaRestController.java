@@ -13,7 +13,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/api/tapahtumat")
@@ -33,6 +37,34 @@ public class TapahtumaRestController {
     public Iterable<TapahtumaVastausDto> findAllTapahtumat(@RequestParam(defaultValue = "false") boolean poistettu) {
         return tapahtumaRepository.findAllByPoistettu(poistettu).stream().map(TapahtumaVastausDto::new).toList();
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/minun")
+    public  List<TapahtumaVastausDto> findMyTapahtumat(
+            @RequestParam(defaultValue = "false") boolean poistettu) {
+
+        Kayttaja kayttaja = userContextService.getCurrentUser();
+
+        return tapahtumaRepository
+                .findAllByJarjestajaAndPoistettu(kayttaja, poistettu)
+                .stream()
+                .map(TapahtumaVastausDto::new)
+                .toList();
+    }
+
+    @GetMapping("/jarjestaja/{jarjestajaId}")
+    public List<TapahtumaVastausDto> findByJarjestaja(
+            @PathVariable Long jarjestajaId,
+            @RequestParam(defaultValue = "false") boolean poistettu) {
+
+        return tapahtumaRepository
+                .findAllByJarjestaja_IdAndPoistettu(jarjestajaId, poistettu)
+                .stream()
+                .map(TapahtumaVastausDto::new)
+                .toList();
+    }
+    
+
 
     @GetMapping("/{id}")
     public ResponseEntity<TapahtumaVastausDto> findById(@PathVariable("id") long tapahtumaId) {
