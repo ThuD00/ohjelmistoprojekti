@@ -5,15 +5,21 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
+import jakarta.validation.constraints.NotNull;
 
 @JsonPropertyOrder({
     "myyntitapahtumaId",
+    "myyjaId",
     "maksuaika",
     "summa",
     "liput"
@@ -25,6 +31,12 @@ public class Myyntitapahtuma {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long myyntitapahtumaId;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "myyja_id", nullable = false)
+    @NotNull
+    private Kayttaja myyja;
 
     private LocalDateTime maksuaika;
     private BigDecimal summa;
@@ -72,11 +84,26 @@ public class Myyntitapahtuma {
         this.liput = liput;
     }
 
+    public Kayttaja getMyyja() {
+        return myyja;
+    }
+
+    @JsonProperty("myyjaId")
+    public Long getMyyjaId() {
+        return myyja != null ? myyja.getId() : null;
+    }
+
+    public void setMyyja(Kayttaja myyja) {
+        this.myyja = myyja;
+    }
+
     @Override
     public String toString() {
-        return "Myyntitapahtuma [myyntitapahtumaId=" + myyntitapahtumaId + ", maksuaika=" + maksuaika + ", summa="
-                + summa + "]";
+        return "Myyntitapahtuma [myyntitapahtumaId=" + myyntitapahtumaId
+                + ", myyjaId=" + getMyyjaId()
+                + ", maksuaika=" + maksuaika
+                + ", summa=" + summa + "]";
     }
-    
+
 
 }

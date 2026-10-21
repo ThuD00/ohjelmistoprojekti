@@ -361,6 +361,12 @@ public class LipputoimistoApplication {
                     new BigDecimal("10.00")
             );
 
+        myynti1.setMyyja(myyja);
+        myynti2.setMyyja(myyja);
+        myynti3.setMyyja(myyja);
+        myynti4.setMyyja(myyja);
+        myynti5.setMyyja(myyja);
+
             myyntitapahtumaRepository.save(myynti1);
             myyntitapahtumaRepository.save(myynti2);
             myyntitapahtumaRepository.save(myynti3);

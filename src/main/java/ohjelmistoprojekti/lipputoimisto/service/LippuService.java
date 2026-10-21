@@ -22,13 +22,16 @@ public class LippuService {
     private final LipputyyppiRepository lipputyyppiRepository;
     private final TapahtumaRepository tapahtumaRepository;
     private final MyyntitapahtumaRepository myyntitapahtumaRepository;
+    private final UserContextService userContextService;
 
     public LippuService(LippuRepository lippuRepository, LipputyyppiRepository lipputyyppiRepository,
-                        TapahtumaRepository tapahtumaRepository, MyyntitapahtumaRepository myyntitapahtumaRepository) {
+                        TapahtumaRepository tapahtumaRepository, MyyntitapahtumaRepository myyntitapahtumaRepository, 
+                        UserContextService userContextService) {
         this.lippuRepository = lippuRepository;
         this.lipputyyppiRepository = lipputyyppiRepository;
         this.tapahtumaRepository = tapahtumaRepository;
         this.myyntitapahtumaRepository = myyntitapahtumaRepository;
+        this.userContextService = userContextService;
     }
 
     public ResponseEntity<?> varaaLiput(LippuVarausPyynto pyynto) {
@@ -97,6 +100,9 @@ public class LippuService {
         }
 
         Myyntitapahtuma myyntitapahtuma = new Myyntitapahtuma(LocalDateTime.now(), summa);
+
+        myyntitapahtuma.setMyyja(userContextService.getCurrentUser());
+        
         myyntitapahtumaRepository.save(myyntitapahtuma);
 
         List<VarattuLippu> varatutLiput = new ArrayList<>();
