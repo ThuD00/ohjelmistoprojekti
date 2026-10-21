@@ -4,7 +4,6 @@ import ohjelmistoprojekti.lipputoimisto.domain.Lippu;
 import ohjelmistoprojekti.lipputoimisto.domain.Tapahtuma;
 import ohjelmistoprojekti.lipputoimisto.repository.LippuRepository;
 import ohjelmistoprojekti.lipputoimisto.repository.LipputyyppiRepository;
-import ohjelmistoprojekti.lipputoimisto.repository.TapahtumaRepository;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,6 +14,11 @@ public class TapahtumaService {
     public TapahtumaService(LipputyyppiRepository lipputyyppiRepository, LippuRepository lippuRepository) {
         this.lipputyyppiRepository = lipputyyppiRepository;
         this.lippuRepository = lippuRepository;
+    }
+
+    public long calculateLiputjaljella(Tapahtuma tapahtuma) {
+        return tapahtuma.getMaxLippumaara() - lippuRepository.countLippuWithoutMaxLippumaara(tapahtuma, Lippu.LippuTila.PERUTTU)
+                - lipputyyppiRepository.sumMaxLippumaaraByTapahtuma(tapahtuma);
     }
 
     public boolean validateTapahtumaMaxLippumaara(Tapahtuma tapahtuma, Tapahtuma uusiTapahtuma) {

@@ -108,7 +108,7 @@ public class LipputyyppiService {
 
             Lipputyyppi lipputyyppi = new Lipputyyppi(new LipputyyppiId(tapahtumaId, nextLipputyyppiId(tapahtumaId)), tapahtuma, body.getKuvaus(), body.getLipunHinta(), body.getMaxLippumaara());
 
-            if (!validateMaxLippumaara(tapahtuma, lipputyyppi)) { // TODO: testaa
+            if (!validateMaxLippumaara(tapahtuma, lipputyyppi)) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).build();
             }
 

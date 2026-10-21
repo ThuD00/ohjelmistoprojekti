@@ -46,7 +46,8 @@ class TapahtumaRestControllerTest {
                 .andExpect(jsonPath("$[0].paikka").value("Tavastia"))
                 .andExpect(jsonPath("$[0].kaupunki").value("Helsinki"))
                 .andExpect(jsonPath("$[0].kuvaus").value("Stand-up Comedy Night"))
-                .andExpect(jsonPath("$[0].maxLippumaara").value(700));
+                .andExpect(jsonPath("$[0].maxLippumaara").value(700))
+                .andExpect(jsonPath("$[0].liputJaljella").value(697));
     }
 
     @Test
@@ -59,7 +60,8 @@ class TapahtumaRestControllerTest {
                 .andExpect(jsonPath("$.paikka").value("Tavastia"))
                 .andExpect(jsonPath("$.kaupunki").value("Helsinki"))
                 .andExpect(jsonPath("$.kuvaus").value("Stand-up Comedy Night"))
-                .andExpect(jsonPath("$.maxLippumaara").value(700));
+                .andExpect(jsonPath("$.maxLippumaara").value(700))
+                .andExpect(jsonPath("$.liputJaljella").value(697));
     }
 
     @Test
@@ -89,7 +91,8 @@ class TapahtumaRestControllerTest {
                 .andExpect(jsonPath("$.paikka").value("Kansalaistori"))
                 .andExpect(jsonPath("$.kaupunki").value("Helsinki"))
                 .andExpect(jsonPath("$.kuvaus").value("Uusivuosi"))
-                .andExpect(jsonPath("$.maxLippumaara").value(1000));
+                .andExpect(jsonPath("$.maxLippumaara").value(1000))
+                .andExpect(jsonPath("$.liputJaljella").value(1000));
     }
 
     @Test
@@ -144,7 +147,8 @@ class TapahtumaRestControllerTest {
                 .andExpect(jsonPath("$.paikka").value("Olympiastadion"))
                 .andExpect(jsonPath("$.kaupunki").value("Helsinki"))
                 .andExpect(jsonPath("$.kuvaus").value("Rock Festival"))
-                .andExpect(jsonPath("$.maxLippumaara").value(30000));
+                .andExpect(jsonPath("$.maxLippumaara").value(30000))
+                .andExpect(jsonPath("$.liputJaljella").value(29999));
     }
 
     @Test

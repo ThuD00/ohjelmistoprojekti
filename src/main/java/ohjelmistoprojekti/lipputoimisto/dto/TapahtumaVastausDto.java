@@ -40,7 +40,9 @@ public class TapahtumaVastausDto {
     @Positive
     private int maxLippumaara;
 
-    public TapahtumaVastausDto(Tapahtuma tapahtuma) {
+    private long liputJaljella;
+
+    public TapahtumaVastausDto(Tapahtuma tapahtuma, long liputJaljella) {
         this.tapahtumaId = tapahtuma.getTapahtumaId();
         this.jarjestajaId = tapahtuma.getJarjestaja().getId();
         this.aika = tapahtuma.getAika();
@@ -48,9 +50,10 @@ public class TapahtumaVastausDto {
         this.kaupunki = tapahtuma.getKaupunki();
         this.kuvaus = tapahtuma.getKuvaus();
         this.maxLippumaara = tapahtuma.getMaxLippumaara();
+        this.liputJaljella = liputJaljella;
     }
 
-    public TapahtumaVastausDto(long tapahtumaId, long jarjestajaId, LocalDateTime aika, String paikka, String kaupunki, String kuvaus, int maxLippumaara) {
+    public TapahtumaVastausDto(long tapahtumaId, long jarjestajaId, LocalDateTime aika, String paikka, String kaupunki, String kuvaus, int maxLippumaara, long liputJaljella) {
         this.tapahtumaId = tapahtumaId;
         this.jarjestajaId = jarjestajaId;
         this.aika = aika;
@@ -58,6 +61,7 @@ public class TapahtumaVastausDto {
         this.kaupunki = kaupunki;
         this.kuvaus = kuvaus;
         this.maxLippumaara = maxLippumaara;
+        this.liputJaljella = liputJaljella;
     }
 
     public LocalDateTime getAika() {
@@ -125,6 +129,14 @@ public class TapahtumaVastausDto {
 
     public void setJarjestajaId(long jarjestajaId) {
         this.jarjestajaId = jarjestajaId;
+    }
+
+    public long getLiputJaljella() {
+        return liputJaljella;
+    }
+
+    public void setLiputJaljella(long liputJaljella) {
+        this.liputJaljella = liputJaljella;
     }
 }
 

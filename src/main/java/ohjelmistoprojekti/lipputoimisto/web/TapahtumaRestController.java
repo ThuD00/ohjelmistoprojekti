@@ -35,7 +35,10 @@ public class TapahtumaRestController {
 
     @GetMapping
     public Iterable<TapahtumaVastausDto> findAllTapahtumat(@RequestParam(defaultValue = "false") boolean poistettu) {
-        return tapahtumaRepository.findAllByPoistettu(poistettu).stream().map(TapahtumaVastausDto::new).toList();
+        return tapahtumaRepository.findAllByPoistettu(poistettu)
+                .stream()
+                .map(t -> new TapahtumaVastausDto(t, tapahtumaService.calculateLiputjaljella(t)))
+                .toList();
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -48,7 +51,7 @@ public class TapahtumaRestController {
         return tapahtumaRepository
                 .findAllByJarjestajaAndPoistettu(kayttaja, poistettu)
                 .stream()
-                .map(TapahtumaVastausDto::new)
+                .map(t -> new TapahtumaVastausDto(t, tapahtumaService.calculateLiputjaljella(t)))
                 .toList();
     }
 
@@ -60,7 +63,7 @@ public class TapahtumaRestController {
         return tapahtumaRepository
                 .findAllByJarjestaja_IdAndPoistettu(jarjestajaId, poistettu)
                 .stream()
-                .map(TapahtumaVastausDto::new)
+                .map(t -> new TapahtumaVastausDto(t, tapahtumaService.calculateLiputjaljella(t)))
                 .toList();
     }
     
@@ -69,7 +72,8 @@ public class TapahtumaRestController {
     @GetMapping("/{id}")
     public ResponseEntity<TapahtumaVastausDto> findById(@PathVariable("id") long tapahtumaId) {
         Optional<Tapahtuma> tapahtuma = tapahtumaRepository.findById(tapahtumaId);
-        return tapahtuma.map(value -> ResponseEntity.ok(new TapahtumaVastausDto(value))).orElseGet(() -> ResponseEntity.notFound().build());
+        return tapahtuma.map(t -> ResponseEntity.ok(new TapahtumaVastausDto(t, tapahtumaService.calculateLiputjaljella(t))))
+                .orElseGet(() -> ResponseEntity.notFound().build());
 
     }
 
@@ -87,7 +91,7 @@ public class TapahtumaRestController {
                 pyynto.getKaupunki(),
                 pyynto.getKuvaus(),
                 pyynto.getMaxLippumaara()));
-        return ResponseEntity.status(HttpStatus.CREATED).body(new TapahtumaVastausDto(tapahtuma));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new TapahtumaVastausDto(tapahtuma, tapahtumaService.calculateLiputjaljella(tapahtuma)));
     }
 
     @PreAuthorize("(hasRole('JARJESTAJA') and @tapahtumaSecurity.isOwner(#tapahtumaId)) or hasRole('ADMIN')")
@@ -119,7 +123,9 @@ public class TapahtumaRestController {
             tapahtuma.setKuvaus(uusiTapahtuma.getKuvaus());
             tapahtuma.setMaxLippumaara(uusiTapahtuma.getMaxLippumaara());
 
-            return ResponseEntity.ok(new TapahtumaVastausDto(tapahtumaRepository.save(tapahtuma)));
+            tapahtuma = tapahtumaRepository.save(tapahtuma);
+
+            return ResponseEntity.ok(new TapahtumaVastausDto(tapahtuma, tapahtumaService.calculateLiputjaljella(tapahtuma)));
         }
 
         return ResponseEntity.notFound().build();

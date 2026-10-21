@@ -3,6 +3,7 @@
 *Versio: V0.2*
 
 ## URL
+
 `http://.../api`
 
 ---
@@ -13,9 +14,10 @@
 
 * **Metodi**: `GET`
 * **Polku**: `/tapahtumat`
-* **Vastaus**: 
-  * `200 OK`
+* **Vastaus**:
+    * `200 OK`
 * **Vastauksen runko**:
+
 ```json
 [
   {
@@ -48,6 +50,7 @@
 * **Vastaus**:
     * `200 OK`
 * **Vastauksen runko**:
+
 ```json
 [
   {
@@ -78,10 +81,11 @@
 * **Metodi**: `GET`
 * **Polku**: `/tapahtumat/{id}`
 * **Parametrit**: `id (Long)`
-* **Vastaus**: 
-  * `200 OK`
-  * `404 NOT FOUND` (Jos id:tä ei löydy)
+* **Vastaus**:
+    * `200 OK`
+    * `404 NOT FOUND` (Jos id:tä ei löydy)
 * **Vastauksen runko**:
+
 ```json
 {
   "tapahtumaId": 1,
@@ -100,8 +104,9 @@
 * **Metodi**: `GET`
 * **Polku**: `/tapahtumat/omat`
 * **Vastaus**:
-  * `200 OK`
+    * `200 OK`
 * **Vastauksen runko**:
+
 ```json
 [
   {
@@ -132,6 +137,7 @@
 * **Metodi**: `POST`
 * **Polku**: `/tapahtumat`
 * **Pyynnön runko**:
+
 ```json
 {
   "aika": "2026-10-05T20:00:00",
@@ -141,11 +147,14 @@
   "maxLippumaara": 700
 }
 ```
+
 _huom. `järjestäjäId` tulee suoraan tunnistautuneen käyttäjän ID:stä_
-* **Vastaus**: 
-  * `201 CREATED`
-  * `400 BAD REQUEST` (Jos pyynnössä on virheitä)
+
+* **Vastaus**:
+    * `201 CREATED`
+    * `400 BAD REQUEST` (Jos pyynnössä on virheitä)
 * **Vastauksen runko**:
+
 ```json
 {
   "tapahtumaId": 3,
@@ -165,6 +174,7 @@ _huom. `järjestäjäId` tulee suoraan tunnistautuneen käyttäjän ID:stä_
 * **Polku**: `/tapahtumat/{id}`
 * **Parametrit**: `id (Long)`
 * **Pyynnön runko**:
+
 ```json
 {
   "aika": "2026-07-15T19:00:00",
@@ -174,12 +184,14 @@ _huom. `järjestäjäId` tulee suoraan tunnistautuneen käyttäjän ID:stä_
   "maxLippumaara": 45000
 }
 ```
-* **Vastaus**: 
-  * `200 OK`
-  * `400 BAD REQUEST` (Jos pyynnössä on virheitä)
-  * `404 NOT FOUND` (Jos id:tä ei löydy)
-  * `409 CONFLICT` (Jos uusi maxLippumaara < tapahtumaan varatut liput)
+
+* **Vastaus**:
+    * `200 OK`
+    * `400 BAD REQUEST` (Jos pyynnössä on virheitä)
+    * `404 NOT FOUND` (Jos id:tä ei löydy)
+    * `409 CONFLICT` (Jos uusi maxLippumaara < tapahtumaan varatut liput)
 * **Vastauksen runko**:
+
 ```json
 {
   "tapahtumaId": 1,
@@ -198,23 +210,24 @@ _huom. `järjestäjäId` tulee suoraan tunnistautuneen käyttäjän ID:stä_
 * **Metodi**: `DELETE`
 * **Polku**: `/tapahtumat/{id}`
 * **Parametrit**: `id (Long)`
-* **Vastaus**: 
-  * `204 NO CONTENT`
-  * `404 NOT FOUND` (Jos id:tä ei löydy)
+* **Vastaus**:
+    * `204 NO CONTENT`
+    * `404 NOT FOUND` (Jos id:tä ei löydy)
 
 ---
 
 ## 1.1. Lipputyypit
 
-### Hae tapahtuman lipputyypit 
+### Hae tapahtuman lipputyypit
 
 * **Metodi**: `GET`
 * **Polku**: `/tapahtumat/{id}/lipputyypit`
 * **Parametrit**: `id (Long)`
-* **Vastaus**: 
-  * `200 OK`
-  * `404 NOT FOUND` (Jos tapahtumaa ei löydy)
+* **Vastaus**:
+    * `200 OK`
+    * `404 NOT FOUND` (Jos tapahtumaa ei löydy)
 * **Vastauksen runko**:
+
 ```json
 [
   {
@@ -243,16 +256,19 @@ _huom. `järjestäjäId` tulee suoraan tunnistautuneen käyttäjän ID:stä_
 * **Polku**: `/tapahtumat/{id}/lipputyypit`
 * **Parametrit**: `id (Long)`
 * **Pyynnön runko**:
+
 ```json
 {
   "kuvaus": "Aikuinen",
   "lipunHinta": 25.00
 }
 ```
-* **Vastaus**: 
-  * `201 CREATED`
-  * `400 BAD REQUEST` (Jos pyynnössä on virheitä)
+
+* **Vastaus**:
+    * `201 CREATED`
+    * `400 BAD REQUEST` (Jos pyynnössä on virheitä)
 * **Vastauksen runko**:
+
 ```json
 {
   "lipputyyppiId": 1,
@@ -260,9 +276,20 @@ _huom. `järjestäjäId` tulee suoraan tunnistautuneen käyttäjän ID:stä_
   "lipunHinta": 25.00
 }
 ```
-##### Lipputyypille voidaan myös asettaa erillinen maxLippumaara:
-**maxLippumaara** ja **liputJaljella** ovat vastauksessa vain jos lipputyypille on määritelty **maxLippumaara**
+
+#### Lipputyyppikohtainen maxLippumaara
+
+Lipputyypille voidaan määrittää oma maxLippumaara, joka varaa kapasiteettia tapahtuman kokonaiskiintiöstä.
+
+- Jos maxLippumaara on määritelty: Lipputyyppi kuluttaa omaa kiintiötään. Kentät maxLippumaara ja liputJaljella ovat
+  mukana vastauksessa.
+- Jos maxLippumaaraa ei ole määritelty: Lipputyyppi jakaa yhteisen kapasiteetin muiden sellaisten lipputyyppien kanssa,
+  joilla ei ole omaa rajoitusta.
+
+##### Esimerkki:
+
 * **Pyynnön runko**:
+
 ```json
 {
   "kuvaus": "VIP",
@@ -270,7 +297,9 @@ _huom. `järjestäjäId` tulee suoraan tunnistautuneen käyttäjän ID:stä_
   "maxLippumaara": 100
 }
 ```
+
 * **Vastauksen runko**:
+
 ```json
 {
   "lipputyyppiId": 3,
@@ -286,21 +315,25 @@ _huom. `järjestäjäId` tulee suoraan tunnistautuneen käyttäjän ID:stä_
 * **Metodi**: `PUT`
 * **Polku**: `/tapahtumat/{id}/lipputyypit/{lipputyyppiId}`
 * **Parametrit**:
-  * `id (Long)`
-  * `lipputyyppiId (Long)`
+    * `id (Long)`
+    * `lipputyyppiId (Long)`
 * **Pyynnön runko**:
+
 ```json
 {
   "kuvaus": "Aikuinen",
   "lipunHinta": 30.00
 }
 ```
+
 * **Vastaus**:
-  * `200 OK`
-  * `400 BAD REQUEST` (Jos pyynnössä on virheitä)
-  * `404 NOT FOUND` (Jos tapahtumaa tai lipputyyppiä ei löydy)
-  * `409 CONFLICT` (Jos uusi maxLippumaara < lipputyypillä varatut liput)
+    * `200 OK`
+    * `400 BAD REQUEST` (Jos pyynnössä on virheitä)
+    * `404 NOT FOUND` (Jos tapahtumaa tai lipputyyppiä ei löydy)
+    * `409 CONFLICT` (Jos uusi maxLippumaara < lipputyypillä varatut liput tai uusi maxLippumaara > tapahtuman
+      maxLippumaara)
 * **Vastauksen runko**:
+
 ```json
 {
   "lipputyyppiId": 1,
@@ -314,11 +347,11 @@ _huom. `järjestäjäId` tulee suoraan tunnistautuneen käyttäjän ID:stä_
 * **Metodi**: `DELETE`
 * **Polku**: `/tapahtumat/{id}/lipputyypit/{lipputyyppiId}`
 * **Parametrit**:
-  * `id (Long)`
-  * `lipputyyppiId (Long)`
+    * `id (Long)`
+    * `lipputyyppiId (Long)`
 * **Vastaus**:
-  * `204 NO CONTENT`
-  * `404 NOT FOUND` (Jos tapahtumaa tai lipputyyppiä ei löydy)
+    * `204 NO CONTENT`
+    * `404 NOT FOUND` (Jos tapahtumaa tai lipputyyppiä ei löydy)
 
 ## 2. Liput
 
@@ -327,10 +360,11 @@ _huom. `järjestäjäId` tulee suoraan tunnistautuneen käyttäjän ID:stä_
 * **Metodi**: `GET`
 * **Polku**: `/tapahtumat/{id}/liput`
 * **Vastaus**:
-  * `200 OK`
-  * `404 NOT FOUND`
-  * `403 FORBIDDEN`
+    * `200 OK`
+    * `404 NOT FOUND`
+    * `403 FORBIDDEN`
 * **Vastauksen runko**:
+
 ```json
 {
   "liput": [
@@ -362,11 +396,12 @@ _huom. `järjestäjäId` tulee suoraan tunnistautuneen käyttäjän ID:stä_
 }
 ```
 
-### Varaa lippuja 
+### Varaa lippuja
 
 * **Metodi**: `POST`
 * **Polku**: `/liput/varaa`
 * **Pyynnön runko**:
+
 ```json
 {
   "tapahtumaId": 1,
@@ -382,12 +417,14 @@ _huom. `järjestäjäId` tulee suoraan tunnistautuneen käyttäjän ID:stä_
   ]
 }
 ```
-* **Vastaus**: 
-  * `201 CREATED`
-  * `400 BAD REQUEST` (Jos pyynnössä on virheitä)
-  * `404 NOT FOUND` (Jos tapahtumaa tai lipputyyppiä ei löydy)
-  * `409 CONFLICT` (Jos lippuja ei ole jäljellä tapahtumaan tai lipputyyppiin)
+
+* **Vastaus**:
+    * `201 CREATED`
+    * `400 BAD REQUEST` (Jos pyynnössä on virheitä)
+    * `404 NOT FOUND` (Jos tapahtumaa tai lipputyyppiä ei löydy)
+    * `409 CONFLICT` (Jos lippuja ei ole jäljellä tapahtumaan tai lipputyyppiin)
 * **Vastauksen runko**:
+
 ```json
 {
   "myyntitapahtumaId": 123,
@@ -409,42 +446,50 @@ _huom. `järjestäjäId` tulee suoraan tunnistautuneen käyttäjän ID:stä_
 }
 ```
 
-### Lunasta lippu 
+### Lunasta lippu
+
 * **Metodi**: `POST`
 * **Polku**: `/liput/lunasta`
 * **Pyynnön runko**:
+
 ```json
 {
   "koodi": "ABCDEF-123456"
 }
 ```
-* **Vastaus**:
-  * `200 OK`
-  * `404 NOT FOUND` (Jos koodia ei löydy)
-  * `409 CONFLICT` (Jos lippu on jo lunastettu tai peruttu)
 
-### Peruuta varaus 
+* **Vastaus**:
+    * `200 OK`
+    * `404 NOT FOUND` (Jos koodia ei löydy)
+    * `409 CONFLICT` (Jos lippu on jo lunastettu tai peruttu)
+
+### Peruuta varaus
+
 * **Metodi**: `POST`
 * **Polku**: `/liput/peru`
 * **Pyynnön runko**:
+
 ```json
 {
   "koodi": "ABCDEF-123456"
 }
 ```
+
 * **Vastaus**:
-  * `200 OK`
-  * `404 NOT FOUND` (Jos koodia ei löydy)
-  * `409 CONFLICT` (Jos lippua ei voi perua)
+    * `200 OK`
+    * `404 NOT FOUND` (Jos koodia ei löydy)
+    * `409 CONFLICT` (Jos lippua ei voi perua)
 
 ## 3. Myyntitapahtumat
 
-### Hae kaikki myyntitapahtumat 
+### Hae kaikki myyntitapahtumat
+
 * **Metodi**: `GET`
 * **Polku**: `/myyntitapahtumat`
-* **Vastaus**: 
-  * `200 OK`
+* **Vastaus**:
+    * `200 OK`
 * **Vastauksen runko**:
+
 ```json
 [
   {
@@ -462,14 +507,16 @@ _huom. `järjestäjäId` tulee suoraan tunnistautuneen käyttäjän ID:stä_
 ]
 ```
 
-### Hae yksittäinen myyntitapahtuma ID:llä 
+### Hae yksittäinen myyntitapahtuma ID:llä
+
 * **Metodi**: `GET`
 * **Polku**: `/myyntitapahtumat/{id}`
 * **Parametrit**: `id (Long)`
 * **Vastaus**:
-  * `200 OK`
-  * `404 NOT FOUND` (Jos id:tä ei löydy)
+    * `200 OK`
+    * `404 NOT FOUND` (Jos id:tä ei löydy)
 * **Vastauksen runko**:
+
 ```json
 {
   "myyntitapahtumaId": 123,
@@ -503,11 +550,13 @@ _huom. `järjestäjäId` tulee suoraan tunnistautuneen käyttäjän ID:stä_
 ```
 
 ### Hae myyjän omat myyntitapahtumat
+
 * **Metodi**: `GET`
 * **Polku**: `/myyntitapahtumat/omat`
 * **Vastaus**:
-  * `200 OK`
+    * `200 OK`
 * **Vastauksen runko**:
+
 ```json
 [
   {
@@ -526,12 +575,14 @@ _huom. `järjestäjäId` tulee suoraan tunnistautuneen käyttäjän ID:stä_
 ```
 
 ### Hae tietyn myyjän myyntitapahtumat
+
 * **Metodi**: `GET`
 * **Polku**: `/myyntitapahtumat/myyja/{id}`
 * **Vastaus**:
-  * `200 OK`
-  * `404 NOT FOUND` (Jos myyjää ei löydy)
+    * `200 OK`
+    * `404 NOT FOUND` (Jos myyjää ei löydy)
 * **Vastauksen runko**:
+
 ```json
 [
   {
@@ -556,9 +607,10 @@ _huom. `järjestäjäId` tulee suoraan tunnistautuneen käyttäjän ID:stä_
 * **Metodi**: `GET`
 * **Polku**: `/kayttajat`
 * **Vastaus**:
-  * `200 OK`
-  * `403 FORBIDDEN`
+    * `200 OK`
+    * `403 FORBIDDEN`
 * **Vastauksen runko**:
+
 ```json
 [
   {
@@ -581,16 +633,19 @@ _huom. `järjestäjäId` tulee suoraan tunnistautuneen käyttäjän ID:stä_
   }
 ]
 ```
+
 ### Hae yksittäinen käyttäjä ID:llä
-backend puolella tämä pitäisi ehkä rajoittaa vain järjestäjien hakemiseen ilman autentikointia mutta sen voi tehdä myöhemminkin
-julkinen rajapinta, ei tarvitse autentikointia
+
+Palauttaa vain JARJESTAJA-käyttäjiä jos pyynnön tekijä ei ole tunnistautunut.
+
 * **Metodi**: `GET`
 * **Polku**: `/kayttajat/{id}`
 * **Parametrit**: `id (Long)`
 * **Vastaus**:
-  * `200 OK`
-  * `404 NOT FOUND` (Jos käyttäjää ei löydy)
+    * `200 OK`
+    * `404 NOT FOUND` (Jos käyttäjää ei löydy)
 * **Vastauksen runko**:
+
 ```json
 {
   "kayttajaId": 3,
@@ -605,6 +660,7 @@ julkinen rajapinta, ei tarvitse autentikointia
 * **Metodi**: `POST`
 * **Polku**: `/kayttajat`
 * **Pyynnön runko**:
+
 ```json
 {
   "nimi": "uusi_kayttaja",
@@ -613,11 +669,13 @@ julkinen rajapinta, ei tarvitse autentikointia
   "rooli": "MYYJA"
 }
 ```
+
 * **Vastaus**:
-  * `201 CREATED`
-  * `400 BAD REQUEST` (Jos pyynnössä on virheitä)
-  * `403 FORBIDDEN`
+    * `201 CREATED`
+    * `400 BAD REQUEST` (Jos pyynnössä on virheitä)
+    * `403 FORBIDDEN`
 * **Vastauksen runko**:
+
 ```json
 {
   "kayttajaId": 4,
@@ -633,6 +691,7 @@ julkinen rajapinta, ei tarvitse autentikointia
 * **Polku**: `/kayttajat/{id}`
 * **Parametrit**: `id (Long)`
 * **Pyynnön runko**:
+
 ```json
 {
   "nimi": "paivitetty_kayttaja",
@@ -641,12 +700,14 @@ julkinen rajapinta, ei tarvitse autentikointia
   "rooli": "JARJESTAJA"
 }
 ```
+
 * **Vastaus**:
-  * `200 OK`
-  * `400 BAD REQUEST` (Jos pyynnössä on virheitä)
-  * `403 FORBIDDEN`
-  * `404 NOT FOUND` (Jos käyttäjää ei löydy)
+    * `200 OK`
+    * `400 BAD REQUEST` (Jos pyynnössä on virheitä)
+    * `403 FORBIDDEN`
+    * `404 NOT FOUND` (Jos käyttäjää ei löydy)
 * **Vastauksen runko**:
+
 ```json
 {
   "kayttajaId": 4,
@@ -662,48 +723,55 @@ julkinen rajapinta, ei tarvitse autentikointia
 * **Polku**: `/kayttajat/{id}`
 * **Parametrit**: `id (Long)`
 * **Vastaus**:
-  * `204 NO CONTENT`
-  * `403 FORBIDDEN`
-  * `404 NOT FOUND` (Jos käyttäjää ei löydy)
-
+    * `204 NO CONTENT`
+    * `403 FORBIDDEN`
+    * `404 NOT FOUND` (Jos käyttäjää ei löydy)
 
 # TODO: seuraavat osiot vanhentuneet
 
 ## 4. REST-periaatteiden tarkistus
 
 API käyttää HTTP-metodeja niiden käyttötarkoituksen mukaisesti:
+
 * `GET` käytetään tietojen hakemiseen
 * `POST` käytetään uusien tietojen luomiseen sekä esimerkiksi lippujen varaamiseen
 * `PUT` käytetään olemassa olevien tietojen päivittämiseen
 * `DELETE` käytetään tietojen poistamiseen
 
-URL-rakenteissa käytetään resursseja kuvaavia nimiä, esimerkiksi `/tapahtumat`, `/liput` ja `/myyntitapahtumat`. Yksittäisiin resursseihin viitataan niiden tunnisteiden avulla, esimerkiksi `/tapahtumat/{id}`.
+URL-rakenteissa käytetään resursseja kuvaavia nimiä, esimerkiksi `/tapahtumat`, `/liput` ja `/myyntitapahtumat`.
+Yksittäisiin resursseihin viitataan niiden tunnisteiden avulla, esimerkiksi `/tapahtumat/{id}`.
 
-API palauttaa tilanteen mukaiset HTTP-tilakoodit. Onnistuneiden pyyntöjen yhteydessä se käyttää esimerkiksi koodeja `200 OK`, `201 CREATED` ja `204 NO CONTENT`. Virhetilanteissa se käyttää esimerkiksi koodeja `404 NOT FOUND` ja `409 CONFLICT`.
+API palauttaa tilanteen mukaiset HTTP-tilakoodit. Onnistuneiden pyyntöjen yhteydessä se käyttää esimerkiksi koodeja
+`200 OK`, `201 CREATED` ja `204 NO CONTENT`. Virhetilanteissa se käyttää esimerkiksi koodeja `404 NOT FOUND` ja
+`409 CONFLICT`.
 
 Tapahtuman ja sen lipputyyppien välinen suhde näkyy myös URL-rakenteessa, esimerkiksi `/tapahtumat/{id}/lipputyypit`.
 
 ## 5. Rajapintojen autentikoinnin testaus
 
-Tässä kaikki testaukset on tehty Postmanin avulla. Testasin rajapintoja ilman tunnuksia, user- ja admin-käyttäjillä sekä väärällä salasanalla.
+Tässä kaikki testaukset on tehty Postmanin avulla. Testasin rajapintoja ilman tunnuksia, user- ja admin-käyttäjillä sekä
+väärällä salasanalla.
 
 ### 5.1	Ei kirjautumista
 
 `GET http://localhost:8080/api/tapahtumat`
+
 * **Metodi**: `GET`
-*	**Polku**: `/api/tapahtumat`
-*	**Vastaus**:
-	*	`200 OK`
+* **Polku**: `/api/tapahtumat`
+* **Vastaus**:
+  *    `200 OK`
 
 ### 5.2	Testaa USER-käyttäjällä
 
 Käytän Postmanin Authorization-välilehteä. Valitsen siellä Basic Auth.
 
 `POST http://localhost:8080/api/liput/varaa`
+
 * **Metodi**: `POST`
-*	**Polku**: `/api/liput/varaa`
-*	**Käyttäjä**: `user`
-*	**Pyynnön runko**:
+* **Polku**: `/api/liput/varaa`
+* **Käyttäjä**: `user`
+* **Pyynnön runko**:
+
 ```json
 {
   "tapahtumaId": 1,
@@ -715,30 +783,34 @@ Käytän Postmanin Authorization-välilehteä. Valitsen siellä Basic Auth.
   ]
 }
 ```
-*	**Vastaus**:
-	* `201 Created`
 
-*	**Vastauksen runko**:
+* **Vastaus**:
+  * `201 Created`
+
+* **Vastauksen runko**:
+
 ```json
 {
-"myyntitapahtumaId": 3,
-"summa": 15.00,
-"liput": [
-{
-  "lipputyyppiId":1,
-  "koodi": "JCWZDG-093114"
-}
-             ]
+  "myyntitapahtumaId": 3,
+  "summa": 15.00,
+  "liput": [
+    {
+      "lipputyyppiId": 1,
+      "koodi": "JCWZDG-093114"
+    }
+  ]
 }
 ```
 
 ### 5.3	Testaa USERillä toiminto, jota sen ei pitäisi saa tehdä
 
 `POST http://localhost:8080/api/tapahtumat`
+
 * **Metodi**: `POST`
-*	**Polku**: `/api/tapahtumat`
-*	**Käyttäjä**: `user`
-*	**Pyynnön runko**:
+* **Polku**: `/api/tapahtumat`
+* **Käyttäjä**: `user`
+* **Pyynnön runko**:
+
 ```json
 {
   "aika": "2026-10-10T18:00:00",
@@ -748,16 +820,19 @@ Käytän Postmanin Authorization-välilehteä. Valitsen siellä Basic Auth.
   "maxLippumaara": 100
 }
 ```
-*	**Vastaus**:
-	* `403 Forbidden`
+
+* **Vastaus**:
+  * `403 Forbidden`
 
 ### 5.4	Testaa sama ADMIN:illa
 
 `POST http://localhost:8080/api/tapahtumat`
+
 * **Metodi**: POST
-*	**Polku**: /api/tapahtumat
-*	**Käyttäjä**: admin
-*	**Pyynnön runko**:
+* **Polku**: /api/tapahtumat
+* **Käyttäjä**: admin
+* **Pyynnön runko**:
+
 ```json
 {
   "aika": "2026-10-10T18:00:00",
@@ -767,9 +842,11 @@ Käytän Postmanin Authorization-välilehteä. Valitsen siellä Basic Auth.
   "maxLippumaara": 100
 }
 ```
-*	**Vastaus**:
-	* `201 Created`
-*	**Vastauksen runko**:
+
+* **Vastaus**:
+  * `201 Created`
+* **Vastauksen runko**:
+
 ```json
 {
   "tapahtumaId": 4,
@@ -783,11 +860,14 @@ Käytän Postmanin Authorization-välilehteä. Valitsen siellä Basic Auth.
 ```
 
 ### 5.5	Testaa muokkaus ja poisto userilla
+
 `PUT http://localhost:8080/api/tapahtumat/4`
-*	**Metodi**: `PUT`
-*	**Polku**: `/api/tapahtumat/4`
-*	**Käyttäjä**: `user`
-*	**Pyynnön runko**:
+
+* **Metodi**: `PUT`
+* **Polku**: `/api/tapahtumat/4`
+* **Käyttäjä**: `user`
+* **Pyynnön runko**:
+
 ```json
 {
   "aika": "2026-10-10T19:00:00",
@@ -797,25 +877,29 @@ Käytän Postmanin Authorization-välilehteä. Valitsen siellä Basic Auth.
   "maxLippumaara": 120
 }
 ```
-*	**Vastaus**:
-	* `403 Forbidden`
+
+* **Vastaus**:
+  * `403 Forbidden`
 
 `DELETE http://localhost:8080/api/tapahtumat/4`
-*	**Metodi**: `DELETE`
-*	**Polku**: `/api/tapahtumat/4`
-*	**Käyttäjä**: `user`
-*	**Vastaus**:
-	* `403 Forbidden`
-   
+
+* **Metodi**: `DELETE`
+* **Polku**: `/api/tapahtumat/4`
+* **Käyttäjä**: `user`
+* **Vastaus**:
+  * `403 Forbidden`
+
 Eli sain molemmista 403 Forbidden, koska user on käyttäjä.
 
 ### 5.6	 Testaa muokkaus ja poisto myös adminilla
 
 `PUT http://localhost:8080/api/tapahtumat/4`
-*	**Metodi**: `PUT`
-*	**Polku**: `/api/tapahtumat/4`
-*	**Käyttäjä**: `admin`
-*	**Pyynnön runko**:
+
+* **Metodi**: `PUT`
+* **Polku**: `/api/tapahtumat/4`
+* **Käyttäjä**: `admin`
+* **Pyynnön runko**:
+
 ```json
 {
   "aika": "2026-10-10T19:00:00",
@@ -825,9 +909,11 @@ Eli sain molemmista 403 Forbidden, koska user on käyttäjä.
   "maxLippumaara": 120
 }
 ```
-*	**Vastaus**:
-	* `200 OK`
-*	**Vastauksen runko**:
+
+* **Vastaus**:
+  * `200 OK`
+* **Vastauksen runko**:
+
 ```json
 {
   "tapahtumaId": 4,
@@ -839,23 +925,26 @@ Eli sain molemmista 403 Forbidden, koska user on käyttäjä.
   "lipputyypit": []
 }
 ```
+
 `DELETE http://localhost:8080/api/tapahtumat/4`
-*	**Metodi**: `DELETE`
-*	**Polku**: `/api/tapahtumat/4`
-*	**Käyttäjä**: `admin`
-*	**Vastaus**:
-	* `204 No Content`
-   
+
+* **Metodi**: `DELETE`
+* **Polku**: `/api/tapahtumat/4`
+* **Käyttäjä**: `admin`
+* **Vastaus**:
+  * `204 No Content`
+
 Muokkaus ja poisto onnistuivat, koska admin-käyttäjällä on siihen oikeudet.
 
 ### 5.7 Testaa väärällä salasanalla
+
 * **Username**: `user`
 * **Password**: `väärä-salasana`
 
 `GET http://localhost:8080/api/tapahtumat`
 
-*	**Metodi**: `GET`
-*	**Polku**: `/api/tapahtumat`
-*	**Käyttäjä**: `user`
-*	**Vastaus**:
-	* `401 Unauthorized`
+* **Metodi**: `GET`
+* **Polku**: `/api/tapahtumat`
+* **Käyttäjä**: `user`
+* **Vastaus**:
+  * `401 Unauthorized`
