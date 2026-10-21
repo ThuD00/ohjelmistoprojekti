@@ -51,10 +51,22 @@ public class LipputyyppiRestControllerTest {
                 .andExpect(jsonPath("$[0].kuvaus").value("Aikuinen"))
                 .andExpect(jsonPath("$[0].lipunHinta").value(10.00))
                 .andExpect(jsonPath("$[0].maxLippumaara").doesNotExist())
+                .andExpect(jsonPath("$[0].liputJaljella").doesNotExist())
+
                 .andExpect(jsonPath("$[1].lipputyyppiId").value(2))
                 .andExpect(jsonPath("$[1].kuvaus").value("VIP"))
                 .andExpect(jsonPath("$[1].lipunHinta").value(20.00))
-                .andExpect(jsonPath("$[1].maxLippumaara").value(10));
+                .andExpect(jsonPath("$[1].maxLippumaara").value(10))
+                .andExpect(jsonPath("$[1].liputJaljella").value(10));
+
+        mockMvc.perform(get(BASE_URL + "/9/lipputyypit"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].lipputyyppiId").value(1))
+                .andExpect(jsonPath("$[0].kuvaus").value("varatut liput"))
+                .andExpect(jsonPath("$[0].lipunHinta").value(20.00))
+                .andExpect(jsonPath("$[0].maxLippumaara").value(20))
+                .andExpect(jsonPath("$[0].liputJaljella").value(10));
+
         // poistettujen lipputyyppien ei pitäisi näkyä
         mockMvc.perform(get(BASE_URL + "/10/lipputyypit"))
                 .andExpect(status().isOk())
@@ -63,7 +75,8 @@ public class LipputyyppiRestControllerTest {
                 .andExpect(jsonPath("$[0].lipputyyppiId").value(2))
                 .andExpect(jsonPath("$[0].kuvaus").value("ei poistettu"))
                 .andExpect(jsonPath("$[0].lipunHinta").value(10.00))
-                .andExpect(jsonPath("$[0].maxLippumaara").doesNotExist());
+                .andExpect(jsonPath("$[0].maxLippumaara").doesNotExist())
+                .andExpect(jsonPath("$[0].liputJaljella").doesNotExist());
     }
 
     @Test
@@ -104,7 +117,8 @@ public class LipputyyppiRestControllerTest {
                 .andExpect(jsonPath("$.lipputyyppiId").value(4))
                 .andExpect(jsonPath("$.kuvaus").value("VIP"))
                 .andExpect(jsonPath("$.lipunHinta").value(80.00))
-                .andExpect(jsonPath("$.maxLippumaara").value(500));
+                .andExpect(jsonPath("$.maxLippumaara").value(500))
+                .andExpect(jsonPath("$.liputJaljella").value(500));
     }
 
     @Test
@@ -183,7 +197,9 @@ public class LipputyyppiRestControllerTest {
                 .andExpect(jsonPath("$.lipputyyppiId").value(1))
                 .andExpect(jsonPath("$.kuvaus").value("Standard"))
                 .andExpect(jsonPath("$.lipunHinta").value(175.00))
-                .andExpect(jsonPath("$.maxLippumaara").value(400));
+                .andExpect(jsonPath("$.maxLippumaara").value(400))
+                .andExpect(jsonPath("$.liputJaljella").value(400));
+
 
         // maxLippumaara nulliksi
         mockMvc.perform(put(BASE_URL + "/6/lipputyypit/1")
@@ -200,7 +216,9 @@ public class LipputyyppiRestControllerTest {
                 .andExpect(jsonPath("$.lipputyyppiId").value(1))
                 .andExpect(jsonPath("$.kuvaus").value("Tapahtumalippu"))
                 .andExpect(jsonPath("$.lipunHinta").value(39.00))
-                .andExpect(jsonPath("$.maxLippumaara").doesNotExist());
+                .andExpect(jsonPath("$.maxLippumaara").doesNotExist())
+                .andExpect(jsonPath("$.liputJaljella").doesNotExist());
+
     }
 
     @Test

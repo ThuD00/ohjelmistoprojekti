@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.Positive;
 
-public class LipputyyppiDto {
+public class LipputyyppiVastausDto {
     @Positive 
     private long lipputyyppiId;
     private String kuvaus;
@@ -14,15 +14,18 @@ public class LipputyyppiDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer maxLippumaara;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Long liputJaljella;
 
-    public LipputyyppiDto() {
+    public LipputyyppiVastausDto() {
     }
 
-    public LipputyyppiDto(long lipputyyppiId, String kuvaus, BigDecimal lipunHinta, Integer maxLippumaara) {
+    public LipputyyppiVastausDto(long lipputyyppiId, String kuvaus, BigDecimal lipunHinta, Integer maxLippumaara, Long liputJaljella) {
         this.lipputyyppiId = lipputyyppiId;
         this.kuvaus = kuvaus;
         this.lipunHinta = lipunHinta;
         this.maxLippumaara = maxLippumaara;
+        this.liputJaljella = liputJaljella;
     }
 
     public long getLipputyyppiId() {
@@ -51,7 +54,7 @@ public class LipputyyppiDto {
 
     @Override
     public String toString() {
-        return "LipputyyppiDto [lipputyyppiId=" + lipputyyppiId + ", kuvaus=" + kuvaus + ", lipunHinta=" + lipunHinta
+        return "LipputyyppiVastausDto [lipputyyppiId=" + lipputyyppiId + ", kuvaus=" + kuvaus + ", lipunHinta=" + lipunHinta
                 + "]";
     }
 
@@ -61,5 +64,13 @@ public class LipputyyppiDto {
 
     public void setMaxLippumaara(Integer maxLippumaara) {
         this.maxLippumaara = maxLippumaara;
+    }
+
+    public Long getLiputJaljella() {
+        return liputJaljella;
+    }
+
+    public void setLiputJaljella(Long liputJaljella) {
+        this.liputJaljella = liputJaljella;
     }
 }

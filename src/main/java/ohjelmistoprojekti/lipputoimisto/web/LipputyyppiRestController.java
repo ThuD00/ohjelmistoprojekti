@@ -1,6 +1,8 @@
 package ohjelmistoprojekti.lipputoimisto.web;
 
 import java.util.List;
+
+import ohjelmistoprojekti.lipputoimisto.dto.LipputyyppiVastausDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -14,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
-import ohjelmistoprojekti.lipputoimisto.dto.LipputyyppiDto;
 import ohjelmistoprojekti.lipputoimisto.dto.LipputyyppiPyyntoDto;
 import ohjelmistoprojekti.lipputoimisto.service.LipputyyppiService;
 
@@ -29,7 +30,7 @@ public class LipputyyppiRestController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LipputyyppiDto>> getLipputyypit(
+    public ResponseEntity<List<LipputyyppiVastausDto>> getLipputyypit(
             @PathVariable("id") long tapahtumaId,
             Authentication authentication) {
 
@@ -43,7 +44,7 @@ public class LipputyyppiRestController {
 
     @PreAuthorize("(hasRole('JARJESTAJA') and @tapahtumaSecurity.isOwner(#tapahtumaId)) or hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<LipputyyppiDto> addLipputyyppi(
+    public ResponseEntity<LipputyyppiVastausDto> addLipputyyppi(
             @PathVariable("id") long tapahtumaId,
             @Valid @RequestBody LipputyyppiPyyntoDto body) {
 
@@ -52,7 +53,7 @@ public class LipputyyppiRestController {
 
     @PreAuthorize("(hasRole('JARJESTAJA') and @tapahtumaSecurity.isOwner(#tapahtumaId)) or hasRole('ADMIN')")
     @PutMapping("/{lipputyyppiId}")
-    public ResponseEntity<LipputyyppiDto> updateLipputyyppi(
+    public ResponseEntity<LipputyyppiVastausDto> updateLipputyyppi(
             @PathVariable("id") long tapahtumaId,
             @PathVariable long lipputyyppiId,
             @Valid @RequestBody LipputyyppiPyyntoDto body) {

@@ -4,8 +4,8 @@ import ohjelmistoprojekti.lipputoimisto.domain.Lippu;
 import ohjelmistoprojekti.lipputoimisto.domain.Lipputyyppi;
 import ohjelmistoprojekti.lipputoimisto.domain.LipputyyppiId;
 import ohjelmistoprojekti.lipputoimisto.domain.Tapahtuma;
-import ohjelmistoprojekti.lipputoimisto.dto.LipputyyppiDto;
 import ohjelmistoprojekti.lipputoimisto.dto.LipputyyppiPyyntoDto;
+import ohjelmistoprojekti.lipputoimisto.dto.LipputyyppiVastausDto;
 import ohjelmistoprojekti.lipputoimisto.repository.LippuRepository;
 import ohjelmistoprojekti.lipputoimisto.repository.LipputyyppiRepository;
 import ohjelmistoprojekti.lipputoimisto.repository.TapahtumaRepository;
@@ -39,6 +39,12 @@ public class LipputyyppiService {
         return tapahtuma.getLipputyypit().getLast().getId().getLipputyyppiId() + 1;
     }
 
+    public Long calculateLiputjaljella(Lipputyyppi lipputyyppi) {
+        if (lipputyyppi.getMaxLippumaara() != null) {
+            return lipputyyppi.getMaxLippumaara() - lippuRepository.countByLipputyyppiAndLipunStatusNot(lipputyyppi, Lippu.LippuTila.PERUTTU);
+        }
+        return null;
+    }
 
     public boolean validateMaxLippumaara(Tapahtuma tapahtuma, Lipputyyppi uusiLipputyyppi) {
 
@@ -74,7 +80,7 @@ public class LipputyyppiService {
     }
 
 
-    public ResponseEntity<List<LipputyyppiDto>> getLipputyypit(long tapahtumaId, boolean isAdmin) {
+    public ResponseEntity<List<LipputyyppiVastausDto>> getLipputyypit(long tapahtumaId, boolean isAdmin) {
 
         Optional<Tapahtuma> tapahtuma = tapahtumaRepository.findByIdIncludingPoistettu(tapahtumaId);
 
@@ -89,17 +95,18 @@ public class LipputyyppiService {
         }
 
         return ResponseEntity.ok(
-            loydettyTapahtuma.getLipputyypit().stream()
-                .filter(e -> !e.isPoistettu())
-                .map(e -> new LipputyyppiDto(
-                        e.getId().getLipputyyppiId(),
-                        e.getKuvaus(),
-                        e.getLipunHinta(),
-                        e.getMaxLippumaara()))
-                .toList());
+                loydettyTapahtuma.getLipputyypit().stream()
+                        .filter(e -> !e.isPoistettu())
+                        .map(e -> new LipputyyppiVastausDto(
+                                e.getId().getLipputyyppiId(),
+                                e.getKuvaus(),
+                                e.getLipunHinta(),
+                                e.getMaxLippumaara(),
+                                calculateLiputjaljella(e)))
+                        .toList());
     }
 
-    public ResponseEntity<LipputyyppiDto> addLipputyyppi(long tapahtumaId, LipputyyppiPyyntoDto body) {
+    public ResponseEntity<LipputyyppiVastausDto> addLipputyyppi(long tapahtumaId, LipputyyppiPyyntoDto body) {
 
         Optional<Tapahtuma> tapahtumaOptional = tapahtumaRepository.findById(tapahtumaId);
 
@@ -114,13 +121,18 @@ public class LipputyyppiService {
 
             lipputyyppiRepository.save(lipputyyppi);
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(new LipputyyppiDto(lipputyyppi.getId().getLipputyyppiId(), lipputyyppi.getKuvaus(), lipputyyppi.getLipunHinta(), lipputyyppi.getMaxLippumaara()));
+            return ResponseEntity.status(HttpStatus.CREATED).body(new LipputyyppiVastausDto(
+                    lipputyyppi.getId().getLipputyyppiId(),
+                    lipputyyppi.getKuvaus(),
+                    lipputyyppi.getLipunHinta(),
+                    lipputyyppi.getMaxLippumaara(),
+                    calculateLiputjaljella(lipputyyppi)));
         }
 
         return ResponseEntity.notFound().build();
     }
 
-    public ResponseEntity<LipputyyppiDto> updateLipputyyppi(long tapahtumaId, long lipputyyppiId, LipputyyppiPyyntoDto body) {
+    public ResponseEntity<LipputyyppiVastausDto> updateLipputyyppi(long tapahtumaId, long lipputyyppiId, LipputyyppiPyyntoDto body) {
 
         Optional<Tapahtuma> tapahtumaOptional = tapahtumaRepository.findById(tapahtumaId);
 
@@ -143,7 +155,12 @@ public class LipputyyppiService {
 
             lipputyyppiRepository.save(lipputyyppi);
 
-            return ResponseEntity.ok().body(new LipputyyppiDto(lipputyyppi.getId().getLipputyyppiId(), lipputyyppi.getKuvaus(), lipputyyppi.getLipunHinta(), lipputyyppi.getMaxLippumaara()));
+            return ResponseEntity.ok().body(new LipputyyppiVastausDto(
+                    lipputyyppi.getId().getLipputyyppiId(),
+                    lipputyyppi.getKuvaus(),
+                    lipputyyppi.getLipunHinta(),
+                    lipputyyppi.getMaxLippumaara(),
+                    calculateLiputjaljella(lipputyyppi)));
         }
 
         return ResponseEntity.notFound().build();
