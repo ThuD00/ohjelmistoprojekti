@@ -3,6 +3,7 @@ package ohjelmistoprojekti.lipputoimisto.service;
 import ohjelmistoprojekti.lipputoimisto.domain.Kayttaja;
 import ohjelmistoprojekti.lipputoimisto.repository.KayttajaRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,15 @@ public class UserContextService {
 
     public UserContextService(KayttajaRepository kayttajaRepository) {
         this.kayttajaRepository = kayttajaRepository;
+    }
+
+    public boolean isAuthenticated() {
+        Authentication auth =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        return auth != null
+                && auth.isAuthenticated()
+                && !(auth instanceof AnonymousAuthenticationToken);
     }
 
     public Kayttaja getCurrentUser() {
