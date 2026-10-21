@@ -36,6 +36,7 @@ public class WebSecurityConfig {
 
                         .requestMatchers(HttpMethod.GET, "/api/tapahtumat/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/lipputyypit/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/kayttajat/*").permitAll()
                         .anyRequest().authenticated())
 
                 .httpBasic(Customizer.withDefaults())
