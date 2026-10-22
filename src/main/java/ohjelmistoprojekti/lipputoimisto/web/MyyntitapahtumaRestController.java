@@ -65,11 +65,4 @@ public class MyyntitapahtumaRestController {
 
         return myyntitapahtumaRepository.findAllByMyyja_Id(myyjaId);
     }
-
-    @GetMapping("/myyja{myyjaId}")
-    public String getMethodName(@RequestParam String param) {
-        return new String();
-    }
-    
-    
 }

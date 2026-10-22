@@ -370,6 +370,7 @@ Lipputyypille voidaan määrittää oma maxLippumaara, joka varaa kapasiteettia 
   "liput": [
     {
       "lippuId": 1,
+      "tapahtumaId": 1,
       "lipputyyppiId": 1,
       "myyntitapahtumaId": 5,
       "koodi": "ABCDEF-123456",
@@ -378,6 +379,7 @@ Lipputyypille voidaan määrittää oma maxLippumaara, joka varaa kapasiteettia 
     },
     {
       "lippuId": 23,
+      "tapahtumaId": 2,
       "lipputyyppiId": 2,
       "myyntitapahtumaId": 12,
       "koodi": "GHIJKL-789012",
@@ -386,6 +388,7 @@ Lipputyypille voidaan määrittää oma maxLippumaara, joka varaa kapasiteettia 
     },
     {
       "lippuId": 25,
+      "tapahtumaId": 5,
       "lipputyyppiId": 3,
       "myyntitapahtumaId": 13,
       "koodi": "MNOPQR-345678",

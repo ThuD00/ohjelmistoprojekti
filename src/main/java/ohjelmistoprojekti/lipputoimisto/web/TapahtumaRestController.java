@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import ohjelmistoprojekti.lipputoimisto.domain.Kayttaja;
 import ohjelmistoprojekti.lipputoimisto.domain.Lippu;
 import ohjelmistoprojekti.lipputoimisto.domain.Tapahtuma;
+import ohjelmistoprojekti.lipputoimisto.dto.LippuVastausDto;
 import ohjelmistoprojekti.lipputoimisto.dto.TapahtumaPyyntoDto;
 import ohjelmistoprojekti.lipputoimisto.dto.TapahtumaVastausDto;
 import ohjelmistoprojekti.lipputoimisto.repository.LippuRepository;
@@ -99,10 +100,10 @@ public class TapahtumaRestController {
 
     @PreAuthorize("(hasRole('JARJESTAJA') and @tapahtumaSecurity.isOwner(#tapahtumaId)) or hasRole('ADMIN')")
     @GetMapping("/{id}/liput")
-    public List<Lippu> findAllLiput(@PathVariable("id") long tapahtumaId) {
+    public List<LippuVastausDto> findAllLiput(@PathVariable("id") long tapahtumaId) {
         Tapahtuma tapahtuma = tapahtumaRepository.findById(tapahtumaId).orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND));
-        return lippuRepository.findAllByLipputyyppi_Tapahtuma(tapahtuma);
+        return lippuRepository.findAllByLipputyyppi_Tapahtuma(tapahtuma).stream().map(LippuVastausDto::new).toList();
     }
 
     @PreAuthorize("hasRole('JARJESTAJA')")

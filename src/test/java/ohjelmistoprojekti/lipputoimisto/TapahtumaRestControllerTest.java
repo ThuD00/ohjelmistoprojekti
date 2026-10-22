@@ -39,7 +39,48 @@ class TapahtumaRestControllerTest {
         mockMvc.perform(get(BASE_URL))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$.length()").value(8))
+                .andExpect(jsonPath("$.length()").value(9))
+                .andExpect(jsonPath("$[0].tapahtumaId").value(1))
+                .andExpect(jsonPath("$[0].jarjestajaId").value(2))
+                .andExpect(jsonPath("$[0].aika").value("2026-10-05T20:00:00"))
+                .andExpect(jsonPath("$[0].paikka").value("Tavastia"))
+                .andExpect(jsonPath("$[0].kaupunki").value("Helsinki"))
+                .andExpect(jsonPath("$[0].kuvaus").value("Stand-up Comedy Night"))
+                .andExpect(jsonPath("$[0].maxLippumaara").value(700))
+                .andExpect(jsonPath("$[0].liputJaljella").value(697));
+    }
+
+    @Test
+    void getDeletedTapahtumatReturnsOk() throws Exception {
+        mockMvc.perform(get(BASE_URL + "?poistettu=true")
+                        .with(ADMIN))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].tapahtumaId").value(4))
+                .andExpect(jsonPath("$[0].jarjestajaId").value(3))
+                .andExpect(jsonPath("$[0].aika").value("2026-11-20T19:00:00"))
+                .andExpect(jsonPath("$[0].paikka").value("Helsingin jäähalli"))
+                .andExpect(jsonPath("$[0].kaupunki").value("Helsinki"))
+                .andExpect(jsonPath("$[0].kuvaus").value("Winter Rock Night"))
+                .andExpect(jsonPath("$[0].maxLippumaara").value(8500))
+                .andExpect(jsonPath("$[0].liputJaljella").value(8500));
+    }
+
+    @Test
+    void getDeletedTapahtumatReturnsForbidden() throws Exception {
+        mockMvc.perform(get(BASE_URL + "?poistettu=true")
+                        .with(MYYJA))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void getMinunTapahtumatReturnsOk() throws Exception {
+        mockMvc.perform(get(BASE_URL + "/minun")
+                        .with(JARJESTAJA))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(7))
                 .andExpect(jsonPath("$[0].tapahtumaId").value(1))
                 .andExpect(jsonPath("$[0].jarjestajaId").value(2))
                 .andExpect(jsonPath("$[0].aika").value("2026-10-05T20:00:00"))
@@ -71,6 +112,61 @@ class TapahtumaRestControllerTest {
     }
 
     @Test
+    void getTapahtumatByJarjestajaReturnsOk() throws Exception {
+        mockMvc.perform(get(BASE_URL + "/jarjestaja/3")
+                        .with(JARJESTAJA))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].tapahtumaId").value(2))
+                .andExpect(jsonPath("$[0].jarjestajaId").value(3))
+                .andExpect(jsonPath("$[0].aika").value("2026-11-15T19:00:00"))
+                .andExpect(jsonPath("$[0].paikka").value("Olympiastadion"))
+                .andExpect(jsonPath("$[0].kaupunki").value("Helsinki"))
+                .andExpect(jsonPath("$[0].kuvaus").value("Rock Festival"))
+                .andExpect(jsonPath("$[0].maxLippumaara").value(40000))
+                .andExpect(jsonPath("$[0].liputJaljella").value(39999));
+    }
+
+    @Test
+    void getTapahtumatByJarjestajaReturnsNotFound() throws Exception {
+        mockMvc.perform(get(BASE_URL + "/jarjestaja/300"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getTapahtumaLiputByTapahtumaReturnsOk() throws Exception {
+        mockMvc.perform(get(BASE_URL + "/9/liput")
+                .with(JARJESTAJA))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(11))
+                .andExpect(jsonPath("$.[0].lippuId").value(1))
+                .andExpect(jsonPath("$.[0].tapahtumaId").value(9))
+                .andExpect(jsonPath("$.[0].lipputyyppiId").value(1))
+                .andExpect(jsonPath("$.[0].myyntitapahtumaId").value(3))
+                .andExpect(jsonPath("$.[0].koodi").value("FFFFFF-000006"))
+                .andExpect(jsonPath("$.[0].hinta").value(20.00))
+                .andExpect(jsonPath("$.[0].status").value("VARATTU"));
+    }
+
+    @Test
+    void getTapahtumaLiputByTapahtumaReturnsOkAsAdmin() throws Exception {
+        mockMvc.perform(get(BASE_URL + "/9/liput")
+                        .with(ADMIN))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(11));
+    }
+
+    @Test
+    void getTapahtumaLiputByTapahtumaReturnsForbidden() throws Exception {
+        mockMvc.perform(get(BASE_URL + "/9/liput")
+                        .with(JARJESTAJA1))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     void createTapahtumaReturnsCreated() throws Exception {
         mockMvc.perform(post(BASE_URL)
                         .with(JARJESTAJA)
@@ -85,7 +181,7 @@ class TapahtumaRestControllerTest {
                                 }
                                 """))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.tapahtumaId").value(11))
+                .andExpect(jsonPath("$.tapahtumaId").value(12))
                 .andExpect(jsonPath("$.jarjestajaId").value(2))
                 .andExpect(jsonPath("$.aika").value("2027-01-01T00:00:00"))
                 .andExpect(jsonPath("$.paikka").value("Kansalaistori"))

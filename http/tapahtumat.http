@@ -1,5 +1,6 @@
 @myyjaToken = bXl5amE6cGFzc3dvcmQ=
 @jarjestajaToken = amFyamVzdGFqYTpwYXNzd29yZA==
+@jarjestaja1Token = amFyamVzdGFqYTE6cGFzc3dvcmQ=
 @adminToken = YWRtaW46cGFzc3dvcmQ=
 
 ### Hae kaikki tapahtumat
@@ -9,11 +10,23 @@ GET http://localhost:8080/api/tapahtumat
 GET http://localhost:8080/api/tapahtumat?poistettu=true
 Authorization: Basic {{adminToken}}
 
-### Hae tapahtuma
+### Hae kaikki järjestäjän omat tapahtumat
+GET http://localhost:8080/api/tapahtumat/minun
+Authorization: Basic {{jarjestajaToken}}
+
+### Hae kaikki tietyn järjestäjän tapahtumat
+GET http://localhost:8080/api/tapahtumat/jarjestaja/3
+Authorization: Basic {{jarjestaja1Token}}
+
+### Hae tietty tapahtuma
 GET http://localhost:8080/api/tapahtumat/1
 
 ### Hae tapahtuma jota ei ole
 GET http://localhost:8080/api/tapahtumat/99999
+
+### Hae tietyn tapahtuman liput
+GET http://localhost:8080/api/tapahtumat/9/liput
+Authorization: Basic {{jarjestajaToken}}
 
 ### Lisää tapahtuma
 POST http://localhost:8080/api/tapahtumat

@@ -165,6 +165,15 @@ public class LipputoimistoApplication {
                     10,
                     false
             );
+            Tapahtuma tapahtuma11 = new Tapahtuma(
+                    jarjestaja1,
+                    LocalDateTime.of(2028, 10, 11, 12, 13),
+                    "perunakellari",
+                    "kellari",
+                    "perunata tarjolla",
+                    8,
+                    false
+            );
 
             tapahtumaRepository.save(tapahtuma1);
             tapahtumaRepository.save(tapahtuma2);
@@ -176,6 +185,7 @@ public class LipputoimistoApplication {
             tapahtumaRepository.save(tapahtuma8);
             tapahtumaRepository.save(tapahtuma9);
             tapahtumaRepository.save(tapahtuma10);
+            tapahtumaRepository.save(tapahtuma11);
 
             // Lipputyypit
             Lipputyyppi aikuinen1 = new Lipputyyppi(
