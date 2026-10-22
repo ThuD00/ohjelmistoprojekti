@@ -118,7 +118,7 @@ public class LipputyyppiRestControllerTest {
                                 }
                                 """))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.lipputyyppiId").value(4))
+                .andExpect(jsonPath("$.lipputyyppiId").value(3))
                 .andExpect(jsonPath("$.kuvaus").value("VIP"))
                 .andExpect(jsonPath("$.lipunHinta").value(80.00))
                 .andExpect(jsonPath("$.maxLippumaara").value(500))

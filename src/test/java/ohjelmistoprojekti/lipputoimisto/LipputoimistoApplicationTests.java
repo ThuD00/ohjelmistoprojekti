@@ -10,8 +10,4 @@ import org.springframework.transaction.annotation.Transactional;
 @ActiveProfiles("test")
 class LipputoimistoApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
-
 }
