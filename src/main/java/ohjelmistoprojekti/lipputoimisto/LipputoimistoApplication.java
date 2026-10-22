@@ -23,18 +23,6 @@ public class LipputoimistoApplication {
         SpringApplication.run(LipputoimistoApplication.class, args);
     }
 
-    // vain kehityskäyttöön: mahdollistaa intellij idean tietokantayhteyden
-    @Bean(initMethod = "start", destroyMethod = "stop")
-    public Server h2Server() {
-        Server h2Server;
-        try {
-            h2Server = Server.createTcpServer();
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to start H2 server: ", e);
-        }
-        return h2Server;
-    }
-
     @Bean
     public CommandLineRunner demo(
             KayttajaRepository kayttajaRepository,

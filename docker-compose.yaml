@@ -1,0 +1,29 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: lipputoimisto-postgres
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  lipputoimisto:
+    build: .
+    container_name: lipputoimisto
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      - DB_SERVICE_HOST=${DB_LOCAL_HOST}
+      - DB_SERVICE_PORT=${DB_LOCAL_PORT}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+
+volumes:
+  postgres_data:

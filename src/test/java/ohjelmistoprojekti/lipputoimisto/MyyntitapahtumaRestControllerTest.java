@@ -3,13 +3,17 @@ package ohjelmistoprojekti.lipputoimisto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
+@ActiveProfiles("test")
 public class MyyntitapahtumaRestControllerTest {
     private static final String BASE_URL = "/api/myyntitapahtumat";
 
