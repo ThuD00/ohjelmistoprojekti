@@ -13,6 +13,7 @@ import ohjelmistoprojekti.lipputoimisto.service.UserContextService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,11 +40,27 @@ public class TapahtumaRestController {
     }
 
     @GetMapping
-    public Iterable<TapahtumaVastausDto> findAllTapahtumat(@RequestParam(defaultValue = "false") boolean poistettu) {
-        return tapahtumaRepository.findAllByPoistettu(poistettu)
+    public ResponseEntity<List<TapahtumaVastausDto>> findAllTapahtumat(
+            @RequestParam(defaultValue = "false") boolean poistettu,
+            Authentication authentication) {
+
+        boolean isAdmin = authentication != null
+                && authentication.getAuthorities().stream()
+                    .anyMatch(authority ->
+                            authority.getAuthority().equals("ROLE_ADMIN"));
+
+        
+        if (poistettu && !isAdmin) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        
+        List<TapahtumaVastausDto> tapahtumat =
+            tapahtumaRepository.findAllByPoistettu(poistettu)
                 .stream()
                 .map(t -> new TapahtumaVastausDto(t, tapahtumaService.calculateLiputjaljella(t)))
                 .toList();
+
+        return ResponseEntity.ok(tapahtumat);
     }
 
     @PreAuthorize("isAuthenticated()")
