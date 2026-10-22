@@ -2,9 +2,11 @@ package ohjelmistoprojekti.lipputoimisto.web;
 
 import jakarta.validation.Valid;
 import ohjelmistoprojekti.lipputoimisto.domain.Kayttaja;
+import ohjelmistoprojekti.lipputoimisto.domain.Lippu;
 import ohjelmistoprojekti.lipputoimisto.domain.Tapahtuma;
 import ohjelmistoprojekti.lipputoimisto.dto.TapahtumaPyyntoDto;
 import ohjelmistoprojekti.lipputoimisto.dto.TapahtumaVastausDto;
+import ohjelmistoprojekti.lipputoimisto.repository.LippuRepository;
 import ohjelmistoprojekti.lipputoimisto.repository.TapahtumaRepository;
 import ohjelmistoprojekti.lipputoimisto.service.TapahtumaService;
 import ohjelmistoprojekti.lipputoimisto.service.UserContextService;
@@ -17,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 
 
 @RestController
@@ -26,11 +29,13 @@ public class TapahtumaRestController {
     private final TapahtumaRepository tapahtumaRepository;
     private final TapahtumaService tapahtumaService;
     private final UserContextService userContextService;
+    private final LippuRepository lippuRepository;
 
-    public TapahtumaRestController(TapahtumaRepository tapahtumaRepository, TapahtumaService tapahtumaService, UserContextService userContextService) {
+    public TapahtumaRestController(TapahtumaRepository tapahtumaRepository, TapahtumaService tapahtumaService, UserContextService userContextService, LippuRepository lippuRepository) {
         this.tapahtumaRepository = tapahtumaRepository;
         this.tapahtumaService = tapahtumaService;
         this.userContextService = userContextService;
+        this.lippuRepository = lippuRepository;
     }
 
     @GetMapping
@@ -66,8 +71,6 @@ public class TapahtumaRestController {
                 .map(t -> new TapahtumaVastausDto(t, tapahtumaService.calculateLiputjaljella(t)))
                 .toList();
     }
-    
-
 
     @GetMapping("/{id}")
     public ResponseEntity<TapahtumaVastausDto> findById(@PathVariable("id") long tapahtumaId) {
@@ -75,6 +78,14 @@ public class TapahtumaRestController {
         return tapahtuma.map(t -> ResponseEntity.ok(new TapahtumaVastausDto(t, tapahtumaService.calculateLiputjaljella(t))))
                 .orElseGet(() -> ResponseEntity.notFound().build());
 
+    }
+
+    @PreAuthorize("(hasRole('JARJESTAJA') and @tapahtumaSecurity.isOwner(#tapahtumaId)) or hasRole('ADMIN')")
+    @GetMapping("/{id}/liput")
+    public List<Lippu> findAllLiput(@PathVariable("id") long tapahtumaId) {
+        Tapahtuma tapahtuma = tapahtumaRepository.findById(tapahtumaId).orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND));
+        return lippuRepository.findAllByLipputyyppi_Tapahtuma(tapahtuma);
     }
 
     @PreAuthorize("hasRole('JARJESTAJA')")

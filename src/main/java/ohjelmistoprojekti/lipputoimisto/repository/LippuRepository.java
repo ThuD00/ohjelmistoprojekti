@@ -18,6 +18,8 @@ public interface LippuRepository extends JpaRepository<Lippu, Long> {
 
     List<Lippu> findAllByLipputyyppi(Lipputyyppi lipputyyppi);
 
+    List<Lippu> findAllByLipputyyppi_Tapahtuma(Tapahtuma tapahtuma);
+
     long countByLipputyyppiAndLipunStatusNot(
             Lipputyyppi lipputyyppi,
             Lippu.LippuTila status
