@@ -34,6 +34,9 @@ public class WebSecurityConfig {
 
                         .requestMatchers(toH2Console()).permitAll() // h2 consolea varten
 
+                        .requestMatchers(HttpMethod.GET, "/api/myyntitapahtumat/minun").hasRole("MYYJA")
+                        .requestMatchers(HttpMethod.GET, "/api/myyntitapahtumat/myyja/**").hasRole("ADMIN")
+                        
                         .requestMatchers(HttpMethod.GET, "/api/tapahtumat/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/lipputyypit/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/kayttajat/*").permitAll()
