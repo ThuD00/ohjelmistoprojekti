@@ -2,7 +2,6 @@ package ohjelmistoprojekti.lipputoimisto;
 
 import ohjelmistoprojekti.lipputoimisto.domain.*;
 import ohjelmistoprojekti.lipputoimisto.repository.*;
-import org.h2.tools.Server;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -12,7 +11,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 
 @SpringBootApplication
