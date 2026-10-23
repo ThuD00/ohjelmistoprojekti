@@ -1,17 +1,32 @@
 # Lipputoimisto API dokumentaatio
 
-*Versio: V0.2*
+*Versio: 1.0.0*
 
 ## URL
 
 `http://.../api`
 
----
+## Tunnistautuminen ja käyttöoikeudet
+
+Rajapinta käyttää basic authentication.
+
+Käyttöoikeudet ovat rajattu neljän eri roolin mukaisesti:
+
+| Rooli      | Sisäinen nimi | Kuvaus                                                                |
+|------------|---------------|-----------------------------------------------------------------------|
+| Julkinen   |               | Julkiset toiminnot ovat kaikkien käytettävissä ilman tunnistautumista |
+| Myyjä      | MYYJA         | Lipunmyyjät, voivat varata ja lunastaa lippuja                        |
+| Järjestäjä | JARJESTAJA    | Tapahtuman järjestäjät, voivat luoda ja hallita omia tapahtumiaan     |
+| Admin      | ADMIN         | Kaikki käyttöoikeudet, mukaan lukien käyttäjien hallinta              |
+
+Lähes kaikki rajapinnat palauttavat virhekoodit `401` tai `403` jos tarvittavat käyttöoikeudet puuttuvat,
+poikkeuksena GET /kayttajat/{id}
 
 ## 1. Tapahtumat
 
 ### Hae kaikki tapahtumat
 
+* **Käyttöoikeudet**: Julkinen
 * **Metodi**: `GET`
 * **Polku**: `/tapahtumat`
 * **Vastaus**:
@@ -45,6 +60,7 @@
 
 ### Hae kaikki poistetut tapahtumat
 
+* **Käyttöoikeudet**: Admin
 * **Metodi**: `GET`
 * **Polku**: `/tapahtumat?poistettu=true`
 * **Vastaus**:
@@ -78,6 +94,7 @@
 
 ### Hae yksittäinen tapahtuma ID:llä
 
+* **Käyttöoikeudet**: Julkinen
 * **Metodi**: `GET`
 * **Polku**: `/tapahtumat/{id}`
 * **Parametrit**: `id (Long)`
@@ -101,6 +118,7 @@
 
 ### Hae omat tapahtumat
 
+* **Käyttöoikeudet**: Järjestäjä
 * **Metodi**: `GET`
 * **Polku**: `/tapahtumat/omat`
 * **Vastaus**:
@@ -134,6 +152,7 @@
 
 ### Luo uusi tapahtuma
 
+* **Käyttöoikeudet**: Järjestäjä
 * **Metodi**: `POST`
 * **Polku**: `/tapahtumat`
 * **Pyynnön runko**:
@@ -170,6 +189,7 @@ _huom. `järjestäjäId` tulee suoraan tunnistautuneen käyttäjän ID:stä_
 
 ### Muokkaa tapahtumaa
 
+* **Käyttöoikeudet**: Järjestäjä (vain omat tapahtumat)
 * **Metodi**: `PUT`
 * **Polku**: `/tapahtumat/{id}`
 * **Parametrit**: `id (Long)`
@@ -207,6 +227,7 @@ _huom. `järjestäjäId` tulee suoraan tunnistautuneen käyttäjän ID:stä_
 
 ### Poista tapahtuma
 
+* **Käyttöoikeudet**: Järjestäjä (vain omat tapahtumat)
 * **Metodi**: `DELETE`
 * **Polku**: `/tapahtumat/{id}`
 * **Parametrit**: `id (Long)`
@@ -220,6 +241,7 @@ _huom. `järjestäjäId` tulee suoraan tunnistautuneen käyttäjän ID:stä_
 
 ### Hae tapahtuman lipputyypit
 
+* **Käyttöoikeudet**: Julkinen
 * **Metodi**: `GET`
 * **Polku**: `/tapahtumat/{id}/lipputyypit`
 * **Parametrit**: `id (Long)`
@@ -252,6 +274,7 @@ _huom. `järjestäjäId` tulee suoraan tunnistautuneen käyttäjän ID:stä_
 
 ### Lisää lipputyyppi tapahtumaan
 
+* **Käyttöoikeudet**: Järjestäjä (vain omat tapahtumat)
 * **Metodi**: `POST`
 * **Polku**: `/tapahtumat/{id}/lipputyypit`
 * **Parametrit**: `id (Long)`
@@ -312,6 +335,7 @@ Lipputyypille voidaan määrittää oma maxLippumaara, joka varaa kapasiteettia 
 
 ### Muokkaa tapahtuman lipputyyppiä
 
+* **Käyttöoikeudet**: Järjestäjä (vain omat tapahtumat)
 * **Metodi**: `PUT`
 * **Polku**: `/tapahtumat/{id}/lipputyypit/{lipputyyppiId}`
 * **Parametrit**:
@@ -344,6 +368,7 @@ Lipputyypille voidaan määrittää oma maxLippumaara, joka varaa kapasiteettia 
 
 ### Poista tapahtuman lipputyyppi
 
+* **Käyttöoikeudet**: Järjestäjä (vain omat tapahtumat)
 * **Metodi**: `DELETE`
 * **Polku**: `/tapahtumat/{id}/lipputyypit/{lipputyyppiId}`
 * **Parametrit**:
@@ -357,6 +382,7 @@ Lipputyypille voidaan määrittää oma maxLippumaara, joka varaa kapasiteettia 
 
 ### Hae tapahtuman liput
 
+* **Käyttöoikeudet**: Järjestäjä (vain omat tapahtumat)
 * **Metodi**: `GET`
 * **Polku**: `/tapahtumat/{id}/liput`
 * **Vastaus**:
@@ -400,7 +426,10 @@ Lipputyypille voidaan määrittää oma maxLippumaara, joka varaa kapasiteettia 
 ```
 
 ### Varaa lippuja
+Lippujen varaaminen luo myyntitapahtuman, joka sisältää varatut liput. Myyntitapahtuman
+omistajaksi asetetaan lippuvarauksen tehnyt myyjä.
 
+* **Käyttöoikeudet**: Myyjä
 * **Metodi**: `POST`
 * **Polku**: `/liput/varaa`
 * **Pyynnön runko**:
@@ -451,6 +480,7 @@ Lipputyypille voidaan määrittää oma maxLippumaara, joka varaa kapasiteettia 
 
 ### Lunasta lippu
 
+* **Käyttöoikeudet**: Myyjä
 * **Metodi**: `POST`
 * **Polku**: `/liput/lunasta`
 * **Pyynnön runko**:
@@ -468,6 +498,7 @@ Lipputyypille voidaan määrittää oma maxLippumaara, joka varaa kapasiteettia 
 
 ### Peruuta varaus
 
+* **Käyttöoikeudet**: Myyjä
 * **Metodi**: `POST`
 * **Polku**: `/liput/peru`
 * **Pyynnön runko**:
@@ -487,6 +518,7 @@ Lipputyypille voidaan määrittää oma maxLippumaara, joka varaa kapasiteettia 
 
 ### Hae kaikki myyntitapahtumat
 
+* **Käyttöoikeudet**: Admin
 * **Metodi**: `GET`
 * **Polku**: `/myyntitapahtumat`
 * **Vastaus**:
@@ -512,6 +544,7 @@ Lipputyypille voidaan määrittää oma maxLippumaara, joka varaa kapasiteettia 
 
 ### Hae yksittäinen myyntitapahtuma ID:llä
 
+* **Käyttöoikeudet**: Admin
 * **Metodi**: `GET`
 * **Polku**: `/myyntitapahtumat/{id}`
 * **Parametrit**: `id (Long)`
@@ -554,6 +587,7 @@ Lipputyypille voidaan määrittää oma maxLippumaara, joka varaa kapasiteettia 
 
 ### Hae myyjän omat myyntitapahtumat
 
+* **Käyttöoikeudet**: Myyjä (vain omat myyntitapahtumat)
 * **Metodi**: `GET`
 * **Polku**: `/myyntitapahtumat/omat`
 * **Vastaus**:
@@ -579,6 +613,7 @@ Lipputyypille voidaan määrittää oma maxLippumaara, joka varaa kapasiteettia 
 
 ### Hae tietyn myyjän myyntitapahtumat
 
+* **Käyttöoikeudet**: Admin
 * **Metodi**: `GET`
 * **Polku**: `/myyntitapahtumat/myyja/{id}`
 * **Vastaus**:
@@ -605,8 +640,31 @@ Lipputyypille voidaan määrittää oma maxLippumaara, joka varaa kapasiteettia 
 
 ## 4. Käyttäjät
 
-### Hae käyttäjät (admin only)
+### Hae yksittäinen käyttäjä ID:llä
 
+Palauttaa vain Järjestäjä-roolin käyttäjiä jos pyynnön tekijä ei ole tunnistautunut.
+
+* **Käyttöoikeudet**: Julkinen
+* **Metodi**: `GET`
+* **Polku**: `/kayttajat/{id}`
+* **Parametrit**: `id (Long)`
+* **Vastaus**:
+  * `200 OK`
+  * `404 NOT FOUND` (Jos käyttäjää ei löydy) (Jos löydetyn käyttäjän rooli ei ole järjestäjä ja pyynnön tekijä ei ole tunnistautunut)
+* **Vastauksen runko**:
+
+```json
+{
+  "kayttajaId": 3,
+  "nimi": "örinämörkö666",
+  "email": "kuoleman_enkeli92@jippii.fi",
+  "rooli": "JARJESTAJA"
+}
+```
+
+### Hae käyttäjät
+
+* **Käyttöoikeudet**: Admin
 * **Metodi**: `GET`
 * **Polku**: `/kayttajat`
 * **Vastaus**:
@@ -637,29 +695,9 @@ Lipputyypille voidaan määrittää oma maxLippumaara, joka varaa kapasiteettia 
 ]
 ```
 
-### Hae yksittäinen käyttäjä ID:llä
-
-Palauttaa vain JARJESTAJA-käyttäjiä jos pyynnön tekijä ei ole tunnistautunut.
-
-* **Metodi**: `GET`
-* **Polku**: `/kayttajat/{id}`
-* **Parametrit**: `id (Long)`
-* **Vastaus**:
-    * `200 OK`
-    * `404 NOT FOUND` (Jos käyttäjää ei löydy)
-* **Vastauksen runko**:
-
-```json
-{
-  "kayttajaId": 3,
-  "nimi": "örinämörkö666",
-  "email": "kuoleman_enkeli92@jippii.fi",
-  "rooli": "JARJESTAJA"
-}
-```
-
 ### Luo uusi käyttäjä (admin only)
 
+* **Käyttöoikeudet**: Admin
 * **Metodi**: `POST`
 * **Polku**: `/kayttajat`
 * **Pyynnön runko**:
@@ -688,6 +726,7 @@ Palauttaa vain JARJESTAJA-käyttäjiä jos pyynnön tekijä ei ole tunnistautunu
 }
 ```
 
+* **Käyttöoikeudet**: Admin
 ### Muokkaa käyttäjää (admin only)
 
 * **Metodi**: `PUT`
@@ -722,6 +761,7 @@ Palauttaa vain JARJESTAJA-käyttäjiä jos pyynnön tekijä ei ole tunnistautunu
 
 ### Poista käyttäjä (admin only)
 
+* **Käyttöoikeudet**: Admin
 * **Metodi**: `DELETE`
 * **Polku**: `/kayttajat/{id}`
 * **Parametrit**: `id (Long)`
@@ -729,225 +769,3 @@ Palauttaa vain JARJESTAJA-käyttäjiä jos pyynnön tekijä ei ole tunnistautunu
     * `204 NO CONTENT`
     * `403 FORBIDDEN`
     * `404 NOT FOUND` (Jos käyttäjää ei löydy)
-
-# TODO: seuraavat osiot vanhentuneet
-
-## 4. REST-periaatteiden tarkistus
-
-API käyttää HTTP-metodeja niiden käyttötarkoituksen mukaisesti:
-
-* `GET` käytetään tietojen hakemiseen
-* `POST` käytetään uusien tietojen luomiseen sekä esimerkiksi lippujen varaamiseen
-* `PUT` käytetään olemassa olevien tietojen päivittämiseen
-* `DELETE` käytetään tietojen poistamiseen
-
-URL-rakenteissa käytetään resursseja kuvaavia nimiä, esimerkiksi `/tapahtumat`, `/liput` ja `/myyntitapahtumat`.
-Yksittäisiin resursseihin viitataan niiden tunnisteiden avulla, esimerkiksi `/tapahtumat/{id}`.
-
-API palauttaa tilanteen mukaiset HTTP-tilakoodit. Onnistuneiden pyyntöjen yhteydessä se käyttää esimerkiksi koodeja
-`200 OK`, `201 CREATED` ja `204 NO CONTENT`. Virhetilanteissa se käyttää esimerkiksi koodeja `404 NOT FOUND` ja
-`409 CONFLICT`.
-
-Tapahtuman ja sen lipputyyppien välinen suhde näkyy myös URL-rakenteessa, esimerkiksi `/tapahtumat/{id}/lipputyypit`.
-
-## 5. Rajapintojen autentikoinnin testaus
-
-Tässä kaikki testaukset on tehty Postmanin avulla. Testasin rajapintoja ilman tunnuksia, user- ja admin-käyttäjillä sekä
-väärällä salasanalla.
-
-### 5.1	Ei kirjautumista
-
-`GET http://localhost:8080/api/tapahtumat`
-
-* **Metodi**: `GET`
-* **Polku**: `/api/tapahtumat`
-* **Vastaus**:
-  *    `200 OK`
-
-### 5.2	Testaa USER-käyttäjällä
-
-Käytän Postmanin Authorization-välilehteä. Valitsen siellä Basic Auth.
-
-`POST http://localhost:8080/api/liput/varaa`
-
-* **Metodi**: `POST`
-* **Polku**: `/api/liput/varaa`
-* **Käyttäjä**: `user`
-* **Pyynnön runko**:
-
-```json
-{
-  "tapahtumaId": 1,
-  "liput": [
-    {
-      "lipputyyppiId": 1,
-      "qty": 1
-    }
-  ]
-}
-```
-
-* **Vastaus**:
-  * `201 Created`
-
-* **Vastauksen runko**:
-
-```json
-{
-  "myyntitapahtumaId": 3,
-  "summa": 15.00,
-  "liput": [
-    {
-      "lipputyyppiId": 1,
-      "koodi": "JCWZDG-093114"
-    }
-  ]
-}
-```
-
-### 5.3	Testaa USERillä toiminto, jota sen ei pitäisi saa tehdä
-
-`POST http://localhost:8080/api/tapahtumat`
-
-* **Metodi**: `POST`
-* **Polku**: `/api/tapahtumat`
-* **Käyttäjä**: `user`
-* **Pyynnön runko**:
-
-```json
-{
-  "aika": "2026-10-10T18:00:00",
-  "paikka": "Tavastia",
-  "kaupunki": "Helsinki",
-  "kuvaus": "Testitapahtuma",
-  "maxLippumaara": 100
-}
-```
-
-* **Vastaus**:
-  * `403 Forbidden`
-
-### 5.4	Testaa sama ADMIN:illa
-
-`POST http://localhost:8080/api/tapahtumat`
-
-* **Metodi**: POST
-* **Polku**: /api/tapahtumat
-* **Käyttäjä**: admin
-* **Pyynnön runko**:
-
-```json
-{
-  "aika": "2026-10-10T18:00:00",
-  "paikka": "Tavastia",
-  "kaupunki": "Helsinki",
-  "kuvaus": "Testitapahtuma",
-  "maxLippumaara": 100
-}
-```
-
-* **Vastaus**:
-  * `201 Created`
-* **Vastauksen runko**:
-
-```json
-{
-  "tapahtumaId": 4,
-  "aika": "2026-10-10T18:00:00",
-  "paikka": "Tavastia",
-  "kaupunki": "Helsinki",
-  "kuvaus": "Testitapahtuma",
-  "maxLippumaara": 100,
-  "lipputyypit": null
-}
-```
-
-### 5.5	Testaa muokkaus ja poisto userilla
-
-`PUT http://localhost:8080/api/tapahtumat/4`
-
-* **Metodi**: `PUT`
-* **Polku**: `/api/tapahtumat/4`
-* **Käyttäjä**: `user`
-* **Pyynnön runko**:
-
-```json
-{
-  "aika": "2026-10-10T19:00:00",
-  "paikka": "Tavastia",
-  "kaupunki": "Helsinki",
-  "kuvaus": "Testitapahtuma päivitetty",
-  "maxLippumaara": 120
-}
-```
-
-* **Vastaus**:
-  * `403 Forbidden`
-
-`DELETE http://localhost:8080/api/tapahtumat/4`
-
-* **Metodi**: `DELETE`
-* **Polku**: `/api/tapahtumat/4`
-* **Käyttäjä**: `user`
-* **Vastaus**:
-  * `403 Forbidden`
-
-Eli sain molemmista 403 Forbidden, koska user on käyttäjä.
-
-### 5.6	 Testaa muokkaus ja poisto myös adminilla
-
-`PUT http://localhost:8080/api/tapahtumat/4`
-
-* **Metodi**: `PUT`
-* **Polku**: `/api/tapahtumat/4`
-* **Käyttäjä**: `admin`
-* **Pyynnön runko**:
-
-```json
-{
-  "aika": "2026-10-10T19:00:00",
-  "paikka": "Tavastia",
-  "kaupunki": "Helsinki",
-  "kuvaus": "Testitapahtuma päivitetty",
-  "maxLippumaara": 120
-}
-```
-
-* **Vastaus**:
-  * `200 OK`
-* **Vastauksen runko**:
-
-```json
-{
-  "tapahtumaId": 4,
-  "aika": "2026-10-10T19:00:00",
-  "paikka": "Tavastia",
-  "kaupunki": "Helsinki",
-  "kuvaus": "Testitapahtuma päivitetty",
-  "maxLippumaara": 120,
-  "lipputyypit": []
-}
-```
-
-`DELETE http://localhost:8080/api/tapahtumat/4`
-
-* **Metodi**: `DELETE`
-* **Polku**: `/api/tapahtumat/4`
-* **Käyttäjä**: `admin`
-* **Vastaus**:
-  * `204 No Content`
-
-Muokkaus ja poisto onnistuivat, koska admin-käyttäjällä on siihen oikeudet.
-
-### 5.7 Testaa väärällä salasanalla
-
-* **Username**: `user`
-* **Password**: `väärä-salasana`
-
-`GET http://localhost:8080/api/tapahtumat`
-
-* **Metodi**: `GET`
-* **Polku**: `/api/tapahtumat`
-* **Käyttäjä**: `user`
-* **Vastaus**:
-  * `401 Unauthorized`

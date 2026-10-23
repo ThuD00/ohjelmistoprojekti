@@ -32,7 +32,7 @@ public class MyyntitapahtumaRestController {
         this.userContextService = userContextService;
     }
 
-    @PreAuthorize("hasRole('MYYJA')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public Iterable<Myyntitapahtuma> findAllMyyntitapahtumat() {
         return myyntitapahtumaRepository.findAll();
