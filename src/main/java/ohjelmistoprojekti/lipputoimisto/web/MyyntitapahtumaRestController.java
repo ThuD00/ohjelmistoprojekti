@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -43,15 +42,12 @@ public class MyyntitapahtumaRestController {
     public ResponseEntity<Myyntitapahtuma> findById(@PathVariable("id") long myyntitapahtumaId) {
         Optional<Myyntitapahtuma> myyntitapahtuma = myyntitapahtumaRepository.findById(myyntitapahtumaId);
 
-        if (myyntitapahtuma.isPresent()) {
-            return ResponseEntity.ok(myyntitapahtuma.get());
-        }
+        return myyntitapahtuma.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
 
-        return ResponseEntity.notFound().build();
     }
 
     @PreAuthorize("hasRole('MYYJA')")
-    @GetMapping("/minun")
+    @GetMapping("/omat")
     public List<Myyntitapahtuma> getOmatMyyntitapahtumat() {
         Kayttaja myyja = userContextService.getCurrentUser();
 
