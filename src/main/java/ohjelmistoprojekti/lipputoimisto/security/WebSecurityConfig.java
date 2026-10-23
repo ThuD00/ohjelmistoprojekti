@@ -32,8 +32,6 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/css/**").permitAll()
 
-                        .requestMatchers(toH2Console()).permitAll() // h2 consolea varten
-
                         .requestMatchers(HttpMethod.GET, "/api/myyntitapahtumat/minun").hasRole("MYYJA")
                         .requestMatchers(HttpMethod.GET, "/api/myyntitapahtumat/myyja/**").hasRole("ADMIN")
                         
@@ -42,11 +40,8 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/kayttajat/*").permitAll()
                         .anyRequest().authenticated())
 
-                .httpBasic(Customizer.withDefaults())
+                .httpBasic(Customizer.withDefaults());
 
-                // h2 consolea varten
-                .headers(headers -> headers
-                        .frameOptions(frameoptions -> frameoptions.disable()));
         return http.build();
     }
 
