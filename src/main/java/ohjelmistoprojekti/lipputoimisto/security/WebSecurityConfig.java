@@ -11,8 +11,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import static org.springframework.boot.security.autoconfigure.web.servlet.PathRequest.toH2Console;
-
 @Configuration
 @EnableMethodSecurity(securedEnabled = true)
 public class WebSecurityConfig {
@@ -30,14 +28,16 @@ public class WebSecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/css/**").permitAll()
+                        .requestMatchers("/css/**", "/error").permitAll()
 
-                        .requestMatchers(HttpMethod.GET, "/api/myyntitapahtumat/minun").hasRole("MYYJA")
-                        .requestMatchers(HttpMethod.GET, "/api/myyntitapahtumat/myyja/**").hasRole("ADMIN")
-                        
                         .requestMatchers(HttpMethod.GET, "/api/tapahtumat/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/lipputyypit/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/kayttajat/*").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/liput/qr").permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/api/myyntitapahtumat/minun").hasRole("MYYJA")
+                        .requestMatchers(HttpMethod.GET, "/api/myyntitapahtumat/myyja/**").hasRole("ADMIN")
+
                         .anyRequest().authenticated())
 
                 .httpBasic(Customizer.withDefaults());

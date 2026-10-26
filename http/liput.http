@@ -2,7 +2,7 @@
 @jarjestajaToken = amFyamVzdGFqYTpwYXNzd29yZA==
 @adminToken = YWRtaW46cGFzc3dvcmQ=
 
-## Varaa lippuja onnistuneesti
+### Varaa lippuja onnistuneesti
 POST http://localhost:8080/api/liput/varaa
 Content-Type: application/json
 Authorization: Basic {{myyjaToken}}
@@ -182,4 +182,12 @@ Authorization: Basic {{myyjaToken}}
 
 {
   "koodi": "FEDCBA-654321"
+}
+
+### Generoi QR-koodi lipulle
+POST http://localhost:8080/api/liput/qr
+Content-Type: application/json
+
+{
+  "koodi": "ABCDEF-123456"
 }

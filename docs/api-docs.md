@@ -1,6 +1,6 @@
 # Lipputoimisto API dokumentaatio
 
-*Versio: 1.0.0*
+*Versio: 1.1.0*
 
 ## URL
 
@@ -513,6 +513,25 @@ omistajaksi asetetaan lippuvarauksen tehnyt myyjä.
     * `200 OK`
     * `404 NOT FOUND` (Jos koodia ei löydy)
     * `409 CONFLICT` (Jos lippua ei voi perua)
+
+### Generoi QR-koodi
+
+* **Käyttöoikeudet**: Julkinen
+* **Metodi**: `POST`
+* **Polku**: `/liput/qr`
+* **Pyynnön runko**:
+
+```json
+{
+  "koodi": "ABCDEF-123456"
+}
+```
+
+* **Vastaus**:
+  * `200 OK`
+
+* **Vastauksen runko**:
+Lipun QR-koodi PNG muodossa
 
 ## 3. Myyntitapahtumat
 

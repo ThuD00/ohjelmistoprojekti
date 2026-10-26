@@ -3,9 +3,6 @@ package ohjelmistoprojekti.lipputoimisto.web;
 import jakarta.validation.Valid;
 import ohjelmistoprojekti.lipputoimisto.dto.LippuLunastus;
 import ohjelmistoprojekti.lipputoimisto.dto.LippuVarausPyynto;
-import ohjelmistoprojekti.lipputoimisto.repository.LipputyyppiRepository;
-import ohjelmistoprojekti.lipputoimisto.repository.MyyntitapahtumaRepository;
-import ohjelmistoprojekti.lipputoimisto.repository.TapahtumaRepository;
 import ohjelmistoprojekti.lipputoimisto.service.LippuService;
 import ohjelmistoprojekti.lipputoimisto.service.QrService;
 import org.springframework.http.MediaType;
@@ -28,6 +25,11 @@ public class LippuRestController {
         this.qrService = qrService;
     }
 
+    @PostMapping(value = "/qr", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<byte[]> genQr(@RequestBody LippuLunastus pyynto) {
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(qrService.generateQrCode(pyynto.getKoodi()));
+    }
+
     @PreAuthorize("hasRole('MYYJA')")
     @PostMapping("/varaa")
     public ResponseEntity<?> varaaLiput(@Valid @RequestBody LippuVarausPyynto pyynto) {
@@ -46,8 +48,4 @@ public class LippuRestController {
         return lippuService.peruLippu(pyynto);
     }
 
-    @GetMapping(value = "/qr", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<byte[]> genQr(@RequestBody LippuLunastus pyynto) {
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(qrService.generateQrCode(pyynto.getKoodi()));
-    }
 }
