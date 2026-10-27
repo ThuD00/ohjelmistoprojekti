@@ -175,4 +175,24 @@ public class LippuService {
 
         return ResponseEntity.ok().build();
     }
+
+    public ResponseEntity<?> haeLipunTiedot(String koodi) {
+
+        if (koodi == null || koodi.isBlank()) {
+            return ResponseEntity.badRequest().build();
+    }
+
+        Lippu lippu = lippuRepository.findByKoodi(koodi)
+            .orElseThrow(() -> new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Lippua ei löydy"));
+
+        LipunTarkastusVastaus vastaus = new LipunTarkastusVastaus(
+            lippu.getLippuId(),
+            lippu.getKoodi(),
+            lippu.getLipunStatus()
+    );
+
+        return ResponseEntity.ok(vastaus);
+    }
+
 }
