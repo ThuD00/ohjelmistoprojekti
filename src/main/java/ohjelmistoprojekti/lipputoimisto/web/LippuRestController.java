@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/liput")
 public class LippuRestController {
@@ -28,6 +29,12 @@ public class LippuRestController {
     @PostMapping(value = "/qr", produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<byte[]> genQr(@RequestBody LippuLunastus pyynto) {
         return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(qrService.generateQrCode(pyynto.getKoodi()));
+    }
+
+    @PreAuthorize("hasRole('MYYJA')")
+    @GetMapping
+    public ResponseEntity<?> haeLipunTiedot(@RequestParam String code) {
+        return lippuService.haeLipunTiedot(code);
     }
 
     @PreAuthorize("hasRole('MYYJA')")
