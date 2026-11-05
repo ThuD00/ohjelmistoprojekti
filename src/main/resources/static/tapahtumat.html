@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tapahtumien hallinta - TicketGuru</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/tapahtumat.js" defer></script>
+</head>
+<body>
+  <header>
+    <h1>TicketGuru</h1>
+    <nav>
+        <a href="index.html">Etusivu</a>
+        <a href="tapahtumat.html">Tapahtumat</a>
+        <a href="lipunmyynti.html">Lipunmyynti</a>
+        <a href="raportit.html">Myyntiraportit</a>
+    </nav>
+  </header>
+  <main>
+    <h1>Tapahtumien hallinta</h1>
+
+    <h2>Lisää uusi tapahtuma</h2>
+
+    <form id="tapahtumaLomake">
+      <label for="aika">Päivämäärä ja aika:</label>
+      <input type="datetime-local" id="aika" required>
+      <br><br>
+      <label for="paikka">Paikka:</label>
+      <input type="text" id="paikka" required>
+      <br><br>
+      <label for="kaupunki">Kaupunki:</label>
+      <input type="text" id="kaupunki" required>
+      <br><br>
+      <label for="kuvaus">Tapahtuman kuvaus:</label>
+      <input type="text" id="kuvaus" required>
+      <br><br>
+      <label for="maxLippumaara">Lippujen enimmäismäärä:</label>
+      <input type="number" id="maxLippumaara" min="1" required>
+      <br><br>
+      <button type="submit">Lisää tapahtuma</button>
+    </form>
+
+    <p id="ilmoitus"></p>
+
+    <button onclick="haeTapahtumat()">Päivitä tapahtumat</button>
+
+    <div id="tapahtumat">
+        <p>Ladataan tapahtumia...</p>
+    </div>
+  </main>
+</body>
+</html>
