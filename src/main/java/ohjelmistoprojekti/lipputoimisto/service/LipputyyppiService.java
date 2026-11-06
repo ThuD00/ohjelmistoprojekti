@@ -6,12 +6,13 @@ import ohjelmistoprojekti.lipputoimisto.domain.LipputyyppiId;
 import ohjelmistoprojekti.lipputoimisto.domain.Tapahtuma;
 import ohjelmistoprojekti.lipputoimisto.dto.LipputyyppiPyyntoDto;
 import ohjelmistoprojekti.lipputoimisto.dto.LipputyyppiVastausDto;
+import ohjelmistoprojekti.lipputoimisto.exception.LippuCapacityException;
 import ohjelmistoprojekti.lipputoimisto.repository.LippuRepository;
 import ohjelmistoprojekti.lipputoimisto.repository.LipputyyppiRepository;
 import ohjelmistoprojekti.lipputoimisto.repository.TapahtumaRepository;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collections;
 import java.util.List;
@@ -80,21 +81,21 @@ public class LipputyyppiService {
     }
 
 
-    public ResponseEntity<List<LipputyyppiVastausDto>> getLipputyypit(long tapahtumaId, boolean isAdmin) {
+    public List<LipputyyppiVastausDto> getLipputyypit(long tapahtumaId, boolean isAdmin) {
 
         Optional<Tapahtuma> tapahtuma = tapahtumaRepository.findByIdIncludingPoistettu(tapahtumaId);
 
         if (tapahtuma.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
         Tapahtuma loydettyTapahtuma = tapahtuma.get();
 
         if (loydettyTapahtuma.isPoistettu() && !isAdmin) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
-        return ResponseEntity.ok(
+        return (
                 loydettyTapahtuma.getLipputyypit().stream()
                         .filter(e -> !e.isPoistettu())
                         .map(e -> new LipputyyppiVastausDto(
@@ -106,80 +107,86 @@ public class LipputyyppiService {
                         .toList());
     }
 
-    public ResponseEntity<LipputyyppiVastausDto> addLipputyyppi(long tapahtumaId, LipputyyppiPyyntoDto body) {
-
-        Optional<Tapahtuma> tapahtumaOptional = tapahtumaRepository.findById(tapahtumaId);
-
-        if (tapahtumaOptional.isPresent()) {
-            Tapahtuma tapahtuma = tapahtumaOptional.get();
-
-            Lipputyyppi lipputyyppi = new Lipputyyppi(new LipputyyppiId(tapahtumaId, nextLipputyyppiId(tapahtumaId)), tapahtuma, body.getKuvaus(), body.getLipunHinta(), body.getMaxLippumaara());
-
-            if (!validateMaxLippumaara(tapahtuma, lipputyyppi)) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).build();
-            }
-
-            lipputyyppiRepository.save(lipputyyppi);
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(new LipputyyppiVastausDto(
-                    lipputyyppi.getId().getLipputyyppiId(),
-                    lipputyyppi.getKuvaus(),
-                    lipputyyppi.getLipunHinta(),
-                    lipputyyppi.getMaxLippumaara(),
-                    calculateLiputjaljella(lipputyyppi)));
-        }
-
-        return ResponseEntity.notFound().build();
-    }
-
-    public ResponseEntity<LipputyyppiVastausDto> updateLipputyyppi(long tapahtumaId, long lipputyyppiId, LipputyyppiPyyntoDto body) {
+    public LipputyyppiVastausDto addLipputyyppi(long tapahtumaId, LipputyyppiPyyntoDto body) {
 
         Optional<Tapahtuma> tapahtumaOptional = tapahtumaRepository.findById(tapahtumaId);
 
         if (tapahtumaOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
-        Optional<Lipputyyppi> lipputyyppiOptional = lipputyyppiRepository.findById(new LipputyyppiId(tapahtumaId, lipputyyppiId));
+        Tapahtuma tapahtuma = tapahtumaOptional.get();
 
-        if (lipputyyppiOptional.isPresent()) {
-            Lipputyyppi lipputyyppi = lipputyyppiOptional.get();
-            Tapahtuma tapahtuma = tapahtumaOptional.get();
-            lipputyyppi.setKuvaus(body.getKuvaus());
-            lipputyyppi.setLipunHinta(body.getLipunHinta());
-            lipputyyppi.setMaxLippumaara(body.getMaxLippumaara());
+        Lipputyyppi lipputyyppi = new Lipputyyppi(
+                new LipputyyppiId(
+                        tapahtumaId,
+                        nextLipputyyppiId(tapahtumaId)),
+                tapahtuma,
+                body.getKuvaus(),
+                body.getLipunHinta(),
+                body.getMaxLippumaara());
 
-            if (!validateMaxLippumaara(tapahtuma, lipputyyppi)) { // TODO: testaa
-                return ResponseEntity.status(HttpStatus.CONFLICT).build();
-            }
-
-            lipputyyppiRepository.save(lipputyyppi);
-
-            return ResponseEntity.ok().body(new LipputyyppiVastausDto(
-                    lipputyyppi.getId().getLipputyyppiId(),
-                    lipputyyppi.getKuvaus(),
-                    lipputyyppi.getLipunHinta(),
-                    lipputyyppi.getMaxLippumaara(),
-                    calculateLiputjaljella(lipputyyppi)));
+        if (!validateMaxLippumaara(tapahtuma, lipputyyppi)) {
+            throw new LippuCapacityException("Lipputyypin kapasiteetti on suurempi kuin tapahtuman kokonaiskapasiteetti");
         }
 
-        return ResponseEntity.notFound().build();
+        lipputyyppiRepository.save(lipputyyppi);
+
+        return new LipputyyppiVastausDto(
+                lipputyyppi.getId().getLipputyyppiId(),
+                lipputyyppi.getKuvaus(),
+                lipputyyppi.getLipunHinta(),
+                lipputyyppi.getMaxLippumaara(),
+                calculateLiputjaljella(lipputyyppi));
     }
 
-    public ResponseEntity<Void> deleteLipputyyppi(long tapahtumaId, long lipputyyppiId) {
+    public LipputyyppiVastausDto updateLipputyyppi(long tapahtumaId, long lipputyyppiId, LipputyyppiPyyntoDto body) {
+
+        Optional<Tapahtuma> tapahtumaOptional = tapahtumaRepository.findById(tapahtumaId);
+
+        if (tapahtumaOptional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
 
         Optional<Lipputyyppi> lipputyyppiOptional = lipputyyppiRepository.findById(new LipputyyppiId(tapahtumaId, lipputyyppiId));
 
-        if (lipputyyppiOptional.isPresent()) {
-
-            Lipputyyppi lipputyyppi = lipputyyppiOptional.get();
-
-            lipputyyppi.setPoistettu(true);
-            lipputyyppiRepository.save(lipputyyppi);
-
-            return ResponseEntity.noContent().build();
+        if (lipputyyppiOptional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
-        return ResponseEntity.notFound().build();
+        Lipputyyppi lipputyyppi = lipputyyppiOptional.get();
+        Tapahtuma tapahtuma = tapahtumaOptional.get();
+        lipputyyppi.setKuvaus(body.getKuvaus());
+        lipputyyppi.setLipunHinta(body.getLipunHinta());
+        lipputyyppi.setMaxLippumaara(body.getMaxLippumaara());
+
+        if (!validateMaxLippumaara(tapahtuma, lipputyyppi)) {
+            throw new LippuCapacityException("Lipputyypin kapasiteetti on suurempi kuin tapahtuman kokonaiskapasiteetti tai pienempi kuin lipputyypin varatut liput");
+        }
+
+        lipputyyppiRepository.save(lipputyyppi);
+
+        return (new LipputyyppiVastausDto(
+                lipputyyppi.getId().getLipputyyppiId(),
+                lipputyyppi.getKuvaus(),
+                lipputyyppi.getLipunHinta(),
+                lipputyyppi.getMaxLippumaara(),
+                calculateLiputjaljella(lipputyyppi)));
+    }
+
+
+    public void deleteLipputyyppi(long tapahtumaId, long lipputyyppiId) {
+
+        Optional<Lipputyyppi> lipputyyppiOptional = lipputyyppiRepository.findById(new LipputyyppiId(tapahtumaId, lipputyyppiId));
+
+        if (lipputyyppiOptional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+
+        Lipputyyppi lipputyyppi = lipputyyppiOptional.get();
+
+        lipputyyppi.setPoistettu(true);
+        lipputyyppiRepository.save(lipputyyppi);
     }
 }

@@ -28,54 +28,26 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping("/api/tapahtumat")
 public class TapahtumaRestController {
 
-    private final TapahtumaRepository tapahtumaRepository;
     private final TapahtumaService tapahtumaService;
-    private final UserContextService userContextService;
-    private final LippuRepository lippuRepository;
 
-    public TapahtumaRestController(TapahtumaRepository tapahtumaRepository, TapahtumaService tapahtumaService, UserContextService userContextService, LippuRepository lippuRepository) {
-        this.tapahtumaRepository = tapahtumaRepository;
+    public TapahtumaRestController(TapahtumaService tapahtumaService) {
         this.tapahtumaService = tapahtumaService;
-        this.userContextService = userContextService;
-        this.lippuRepository = lippuRepository;
     }
 
     @GetMapping
     public ResponseEntity<List<TapahtumaVastausDto>> findAllTapahtumat(
-            @RequestParam(defaultValue = "false") boolean poistettu,
-            Authentication authentication) {
+            @RequestParam(defaultValue = "false") boolean poistettu) {
 
-        boolean isAdmin = authentication != null
-                && authentication.getAuthorities().stream()
-                    .anyMatch(authority ->
-                            authority.getAuthority().equals("ROLE_ADMIN"));
-
-        
-        if (poistettu && !isAdmin) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-        
-        List<TapahtumaVastausDto> tapahtumat =
-            tapahtumaRepository.findAllByPoistettu(poistettu)
-                .stream()
-                .map(t -> new TapahtumaVastausDto(t, tapahtumaService.calculateLiputjaljella(t)))
-                .toList();
-
-        return ResponseEntity.ok(tapahtumat);
+        return ResponseEntity.ok(
+                tapahtumaService.getAllTapahtumat(poistettu));
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/minun")
-    public  List<TapahtumaVastausDto> findMyTapahtumat(
+    public List<TapahtumaVastausDto> findMyTapahtumat(
             @RequestParam(defaultValue = "false") boolean poistettu) {
 
-        Kayttaja kayttaja = userContextService.getCurrentUser();
-
-        return tapahtumaRepository
-                .findAllByJarjestajaAndPoistettu(kayttaja, poistettu)
-                .stream()
-                .map(t -> new TapahtumaVastausDto(t, tapahtumaService.calculateLiputjaljella(t)))
-                .toList();
+        return tapahtumaService.getMyTapahtumat(poistettu);
     }
 
     @GetMapping("/jarjestaja/{jarjestajaId}")
@@ -83,27 +55,24 @@ public class TapahtumaRestController {
             @PathVariable Long jarjestajaId,
             @RequestParam(defaultValue = "false") boolean poistettu) {
 
-        return tapahtumaRepository
-                .findAllByJarjestaja_IdAndPoistettu(jarjestajaId, poistettu)
-                .stream()
-                .map(t -> new TapahtumaVastausDto(t, tapahtumaService.calculateLiputjaljella(t)))
-                .toList();
+        return tapahtumaService.getByJarjestaja(jarjestajaId, poistettu);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TapahtumaVastausDto> findById(@PathVariable("id") long tapahtumaId) {
-        Optional<Tapahtuma> tapahtuma = tapahtumaRepository.findById(tapahtumaId);
-        return tapahtuma.map(t -> ResponseEntity.ok(new TapahtumaVastausDto(t, tapahtumaService.calculateLiputjaljella(t))))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<TapahtumaVastausDto> findById(
+            @PathVariable("id") long tapahtumaId) {
 
+        return tapahtumaService.getTapahtumaById(tapahtumaId)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PreAuthorize("(hasRole('JARJESTAJA') and @tapahtumaSecurity.isOwner(#tapahtumaId)) or hasRole('ADMIN')")
     @GetMapping("/{id}/liput")
-    public List<LippuVastausDto> findAllLiput(@PathVariable("id") long tapahtumaId) {
-        Tapahtuma tapahtuma = tapahtumaRepository.findById(tapahtumaId).orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND));
-        return lippuRepository.findAllByLipputyyppi_Tapahtuma(tapahtuma).stream().map(LippuVastausDto::new).toList();
+    public List<LippuVastausDto> findAllLiput(
+            @PathVariable("id") long tapahtumaId) {
+
+        return tapahtumaService.getAllLiput(tapahtumaId);
     }
 
     @PreAuthorize("hasRole('JARJESTAJA')")
@@ -111,16 +80,10 @@ public class TapahtumaRestController {
     public ResponseEntity<TapahtumaVastausDto> addTapahtuma(
             @Valid @RequestBody TapahtumaPyyntoDto pyynto) {
 
-        Kayttaja kayttaja = userContextService.getCurrentUser();
+        TapahtumaVastausDto vastaus =
+                tapahtumaService.addTapahtuma(pyynto);
 
-        Tapahtuma tapahtuma = tapahtumaRepository.save(new Tapahtuma(
-                kayttaja,
-                pyynto.getAika(),
-                pyynto.getPaikka(),
-                pyynto.getKaupunki(),
-                pyynto.getKuvaus(),
-                pyynto.getMaxLippumaara()));
-        return ResponseEntity.status(HttpStatus.CREATED).body(new TapahtumaVastausDto(tapahtuma, tapahtumaService.calculateLiputjaljella(tapahtuma)));
+        return ResponseEntity.status(HttpStatus.CREATED).body(vastaus);
     }
 
     @PreAuthorize("(hasRole('JARJESTAJA') and @tapahtumaSecurity.isOwner(#tapahtumaId)) or hasRole('ADMIN')")
@@ -129,52 +92,17 @@ public class TapahtumaRestController {
             @PathVariable("id") long tapahtumaId,
             @Valid @RequestBody TapahtumaPyyntoDto pyynto) {
 
-        Optional<Tapahtuma> vanhaTapahtuma = tapahtumaRepository.findById(tapahtumaId);
-
-        if (vanhaTapahtuma.isPresent()) {
-            Tapahtuma tapahtuma = vanhaTapahtuma.get();
-
-            Tapahtuma uusiTapahtuma = new Tapahtuma(
-                    pyynto.getAika(),
-                    pyynto.getPaikka(),
-                    pyynto.getKaupunki(),
-                    pyynto.getKuvaus(),
-                    pyynto.getMaxLippumaara()
-            );
-
-            if (!tapahtumaService.validateTapahtumaMaxLippumaara(tapahtuma, uusiTapahtuma)) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).build();
-            }
-
-            tapahtuma.setAika(uusiTapahtuma.getAika());
-            tapahtuma.setPaikka(uusiTapahtuma.getPaikka());
-            tapahtuma.setKaupunki(uusiTapahtuma.getKaupunki());
-            tapahtuma.setKuvaus(uusiTapahtuma.getKuvaus());
-            tapahtuma.setMaxLippumaara(uusiTapahtuma.getMaxLippumaara());
-
-            tapahtuma = tapahtumaRepository.save(tapahtuma);
-
-            return ResponseEntity.ok(new TapahtumaVastausDto(tapahtuma, tapahtumaService.calculateLiputjaljella(tapahtuma)));
-        }
-
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(
+                tapahtumaService.updateTapahtuma(tapahtumaId, pyynto));
     }
 
     @PreAuthorize("(hasRole('JARJESTAJA') and @tapahtumaSecurity.isOwner(#tapahtumaId)) or hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTapahtuma(@PathVariable("id") long tapahtumaId) {
-        Optional<Tapahtuma> tapahtuma = tapahtumaRepository.findById(tapahtumaId);
+    public ResponseEntity<Void> deleteTapahtuma(
+            @PathVariable("id") long tapahtumaId) {
 
-        if (tapahtuma.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Tapahtuma loydettyTapahtuma = tapahtuma.get();
-
-        loydettyTapahtuma.setPoistettu(true);
-        tapahtumaRepository.save(loydettyTapahtuma);
+        tapahtumaService.deleteTapahtuma(tapahtumaId);
 
         return ResponseEntity.noContent().build();
     }
-
 }

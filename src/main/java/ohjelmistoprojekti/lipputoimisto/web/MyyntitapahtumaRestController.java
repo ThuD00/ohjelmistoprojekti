@@ -1,10 +1,8 @@
 package ohjelmistoprojekti.lipputoimisto.web;
 
-import ohjelmistoprojekti.lipputoimisto.domain.Kayttaja;
 import ohjelmistoprojekti.lipputoimisto.domain.Myyntitapahtuma;
-import ohjelmistoprojekti.lipputoimisto.repository.MyyntitapahtumaRepository;
-import ohjelmistoprojekti.lipputoimisto.service.UserContextService;
 
+import ohjelmistoprojekti.lipputoimisto.service.MyyntitapahtumaService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,52 +11,49 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @RestController
 @RequestMapping("/api/myyntitapahtumat")
 public class MyyntitapahtumaRestController {
 
-    private final MyyntitapahtumaRepository myyntitapahtumaRepository;
-    private final UserContextService userContextService;
+    private final MyyntitapahtumaService myyntitapahtumaService;
 
     public MyyntitapahtumaRestController(
-        MyyntitapahtumaRepository myyntitapahtumaRepository,
-        UserContextService userContextService) {
+            MyyntitapahtumaService myyntitapahtumaService) {
 
-        this.myyntitapahtumaRepository = myyntitapahtumaRepository;
-        this.userContextService = userContextService;
+        this.myyntitapahtumaService = myyntitapahtumaService;
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public Iterable<Myyntitapahtuma> findAllMyyntitapahtumat() {
-        return myyntitapahtumaRepository.findAll();
+    public List<Myyntitapahtuma> findAllMyyntitapahtumat() {
+        return myyntitapahtumaService.getAllMyyntitapahtumat();
     }
 
     @PreAuthorize("hasRole('MYYJA')")
     @GetMapping("/{id}")
-    public ResponseEntity<Myyntitapahtuma> findById(@PathVariable("id") long myyntitapahtumaId) {
-        Optional<Myyntitapahtuma> myyntitapahtuma = myyntitapahtumaRepository.findById(myyntitapahtumaId);
+    public ResponseEntity<Myyntitapahtuma> findById(
+            @PathVariable("id") long myyntitapahtumaId) {
 
-        return myyntitapahtuma.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-
+        return myyntitapahtumaService
+                .getMyyntitapahtumaById(myyntitapahtumaId)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PreAuthorize("hasRole('MYYJA')")
     @GetMapping("/omat")
     public List<Myyntitapahtuma> getOmatMyyntitapahtumat() {
-        Kayttaja myyja = userContextService.getCurrentUser();
-
-        return myyntitapahtumaRepository.findAllByMyyja_Id(myyja.getId());
+        return myyntitapahtumaService.getOmatMyyntitapahtumat();
     }
-    
+
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/myyja/{myyjaId}")
     public List<Myyntitapahtuma> getMyyjanMyyntitapahtumat(
             @PathVariable Long myyjaId) {
 
-        return myyntitapahtumaRepository.findAllByMyyja_Id(myyjaId);
+        return myyntitapahtumaService
+                .getMyyjanMyyntitapahtumat(myyjaId);
     }
 }

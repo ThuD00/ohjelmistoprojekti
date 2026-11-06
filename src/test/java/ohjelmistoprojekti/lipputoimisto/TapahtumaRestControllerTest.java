@@ -75,7 +75,7 @@ class TapahtumaRestControllerTest {
     void getDeletedTapahtumatReturnsForbidden() throws Exception {
         mockMvc.perform(get(BASE_URL + "?poistettu=true")
                         .with(MYYJA))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isNotFound());
     }
 
     @Test

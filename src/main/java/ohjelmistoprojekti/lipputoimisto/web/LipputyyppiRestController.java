@@ -1,23 +1,16 @@
 package ohjelmistoprojekti.lipputoimisto.web;
 
-import java.util.List;
-
+import jakarta.validation.Valid;
+import ohjelmistoprojekti.lipputoimisto.dto.LipputyyppiPyyntoDto;
 import ohjelmistoprojekti.lipputoimisto.dto.LipputyyppiVastausDto;
+import ohjelmistoprojekti.lipputoimisto.service.LipputyyppiService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
-import ohjelmistoprojekti.lipputoimisto.dto.LipputyyppiPyyntoDto;
-import ohjelmistoprojekti.lipputoimisto.service.LipputyyppiService;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/tapahtumat/{id}/lipputyypit")
@@ -36,10 +29,12 @@ public class LipputyyppiRestController {
 
         boolean isAdmin = authentication != null
                 && authentication.getAuthorities().stream()
-                    .anyMatch(authority ->
+                .anyMatch(authority ->
                         authority.getAuthority().equals("ROLE_ADMIN"));
 
-        return lipputyyppiService.getLipputyypit(tapahtumaId, isAdmin);
+        List<LipputyyppiVastausDto> lipputyypit = lipputyyppiService.getLipputyypit(tapahtumaId, isAdmin);
+
+        return ResponseEntity.ok().body(lipputyypit);
     }
 
     @PreAuthorize("(hasRole('JARJESTAJA') and @tapahtumaSecurity.isOwner(#tapahtumaId)) or hasRole('ADMIN')")
@@ -48,7 +43,9 @@ public class LipputyyppiRestController {
             @PathVariable("id") long tapahtumaId,
             @Valid @RequestBody LipputyyppiPyyntoDto body) {
 
-        return lipputyyppiService.addLipputyyppi(tapahtumaId, body);
+        LipputyyppiVastausDto lipputyyppi = lipputyyppiService.addLipputyyppi(tapahtumaId, body);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(lipputyyppi);
     }
 
     @PreAuthorize("(hasRole('JARJESTAJA') and @tapahtumaSecurity.isOwner(#tapahtumaId)) or hasRole('ADMIN')")
@@ -58,7 +55,9 @@ public class LipputyyppiRestController {
             @PathVariable long lipputyyppiId,
             @Valid @RequestBody LipputyyppiPyyntoDto body) {
 
-        return lipputyyppiService.updateLipputyyppi(tapahtumaId, lipputyyppiId, body);
+        LipputyyppiVastausDto lipputyyppi = lipputyyppiService.updateLipputyyppi(tapahtumaId, lipputyyppiId, body);
+
+        return ResponseEntity.ok().body(lipputyyppi);
     }
 
     @PreAuthorize("(hasRole('JARJESTAJA') and @tapahtumaSecurity.isOwner(#tapahtumaId)) or hasRole('ADMIN')")
@@ -67,6 +66,8 @@ public class LipputyyppiRestController {
             @PathVariable("id") long tapahtumaId,
             @PathVariable long lipputyyppiId) {
 
-        return lipputyyppiService.deleteLipputyyppi(tapahtumaId, lipputyyppiId);
+        lipputyyppiService.deleteLipputyyppi(tapahtumaId, lipputyyppiId);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

@@ -2,12 +2,13 @@ package ohjelmistoprojekti.lipputoimisto.service;
 
 import ohjelmistoprojekti.lipputoimisto.domain.*;
 import ohjelmistoprojekti.lipputoimisto.dto.*;
+import ohjelmistoprojekti.lipputoimisto.exception.LippuCapacityException;
+import ohjelmistoprojekti.lipputoimisto.exception.LippuStatusException;
 import ohjelmistoprojekti.lipputoimisto.repository.LippuRepository;
 import ohjelmistoprojekti.lipputoimisto.repository.LipputyyppiRepository;
 import ohjelmistoprojekti.lipputoimisto.repository.MyyntitapahtumaRepository;
 import ohjelmistoprojekti.lipputoimisto.repository.TapahtumaRepository;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -25,7 +26,7 @@ public class LippuService {
     private final UserContextService userContextService;
 
     public LippuService(LippuRepository lippuRepository, LipputyyppiRepository lipputyyppiRepository,
-                        TapahtumaRepository tapahtumaRepository, MyyntitapahtumaRepository myyntitapahtumaRepository, 
+                        TapahtumaRepository tapahtumaRepository, MyyntitapahtumaRepository myyntitapahtumaRepository,
                         UserContextService userContextService) {
         this.lippuRepository = lippuRepository;
         this.lipputyyppiRepository = lipputyyppiRepository;
@@ -34,18 +35,18 @@ public class LippuService {
         this.userContextService = userContextService;
     }
 
-    public ResponseEntity<?> varaaLiput(LippuVarausPyynto pyynto) {
+    public LippuVarausVastaus varaaLiput(LippuVarausPyynto pyynto) {
 
         Optional<Tapahtuma> tapahtumaOptional = tapahtumaRepository.findById(pyynto.getTapahtumaId());
 
         if (tapahtumaOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
         Tapahtuma tapahtuma = tapahtumaOptional.get();
 
         if (tapahtuma.isPoistettu()) {
-            return ResponseEntity.notFound().build();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
         BigDecimal summa = BigDecimal.ZERO;
@@ -62,17 +63,17 @@ public class LippuService {
                     .findById(new LipputyyppiId(tapahtuma.getTapahtumaId(), varaus.getLipputyyppiId()));
 
             if (lipputyyppiOptional.isEmpty()) {
-                return ResponseEntity.notFound().build();
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             }
 
             Lipputyyppi lipputyyppi = lipputyyppiOptional.get();
 
             if (lipputyyppi.isPoistettu()) {
-                return ResponseEntity.notFound().build();
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             }
 
             if (lipputyyppi.getTapahtuma().getTapahtumaId() != pyynto.getTapahtumaId()) {
-                return ResponseEntity.badRequest().build();
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
             }
 
 
@@ -88,13 +89,13 @@ public class LippuService {
             Integer qty = e.getValue();
             if (lipputyyppi.getMaxLippumaara() == null) {
                 if (tapahtumaMax < qty) {
-                    return ResponseEntity.status(HttpStatus.CONFLICT).build();
+                    throw new LippuCapacityException("Tapahtumaan ei ole tarpeeksi lippuja jäljellä");
                 }
                 tapahtumaMax -= qty;
             } else {
                 long liputJaljella = lipputyyppi.getMaxLippumaara() - lippuRepository.countByLipputyyppiAndLipunStatusNot(lipputyyppi, Lippu.LippuTila.PERUTTU);
                 if (liputJaljella < qty) {
-                    return ResponseEntity.status(HttpStatus.CONFLICT).build();
+                    throw new LippuCapacityException("Lipputyyppiin ei ole tarpeeksi lippuja jäljellä");
                 }
             }
         }
@@ -102,7 +103,7 @@ public class LippuService {
         Myyntitapahtuma myyntitapahtuma = new Myyntitapahtuma(LocalDateTime.now(), summa);
 
         myyntitapahtuma.setMyyja(userContextService.getCurrentUser());
-        
+
         myyntitapahtumaRepository.save(myyntitapahtuma);
 
         List<VarattuLippu> varatutLiput = new ArrayList<>();
@@ -118,12 +119,10 @@ public class LippuService {
                     lippu.getKoodi()));
         }
 
-        LippuVarausVastaus vastaus = new LippuVarausVastaus(
+        return new LippuVarausVastaus(
                 myyntitapahtuma.getMyyntitapahtumaId(),
                 summa,
                 varatutLiput);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(vastaus);
     }
 
     private Lippu haeLippu(String koodi) {
@@ -138,61 +137,48 @@ public class LippuService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
-        Lippu lippu = optLippu.get();
-
-        Lippu.LippuTila status = lippu.getLipunStatus();
-
-        if (status != Lippu.LippuTila.VARATTU) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT);
-        }
-        return lippu;
+        return optLippu.get();
     }
 
-    public ResponseEntity<?> lunastaLippu(LippuLunastus pyynto) {
+    public void lunastaLippu(LippuLunastus pyynto) {
         Lippu lippu = haeLippu(pyynto.getKoodi());
         Lippu.LippuTila status = lippu.getLipunStatus();
 
         if (status != Lippu.LippuTila.VARATTU) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            throw new LippuStatusException("Lippu on jo lunastettu tai peruttu");
         }
 
         lippu.setLipunStatus(Lippu.LippuTila.LUNASTETTU);
         lippuRepository.save(lippu);
-
-        return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity<?> peruLippu(LippuLunastus pyynto) {
+    public void peruLippu(LippuLunastus pyynto) {
         Lippu lippu = haeLippu(pyynto.getKoodi());
         Lippu.LippuTila status = lippu.getLipunStatus();
 
         if (status != Lippu.LippuTila.VARATTU) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            throw new LippuStatusException("Lippu on jo lunastettu tai peruttu");
         }
 
         lippu.setLipunStatus(Lippu.LippuTila.PERUTTU);
         lippuRepository.save(lippu);
-
-        return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity<?> haeLipunTiedot(String koodi) {
+    public LipunTarkastusVastaus haeLipunTiedot(String koodi) {
 
         if (koodi == null || koodi.isBlank()) {
-            return ResponseEntity.badRequest().build();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
 
         Lippu lippu = lippuRepository.findByKoodi(koodi)
             .orElseThrow(() -> new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Lippua ei löydy"));
 
-        LipunTarkastusVastaus vastaus = new LipunTarkastusVastaus(
+        return new LipunTarkastusVastaus(
             lippu.getLippuId(),
             lippu.getKoodi(),
             lippu.getLipunStatus()
     );
-
-        return ResponseEntity.ok(vastaus);
     }
 
 }
