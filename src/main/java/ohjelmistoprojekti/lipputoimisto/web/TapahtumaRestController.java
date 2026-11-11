@@ -2,7 +2,6 @@ package ohjelmistoprojekti.lipputoimisto.web;
 
 import jakarta.validation.Valid;
 import ohjelmistoprojekti.lipputoimisto.domain.Kayttaja;
-import ohjelmistoprojekti.lipputoimisto.domain.Lippu;
 import ohjelmistoprojekti.lipputoimisto.domain.Tapahtuma;
 import ohjelmistoprojekti.lipputoimisto.dto.LippuVastausDto;
 import ohjelmistoprojekti.lipputoimisto.dto.TapahtumaPyyntoDto;

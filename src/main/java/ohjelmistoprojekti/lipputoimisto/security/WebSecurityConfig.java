@@ -15,39 +15,39 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity(securedEnabled = true)
 public class WebSecurityConfig {
 
-    @Bean
-    public RoleHierarchy roleHierarchy() {
-        return RoleHierarchyImpl.withDefaultRolePrefix()
-                .role("ADMIN").implies("MYYJA")
-                .role("ADMIN").implies("JARJESTAJA")
-                .build();
-    }
+  @Bean
+  public RoleHierarchy roleHierarchy() {
+    return RoleHierarchyImpl.withDefaultRolePrefix()
+      .role("ADMIN").implies("MYYJA")
+      .role("ADMIN").implies("JARJESTAJA")
+      .build();
+  }
 
-    @Bean
-    public SecurityFilterChain configure(HttpSecurity http) throws Exception {
-        http
-                .cors(Customizer.withDefaults())
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/css/**", "/error").permitAll()
+  @Bean
+  public SecurityFilterChain configure(HttpSecurity http) throws Exception {
+    http
+      .cors(Customizer.withDefaults())
+      .csrf(csrf -> csrf.disable())
+      .authorizeHttpRequests(authorize -> authorize
+        .requestMatchers("/css/**", "/error").permitAll()
 
-                        .requestMatchers(HttpMethod.GET, "/api/tapahtumat/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/lipputyypit/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/kayttajat/*").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/liput/qr").permitAll()
+        .requestMatchers(HttpMethod.GET, "/api/tapahtumat/**").permitAll()
+        .requestMatchers(HttpMethod.GET, "/api/lipputyypit/**").permitAll()
+        .requestMatchers(HttpMethod.GET, "/api/kayttajat/*").permitAll()
+        .requestMatchers(HttpMethod.POST, "/api/liput/qr").permitAll()
 
-                        .requestMatchers(HttpMethod.GET, "/api/myyntitapahtumat/minun").hasRole("MYYJA")
-                        .requestMatchers(HttpMethod.GET, "/api/myyntitapahtumat/myyja/**").hasRole("ADMIN")
+        .requestMatchers(HttpMethod.GET, "/api/myyntitapahtumat/minun").hasRole("MYYJA")
+        .requestMatchers(HttpMethod.GET, "/api/myyntitapahtumat/myyja/**").hasRole("ADMIN")
 
-                        .anyRequest().authenticated())
+        .anyRequest().authenticated())
 
-                .httpBasic(Customizer.withDefaults());
+      .httpBasic(Customizer.withDefaults());
 
-        return http.build();
-    }
+    return http.build();
+  }
 
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+  @Bean
+  public BCryptPasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
 }
