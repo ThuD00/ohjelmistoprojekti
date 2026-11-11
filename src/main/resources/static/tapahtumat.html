@@ -11,14 +11,34 @@
   <header>
     <h1>TicketGuru</h1>
     <nav>
-        <a href="index.html">Etusivu</a>
-        <a href="tapahtumat.html">Tapahtumat</a>
-        <a href="lipunmyynti.html">Lipunmyynti</a>
-        <a href="raportit.html">Myyntiraportit</a>
+      <a href="index.html">Etusivu</a>
+      <a href="tapahtumat.html">Tapahtumat</a>
+      <a href="lipunmyynti.html">Lipunmyynti</a>
+      <a href="raportit.html">Myyntiraportit</a>
     </nav>
   </header>
   <main>
     <h1>Tapahtumien hallinta</h1>
+
+    <section>
+    <h2>Kirjautuminen</h2>
+
+    <label for="kayttajatunnus">Käyttäjätunnus:</label>
+    <input type="text" id="kayttajatunnus">
+
+    <label for="salasana">Salasana:</label>
+    <input type="password" id="salasana">
+
+    <button type="button" id="kirjauduNappi">
+      Kirjaudu
+    </button>
+
+    <button type="button" id="kirjauduUlosNappi">
+      Kirjaudu ulos
+    </button>
+
+    <p id="kirjautumisIlmoitus"></p>
+    </section>
 
     <h2>Lisää uusi tapahtuma</h2>
 
@@ -38,16 +58,41 @@
       <label for="maxLippumaara">Lippujen enimmäismäärä:</label>
       <input type="number" id="maxLippumaara" min="1" required>
       <br><br>
-      <button type="submit">Lisää tapahtuma</button>
+      <button type="submit" id="tallennaNappi">Lisää tapahtuma</button>
     </form>
 
     <p id="ilmoitus"></p>
 
-    <button onclick="haeTapahtumat()">Päivitä tapahtumat</button>
+    <section>
+      <h2>Tapahtumien haku</h2>
 
+      <button type="button" onclick="haeTapahtumat()">
+        Hae kaikki tapahtumat
+      </button>
+
+      <button type="button" id="omatTapahtumatNappi">
+        Hae omat tapahtumat
+      </button>
+
+      <div>
+        <label for="jarjestajaId">Järjestäjän ID:</label>
+        <input type="number" id="jarjestajaId" min="1">
+
+        <button type="button" id="jarjestajaTapahtumatNappi">
+          Hae järjestäjän tapahtumat
+        </button>
+      </div>
+
+      <button type="button" id="poistetutTapahtumatNappi">
+        Hae poistetut tapahtumat
+      </button>
+    </section>
+
+    <h2>Tapahtumat</h2>
     <div id="tapahtumat">
-        <p>Ladataan tapahtumia...</p>
+      <p>Ladataan tapahtumia...</p>
     </div>
+
   </main>
 </body>
 </html>

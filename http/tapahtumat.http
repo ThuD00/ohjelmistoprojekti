@@ -18,6 +18,10 @@ Authorization: Basic {{jarjestajaToken}}
 GET http://localhost:8080/api/tapahtumat/jarjestaja/3
 Authorization: Basic {{jarjestaja1Token}}
 
+### Hae kaikki tietyn järjestäjän tapahtumat
+GET http://localhost:8080/api/tapahtumat/jarjestaja/2
+Authorization: Basic {{adminToken}}
+
 ### Hae tietty tapahtuma
 GET http://localhost:8080/api/tapahtumat/1
 
