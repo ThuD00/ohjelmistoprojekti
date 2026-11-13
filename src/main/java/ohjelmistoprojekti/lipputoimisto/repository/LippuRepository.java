@@ -12,12 +12,6 @@ import java.util.Optional;
 public interface LippuRepository extends JpaRepository<Lippu, Long> {
     Optional<Lippu> findByKoodi(String koodi);
 
-    boolean existsByLipputyyppi(Lipputyyppi lipputyyppi);
-
-    long countByLipputyyppi(Lipputyyppi lipputyyppi);
-
-    List<Lippu> findAllByLipputyyppi(Lipputyyppi lipputyyppi);
-
     List<Lippu> findAllByLipputyyppi_Tapahtuma(Tapahtuma tapahtuma);
 
     long countByLipputyyppiAndLipunStatusNot(

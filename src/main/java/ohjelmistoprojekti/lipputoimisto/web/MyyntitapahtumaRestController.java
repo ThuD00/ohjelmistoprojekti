@@ -43,7 +43,7 @@ public class MyyntitapahtumaRestController {
     }
 
     @PreAuthorize("hasRole('MYYJA')")
-    @GetMapping("/omat")
+    @GetMapping("/minun")
     public List<Myyntitapahtuma> getOmatMyyntitapahtumat() {
         return myyntitapahtumaService.getOmatMyyntitapahtumat();
     }

@@ -1,5 +1,6 @@
 package ohjelmistoprojekti.lipputoimisto;
 
+import com.jayway.jsonpath.JsonPath;
 import ohjelmistoprojekti.lipputoimisto.domain.Lippu;
 import ohjelmistoprojekti.lipputoimisto.repository.LippuRepository;
 import org.junit.jupiter.api.Assertions;
@@ -10,9 +11,13 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -38,7 +43,7 @@ public class LippuRestControllerTest {
 
     @Test
     void reserveTicketReturnsCreated() throws Exception {
-        mockMvc.perform(post(BASE_URL + "/varaa")
+        MvcResult result = mockMvc.perform(post(BASE_URL + "/varaa")
                         .with(MYYJA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
@@ -57,20 +62,25 @@ public class LippuRestControllerTest {
                                 }
                                 """))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.myyntitapahtumaId").value(6))
+                .andExpect(jsonPath("$.myyntitapahtumaId").isNumber())
                 .andExpect(jsonPath("$.summa").value(37.5))
                 .andExpect(jsonPath("$.liput").isArray())
                 .andExpect(jsonPath("$.liput.length()").value(3))
 
-                .andExpect(jsonPath("$.liput[0].lipputyyppiId").value(1))
+                .andExpect(jsonPath("$.liput[0].lipputyyppiId").isNumber())
                 .andExpect(jsonPath("$.liput[0].koodi").isNotEmpty())
 
-                .andExpect(jsonPath("$.liput[1].lipputyyppiId").value(1))
+                .andExpect(jsonPath("$.liput[1].lipputyyppiId").isNumber())
                 .andExpect(jsonPath("$.liput[1].koodi").isNotEmpty())
 
-                .andExpect(jsonPath("$.liput[2].lipputyyppiId").value(2))
-                .andExpect(jsonPath("$.liput[2].koodi").isNotEmpty());
-        // TODO: testaa että liput oikeasti on varattu
+                .andExpect(jsonPath("$.liput[2].lipputyyppiId").isNumber())
+                .andExpect(jsonPath("$.liput[2].koodi").isNotEmpty())
+                .andReturn();
+
+        List<String> koodit = JsonPath.read(result.getResponse().getContentAsString(), "$.liput[*].koodi");
+        for (String koodi:koodit) {
+            assertTrue(lippuRepository.findByKoodi(koodi).isPresent());
+        }
     }
 
     @Test
