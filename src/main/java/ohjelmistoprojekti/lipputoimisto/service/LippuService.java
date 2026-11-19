@@ -146,7 +146,7 @@ public class LippuService {
 
         if (status != Lippu.LippuTila.VARATTU) {
             throw new LippuStatusException(
-                "Lippua ei voi lunastaa. Lipun nykyinen tila on " + status
+                "Lippua ei voi lunastaa. Lipun nykyinen tila: " + status
             );
         }
 
