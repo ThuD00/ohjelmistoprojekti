@@ -145,7 +145,9 @@ public class LippuService {
         Lippu.LippuTila status = lippu.getLipunStatus();
 
         if (status != Lippu.LippuTila.VARATTU) {
-            throw new LippuStatusException("Lippu on jo lunastettu tai peruttu");
+            throw new LippuStatusException(
+                "Lippua ei voi lunastaa. Lipun nykyinen tila on " + status
+            );
         }
 
         lippu.setLipunStatus(Lippu.LippuTila.LUNASTETTU);
