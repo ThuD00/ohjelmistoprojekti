@@ -15,8 +15,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-// TODO: testaa myös tapahtuman omistajuus
-
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
@@ -307,4 +305,32 @@ public class LipputyyppiRestControllerTest {
                         .with(JARJESTAJA))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+        void modifyLipputyyppiReturnsForbiddenForOtherOrganizer() throws Exception {
+        mockMvc.perform(put(BASE_URL + "/2/lipputyypit/1")
+            .with(JARJESTAJA)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("""
+                    {
+                        "kuvaus": "Aikuinen",
+                        "lipunHinta": 20.00
+                    }
+                    """))
+            .andExpect(status().isForbidden());
+        }
+
+        @Test
+        void createLipputyyppiReturnsUnauthorized() throws Exception {
+        mockMvc.perform(post(BASE_URL + "/3/lipputyypit")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("""
+                    {
+                        "kuvaus": "VIP",
+                        "lipunHinta": 50.00
+                    }
+                    """))
+            .andExpect(status().isUnauthorized());
+        }
+
 }
