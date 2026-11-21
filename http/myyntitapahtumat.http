@@ -4,6 +4,10 @@
 
 ### Hae kaikki myyntitapahtumat
 GET http://localhost:8080/api/myyntitapahtumat
+Authorization: Basic {{adminToken}}
+
+### Hae omat myyntitapahtumat
+GET http://localhost:8080/api/myyntitapahtumat/minun
 Authorization: Basic {{myyjaToken}}
 
 ### Hae myyntitapahtuma ID:llä

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Myyntiraportit - TicketGuru</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/raportit.js" defer></script>
+</head>
+<body>
+  <header>
+    <h1>TicketGuru</h1>
+    <nav>
+      <a href="index.html">Etusivu</a>
+      <a href="tapahtumat.html">Tapahtumat</a>
+      <a href="lipunmyynti.html">Lipunmyynti</a>
+      <a href="raportit.html">Myyntiraportit</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Myyntiraportit</h1>
+
+    <section>
+      <h2>Kirjautuminen</h2>
+
+      <label for="kayttajatunnus">Käyttäjätunnus:</label>
+      <input type="text" id="kayttajatunnus">
+
+      <label for="salasana">Salasana:</label>
+      <input type="password" id="salasana">
+
+      <button type="button" id="kirjauduNappi">Kirjaudu</button>
+      <button type="button" id="kirjauduUlosNappi">Kirjaudu ulos</button>
+
+      <p id="kirjautumisIlmoitus"></p>
+    </section>
+
+    <section>
+      <h2>Myynnin yhteenveto</h2>
+      <div id="yhteenveto">
+        <p>Kirjaudu sisään nähdäksesi raportin.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Myyntitapahtumat</h2>
+      <div id="myyntitapahtumat">
+        <p>Myyntitapahtumia ei ole haettu.</p>
+      </div>
+    </section>
+
+    <section id="tilauksenTiedot" hidden>
+      <h2>Tilauksen tiedot</h2>
+      <div id="tilausSisalto"></div>
+    </section>
+  </main>
+</body>
+</html>

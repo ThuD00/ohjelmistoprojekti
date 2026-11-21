@@ -147,5 +147,62 @@ section select {
     max-width: 100%;
 }
 
+/* Myyntiraportit */
+.raporttiKortit {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.raporttiKortti {
+    background-color: #f5f6fa;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.raporttiKortti h3 {
+    color: #243247;
+    font-size: 16px;
+}
+
+.raporttiKortti p {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 0;
+}
+
+#yhteenveto table,
+#myyntitapahtumat table,
+#tilausSisalto table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+#yhteenveto th,
+#yhteenveto td,
+#myyntitapahtumat th,
+#myyntitapahtumat td,
+#tilausSisalto th,
+#tilausSisalto td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+#yhteenveto th,
+#myyntitapahtumat th,
+#tilausSisalto th {
+    background-color: #243247;
+    color: white;
+}
+
+#yhteenveto tr:last-child {
+    font-weight: bold;
+}
+
+
 
 
