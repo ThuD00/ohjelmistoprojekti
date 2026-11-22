@@ -1,11 +1,10 @@
-let authToken = null;
+let authToken = sessionStorage.getItem("authToken");
 let myyntitapahtumat = [];
 
+//Lipputyypin crud-toiminnon lisäys, parannettu raporttisivun roolien käsittelyä ja virheenkäsittelyä
 async function kirjaudu() {
-  const kayttaja =
-    document.getElementById("kayttajatunnus").value;
-  const salasana =
-    document.getElementById("salasana").value;
+  const kayttaja = document.getElementById("kayttajatunnus").value;
+  const salasana = document.getElementById("salasana").value;
 
   if (!kayttaja || !salasana) {
     document.getElementById("kirjautumisIlmoitus").textContent =
@@ -14,6 +13,7 @@ async function kirjaudu() {
   }
 
   authToken = btoa(kayttaja + ":" + salasana);
+  sessionStorage.setItem("authToken", authToken);
   document.getElementById("salasana").value = "";
 
   await haeMyyntiraportti();
@@ -21,6 +21,8 @@ async function kirjaudu() {
 
 function kirjauduUlos() {
   authToken = null;
+  sessionStorage.removeItem("authToken");
+
   myyntitapahtumat = [];
 
   document.getElementById("kayttajatunnus").value = "";
@@ -44,48 +46,87 @@ async function haeMyyntiraportti() {
     return;
   }
 
-  const ilmoitus =
-    document.getElementById("kirjautumisIlmoitus");
+  const ilmoitus = document.getElementById("kirjautumisIlmoitus");
 
   const headers = {
     "Authorization": "Basic " + authToken
   };
 
+  //edellisen käyttäjän raporttitiedot tyhjennys
+  myyntitapahtumat = [];
+
+  document.getElementById("yhteenveto").innerHTML = "";
+  document.getElementById("myyntitapahtumat").innerHTML =
+    "<p>Ladataan myyntitapahtumia...</p>";
+  document.getElementById("tilauksenTiedot").hidden = true;
+
   try {
-    //kaikkien myyjien myynnin haku (admin)
-    let response = await fetch("/api/myyntitapahtumat", {
+    const rooliResponse = await fetch("/api/kayttajat/oma-rooli", {
       headers: headers
     });
 
-    let rooli = "ADMIN";
+    if (!rooliResponse.ok) {
+      throw new Error("Kirjautuminen epäonnistui. Tarkista käyttäjätunnus ja salasana.");
+    }
 
-    //!ADMIN -> omat myynnit
-    if (response.status === 403) {
+    const rooli = await rooliResponse.text();
+    ilmoitus.textContent = "Kirjautunut " + rooli + "-käyttäjänä.";
+
+    let response;
+    let ilmoituksenTeksti;
+
+    if (rooli === "ADMIN") {
+      response = await fetch("/api/myyntitapahtumat", {
+        headers: headers
+      });
+
+      ilmoituksenTeksti =
+        "Kirjautunut ADMIN-käyttäjänä. Näytetään kaikkien myyjien myynnit.";
+
+    } else if (rooli === "MYYJA") {
       response = await fetch("/api/myyntitapahtumat/minun", {
         headers: headers
       });
 
-      rooli = "MYYJA";
+      ilmoituksenTeksti =
+        "Kirjautunut MYYJA-käyttäjänä. Näytetään omat myynnit.";
+
+    } else if (rooli === "JARJESTAJA" || rooli === "JARJESTAJA1") {
+      ilmoituksenTeksti =
+        "Kirjautunut JÄRJESTÄJÄ-käyttäjänä. Myyntiraportti ei ole vielä käytettävissä.";
+      document.getElementById("yhteenveto").innerHTML = "";
+      document.getElementById("myyntitapahtumat").innerHTML =
+        "<p>Järjestäjän myyntiraporttia ei ole vielä toteutettu.</p>";
+
+      return;
+
+    } else {
+      throw new Error("Tuntematon käyttäjärooli.");
     }
 
     if (!response.ok) {
       throw new Error(
-        "Myyntitapahtumien hakeminen epäonnistui. Tarkista kirjautumistiedot ja käyttöoikeudet."
+        "Myyntitapahtumien hakeminen epäonnistui. Tarkista käyttöoikeudet."
       );
     }
 
     myyntitapahtumat = await response.json();
 
-    ilmoitus.textContent =
-      rooli === "ADMIN"
-        ? "Kirjautunut ADMIN-käyttäjänä. Näytetään kaikkien myyjien myynnit."
-        : "Kirjautunut MYYJA-käyttäjänä. Näytetään omat myynnit.";
+    ilmoitus.textContent = ilmoituksenTeksti;
 
     naytaYhteenveto();
     naytaMyyntitapahtumat();
 
   } catch (error) {
     console.error(error);
+
+    //virhetilanne: raporttitietojen tyhjennys
+    myyntitapahtumat = [];
+
+    document.getElementById("yhteenveto").innerHTML = "";
+    document.getElementById("myyntitapahtumat").innerHTML = "";
+    document.getElementById("tilauksenTiedot").hidden = true;
+
     ilmoitus.textContent = error.message;
   }
 }
@@ -178,7 +219,6 @@ function naytaYhteenveto() {
 
   yhteenveto.innerHTML = html;
 }
-
 
 function naytaMyyntitapahtumat() {
   const alue = document.getElementById("myyntitapahtumat");
@@ -349,3 +389,7 @@ document.getElementById("kirjauduNappi")
 
 document.getElementById("kirjauduUlosNappi")
   .addEventListener("click", kirjauduUlos);
+
+if (authToken) {
+  haeMyyntiraportti();
+}
