@@ -1,6 +1,6 @@
 console.log("lipunmyynti.js latautui!");
 
-let authToken = null;
+let authToken = sessionStorage.getItem("authToken");
 
 async function haeTapahtumat() {
   try {
@@ -13,11 +13,13 @@ async function haeTapahtumat() {
     const tapahtumat = await response.json();
     const valinta = document.getElementById("tapahtumaValinta");
 
+    valinta.innerHTML = '<option value="">Valitse tapahtuma</option>';
+
     tapahtumat.forEach(tapahtuma => {
       const option = document.createElement("option");
       option.value = tapahtuma.tapahtumaId;
-      const aika = new Date(tapahtuma.aika);
 
+      const aika = new Date(tapahtuma.aika);
       const paivamaara = aika.toLocaleDateString("fi-FI");
       const kellonaika = aika.toLocaleTimeString("fi-FI", {
         hour: "2-digit",
@@ -25,10 +27,23 @@ async function haeTapahtumat() {
       });
 
       option.textContent =
-        `${tapahtuma.kuvaus} - ${tapahtuma.paikka}, 
-        ${tapahtuma.kaupunki} (${paivamaara} klo ${kellonaika})`;
-            valinta.appendChild(option);
-          });
+        `${tapahtuma.kuvaus} - ${tapahtuma.paikka}, ${tapahtuma.kaupunki} (${paivamaara} klo ${kellonaika})`;
+
+      valinta.appendChild(option);
+    });
+
+    const tallennettuTapahtuma =
+      sessionStorage.getItem("valittuTapahtuma");
+
+    if (tallennettuTapahtuma) {
+      valinta.value = tallennettuTapahtuma;
+
+      if (valinta.value) {
+        await haeLipputyypit();
+      } else {
+        sessionStorage.removeItem("valittuTapahtuma");
+      }
+    }
 
   } catch (error) {
     console.error(error);
@@ -39,8 +54,7 @@ async function haeTapahtumat() {
 
 //valitun tapahtuman lipputyypit
 async function haeLipputyypit() {
-  const tapahtumaId =
-    document.getElementById("tapahtumaValinta").value;
+  const tapahtumaId = document.getElementById("tapahtumaValinta").value;
 
   const lista = document.getElementById("lipputyypit");
   const tiedot = document.getElementById("tapahtumaTiedot");
@@ -190,7 +204,7 @@ async function myyLiput() {
     if (!response.ok) {
       const virhe = await response.text();
       throw new Error(
-        "Lipunmyynti epäonnistui: " + response.status + " " + virhe
+        "Lipunmyynti epäonnistui! Tarkista käyttöoikeudet " 
       );
     }
 
@@ -287,7 +301,6 @@ async function naytaMyyntiTulos(tulos) {
   alue.scrollIntoView({ behavior: "smooth" });
 }
 
-
 function tyhjennaMyyntilomake() {
   document.getElementById("tapahtumaValinta").value = "";
   document.getElementById("lipputyypit").innerHTML =
@@ -299,11 +312,9 @@ function tyhjennaMyyntilomake() {
   document.getElementById("tapahtumaTiedot").textContent = "";
 }
 
-function kirjaudu() {
-  const kayttaja =
-    document.getElementById("kayttajatunnus").value;
-  const salasana =
-    document.getElementById("salasana").value;
+async function kirjaudu() {
+  const kayttaja = document.getElementById("kayttajatunnus").value;
+  const salasana = document.getElementById("salasana").value;
 
   if (!kayttaja || !salasana) {
     document.getElementById("kirjautumisIlmoitus").textContent =
@@ -313,14 +324,35 @@ function kirjaudu() {
 
   authToken = btoa(kayttaja + ":" + salasana);
 
-  document.getElementById("kirjautumisIlmoitus").textContent =
-    "Kirjautumistiedot asetettu käyttäjälle " + kayttaja + ".";
+  try {
+    const response = await fetch("/api/kayttajat/oma-rooli", {
+      headers: {
+        "Authorization": "Basic " + authToken
+      }
+    });
 
-  document.getElementById("salasana").value = "";
+    if (!response.ok) {
+      throw new Error("Kirjautuminen epäonnistui. Tarkista tunnukset.");
+    }
+
+    sessionStorage.setItem("authToken", authToken);
+    document.getElementById("salasana").value = "";
+
+    await naytaKirjautumisRooli();
+
+  } catch (error) {
+    authToken = null;
+    sessionStorage.removeItem("authToken");
+
+    document.getElementById("kirjautumisIlmoitus").textContent =
+      error.message;
+  }
 }
 
 function kirjauduUlos() {
   authToken = null;
+  sessionStorage.removeItem("authToken");
+  sessionStorage.removeItem("valittuTapahtuma");
 
   document.getElementById("kayttajatunnus").value = "";
   document.getElementById("salasana").value = "";
@@ -329,6 +361,29 @@ function kirjauduUlos() {
     "Olet kirjautunut ulos.";
 }
 
+async function naytaKirjautumisRooli() {
+  if (!authToken) return;
+
+  try {
+    const response = await fetch("/api/kayttajat/oma-rooli", {
+      headers: {
+        "Authorization": "Basic " + authToken
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error("Roolin hakeminen epäonnistui.");
+    }
+
+    const rooli = await response.text();
+
+    document.getElementById("kirjautumisIlmoitus").textContent =
+      "Kirjautunut " + rooli + "-käyttäjänä.";
+
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 // Painikkeiden kuuntelijat
 document.getElementById("kirjauduNappi")
@@ -338,11 +393,24 @@ document.getElementById("kirjauduUlosNappi")
   .addEventListener("click", kirjauduUlos);
 
 document.getElementById("tapahtumaValinta")
-  .addEventListener("change", haeLipputyypit);
+  .addEventListener("change", () => {
+    const tapahtumaId =
+      document.getElementById("tapahtumaValinta").value;
+
+    sessionStorage.setItem("valittuTapahtuma", tapahtumaId);
+
+    haeLipputyypit();
+  });
 
 document.getElementById("myyLiputNappi")
   .addEventListener("click", myyLiput);
 
 
-// Haetaan tapahtumat sivun avautuessa
-haeTapahtumat();
+async function alustaLipunmyynti() {
+  if (authToken) {
+    await naytaKirjautumisRooli();
+  }
+  await haeTapahtumat();
+}
+
+alustaLipunmyynti();

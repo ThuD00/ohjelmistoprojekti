@@ -84,7 +84,7 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<scope>runtime</scope> <!--(runtime) muista muutaa takas test-->
+			<scope>test</scope> <!--(runtime) muista muutaa takas test-->
 		</dependency>
 		<dependency>
 			<groupId>com.google.zxing</groupId>

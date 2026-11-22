@@ -9,6 +9,7 @@ import ohjelmistoprojekti.lipputoimisto.service.UserContextService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,6 +48,22 @@ public class KayttajaRestController {
     @PreAuthorize("hasRole('ADMIN')")
     public Iterable<KayttajaVastausDto> findAllKayttajat() {
         return kayttajaRepository.findAll().stream().map(KayttajaVastausDto::new).toList();
+    }
+
+    @GetMapping("/oma-rooli")
+    public ResponseEntity<String> getOmaRooli(Authentication authentication) {
+      if (authentication == null) {
+          return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+      }
+
+      Kayttaja kayttaja = kayttajaRepository
+          .findKayttajaByKayttajanimi(authentication.getName());
+
+      if (kayttaja == null) {
+          return ResponseEntity.notFound().build();
+      }
+
+      return ResponseEntity.ok(kayttaja.getRooli().name());
     }
 
     @PostMapping
