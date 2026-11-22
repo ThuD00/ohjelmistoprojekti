@@ -1,7 +1,6 @@
 let authToken = sessionStorage.getItem("authToken");
 let myyntitapahtumat = [];
 
-//Lipputyypin crud-toiminnon lisäys, parannettu raporttisivun roolien käsittelyä ja virheenkäsittelyä
 async function kirjaudu() {
   const kayttaja = document.getElementById("kayttajatunnus").value;
   const salasana = document.getElementById("salasana").value;
